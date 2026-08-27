@@ -1,0 +1,1 @@
+unit — node --test core.test.mjs = 12/12 green (isolation, audit, erasure, validation, snapshot/load).

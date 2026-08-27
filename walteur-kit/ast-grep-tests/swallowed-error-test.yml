@@ -1,0 +1,21 @@
+id: walteur-swallowed-error-py
+valid:
+  - |
+    def f():
+        try:
+            work()
+        except Exception as e:
+            log.error("failed", exc_info=e)
+  - |
+    def f():
+        try:
+            work()
+        except Exception as e:
+            raise
+invalid:
+  - |
+    def f():
+        try:
+            work()
+        except Exception as e:
+            return None

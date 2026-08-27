@@ -1,0 +1,8 @@
+{
+  "name": "cadence",
+  "risk_tier": "medium",
+  "is_user_facing": true,
+  "interfaces": [
+    { "type": "ui", "surface": "single-page web app (React + Vite)" }
+  ]
+}

@@ -1,0 +1,1 @@
+documents SDLC evidence: local-evidence — node --test core.test.mjs + test/ = 29/29 green (12 core + 10 api + 5 cross-tenant + 2 erasure); core.mjs owned() chokepoint; proven by execution.

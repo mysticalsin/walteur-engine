@@ -1,0 +1,1 @@
+local build gate — node -c on core.mjs + server.mjs (syntax OK) + node --test core.test.mjs (12/12). Green required to pass.

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "dashboard": "apikeys-vault-overview",
+  "service": "apikeys-vault",
+  "source": "structured JSON request logs from server.mjs (Authorization/token/key redacted to ***)",
+  "panels": [
+    {
+      "id": "status-mix",
+      "title": "Request status mix",
+      "query": "count(requests) by status",
+      "note": "401/403/404/409 are EXPECTED deny-by-default outcomes; only rising 5xx burns the availability budget."
+    },
+    {
+      "id": "latency",
+      "title": "Latency p50/p99",
+      "query": "percentile(ms, [50,99]) by path",
+      "paths": ["/keys", "/keys/:id", "/keys/:id/rotate", "/audit", "/admin/erase"]
+    },
+    {
+      "id": "key-lifecycle",
+      "title": "Key lifecycle events per tenant",
+      "query": "count(method=POST path=/keys | path~rotate | method=DELETE) by tenant",
+      "note": "Issue / rotate / revoke counts per tenant. Never exposes raw key material — logs are redacted."
+    },
+    {
+      "id": "rotation-cadence",
+      "title": "Rotations over time",
+      "query": "count(path~/rotate and status=200) by day",
+      "note": "Tracks rotation hygiene against the 90-day issued_key_rotation_policy in ops/secrets-policy.json."
+    },
+    {
+      "id": "erase-events",
+      "title": "DSAR erase executions",
+      "query": "count(path=/admin/erase and status=200)"
+    }
+  ],
+  "linked_slo": "ops/slo.json",
+  "runbook": "ops/dashboards.md#on-call-runbook-per-alert"
+}

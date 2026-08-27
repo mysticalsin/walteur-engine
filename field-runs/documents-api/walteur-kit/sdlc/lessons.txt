@@ -1,0 +1,1 @@
+lessons — reuse the owned() chokepoint pattern; keep isolation in core, not the HTTP layer; portable test glob test/**/*.test.mjs on node 24.

@@ -1,0 +1,19 @@
+version: "1.0.0"
+title: run-tests
+description: Run the project's test suite in target_dir and report pass/fail with the exact command + exit code.
+parameters:
+  - { key: target_dir, type: string, requirement: required, description: "directory to run tests in" }
+  - { key: language, type: select, requirement: optional, default: auto, options: [auto, node, python, go, rust], description: "test toolchain; auto-detect if unset" }
+instructions: >-
+  Detect the test runner in {{ target_dir }} for {{ language }} (npm test / pytest / go test / cargo test),
+  run it once, and report the exact command, its stdout tail, and the real exit code. Do not claim PASS
+  without a zero exit code (HONESTY law).
+response:
+  json_schema:
+    type: object
+    required: [command, exit_code, passed]
+    properties:
+      command: { type: string }
+      exit_code: { type: integer }
+      passed: { type: boolean }
+settings: { model: sonnet, max_turns: 6 }

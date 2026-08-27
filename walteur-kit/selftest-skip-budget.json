@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "budget_id": "walteur-spec-distribution-v9.78",
+  "updated_at": "2026-06-24",
+  "policy": "Only explicit optional runtime or distribution surfaces may skip aggregate selftest; any new skip reason must fail closed until reviewed.",
+  "max_skipped": 0,
+  "allowed_skip_reasons": []
+}

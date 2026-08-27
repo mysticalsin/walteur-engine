@@ -1,0 +1,1 @@
+monitoring — structured JSON logs per request (status/path/tenant/ms, token redacted); dashboards + alerts in ops/slo.json + ops/dashboards.md.

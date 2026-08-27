@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: lint — lint: node -c core.mjs / server.mjs syntax-clean; zero external deps so no dependency lint surface.

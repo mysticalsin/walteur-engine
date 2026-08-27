@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Support Risk Command Center</title>
+    <link rel="stylesheet" href="src/styles.css">
+  </head>
+  <body>
+    <main id="app" class="shell">
+      <header class="hero">
+        <p class="eyebrow">Field-mile product · WALTEUR v9.78</p>
+        <h1>Support Risk Command Center</h1>
+        <p>Spot blocked, aging, and SLA-near tickets before the daily queue review starts.</p>
+        <span id="loaded-at" class="snapshot">Loading seeded snapshot…</span>
+      </header>
+
+      <section id="summary" class="metrics" aria-label="Support risk summary"></section>
+
+      <section class="grid">
+        <article class="panel wide">
+          <div class="panel-header">
+            <h2>Top operational risks</h2>
+            <p>Sorted by blocker, SLA proximity, then age.</p>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Issue</th>
+                <th>Owner</th>
+                <th>Priority</th>
+                <th>Age</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody id="risk-rows"></tbody>
+          </table>
+        </article>
+
+        <aside class="panel">
+          <div class="panel-header">
+            <h2>Owner load</h2>
+            <p>Who needs help first.</p>
+          </div>
+          <ul id="owner-load" class="owner-load"></ul>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="src/app.mjs"></script>
+  </body>
+</html>

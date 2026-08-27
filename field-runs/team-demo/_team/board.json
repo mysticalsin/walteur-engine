@@ -1,0 +1,37 @@
+{
+  "tasks": [
+    {
+      "id": "t001",
+      "title": "add /health endpoint",
+      "detail": "export health() returning {status:\"ok\"}; test asserts it",
+      "files": [
+        "src/health.mjs"
+      ],
+      "depends_on": [],
+      "status": "done",
+      "owner": "FORGE",
+      "posted_by": "ATLAS",
+      "posted_at": "2026-07-02T18:10:55.571Z",
+      "notes": [
+        {
+          "ts": "2026-07-02T18:10:55.611Z",
+          "peer": "FORGE",
+          "note": "writing src/health.mjs + test"
+        },
+        {
+          "ts": "2026-07-02T18:10:55.723Z",
+          "peer": "FORGE",
+          "note": "built + tested (node --test exit 0); handing to SENTINEL"
+        },
+        {
+          "ts": "2026-07-02T18:10:55.869Z",
+          "peer": "SENTINEL",
+          "note": "re-ran node --test independently, observed exit 0; secrets scan clean; approved"
+        }
+      ],
+      "claimed_at": "2026-07-02T18:10:55.610Z",
+      "reviewed_by": "SENTINEL",
+      "done_at": "2026-07-02T18:10:55.869Z"
+    }
+  ]
+}

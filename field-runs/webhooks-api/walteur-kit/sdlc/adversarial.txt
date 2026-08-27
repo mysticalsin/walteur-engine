@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: adversarial — adversarial: cross-tenant.test.mjs is written to PROVE denial (B cannot read/mutate/rotate A; denied action writes no audit row); a skeptic can re-run it.

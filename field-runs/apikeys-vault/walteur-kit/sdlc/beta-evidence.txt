@@ -1,0 +1,1 @@
+beta evidence — cross-tenant adversarial probes denied; accessible console; rollback target verified; docs present.

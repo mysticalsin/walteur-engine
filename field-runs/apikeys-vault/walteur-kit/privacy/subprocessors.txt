@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: subprocessors — subprocessors — none. Zero external dependencies, zero network egress; the vault is self-contained Node built-ins.

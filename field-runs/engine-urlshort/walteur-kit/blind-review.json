@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "severity": "important",
+      "file": "src/server.js",
+      "line": 120,
+      "note": "buildShortUrl() reflects the client-controlled Host and X-Forwarded-Proto headers verbatim into the returned shortUrl when BASE_URL is unset. Verified empirically: a request with `Host: evil.example.com` and `X-Forwarded-Proto: https` returns shortUrl `https://evil.example.com/<code>`. There is no host allowlist. A consumer that trusts the returned shortUrl (renders it, emails it, treats it as canonical) can be pointed at an attacker-chosen origin (Host-header injection / poisoned absolute URL). Mitigations present but not sufficient on their own: BASE_URL env override exists for fronted deploys, and the stored/redirected href is safe (canonicalized, unaffected). Recommend documenting the header-trust boundary explicitly and/or validating Host against an allowlist when BASE_URL is not set."
+    },
+    {
+      "severity": "nit",
+      "file": "src/server.js",
+      "line": 58,
+      "note": "Stale docstring in readBody(): the JSDoc (lines 58-60) says it rejects 'after destroying the socket so no further bytes are buffered', and the 'error' handler comment (line 100-103) refers to 'the destroy() above'. The actual over-cap code path calls req.pause() (not destroy) — deliberately, because destroying here would kill the 413 response still owed to the client (the caller does the resume+drain+Connection:close). The comments describe an earlier design and contradict the correct current behavior; a maintainer reading them could reintroduce a destroy() and break the 413 delivery. The runtime behavior itself is correct (verified: over-cap returns a clean 413 JSON with Connection: close)."
+    },
+    {
+      "severity": "nit",
+      "file": "bin/server.js",
+      "line": 16,
+      "note": "PORT is read as `process.env.PORT ?? 3000` and passed straight to server.listen() with no numeric validation. A non-numeric PORT (e.g. PORT=abc) is not coerced or rejected up front; verified it surfaces as a misleading fatal `listen EACCES: permission denied not_a_number` rather than a clear 'invalid PORT' config error. Low impact — it fails closed via the server 'error' handler (structured fatal log + exit 1), and this is an ops-only entrypoint — but a Number.parseInt + isFinite guard would give a far clearer diagnostic."
+    },
+    {
+      "severity": "nit",
+      "file": "test/errors.test.js",
+      "line": 108,
+      "note": "Test name overclaims vs. what it asserts. The case titled 'AppError.captureStackTrace-style stack is present but toJSON/serialization never leaks it via the wire helpers' only asserts that err.stack is a non-empty string — it never calls sendError/sendJson and so does not actually verify the 'never leaks via the wire helpers' claim in its own name. (The real no-stack-leak guarantee IS covered by the separate 'sendError never leaks a stack trace onto the wire' test at line 168.) Rename to reflect that this case only checks stack presence, to avoid a false sense of coverage."
+    }
+  ]
+}

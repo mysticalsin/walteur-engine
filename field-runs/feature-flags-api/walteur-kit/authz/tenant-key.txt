@@ -1,0 +1,1 @@
+feature-flags authz evidence: tenant-key — tenantId is the X-Tenant header, carried into core.mjs per-tenant Map bucket key. See server.mjs authenticate + core.mjs byTenant.

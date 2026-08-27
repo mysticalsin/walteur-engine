@@ -1,0 +1,23 @@
+id: walteur-empty-catch-py
+valid:
+  - |
+    try:
+        do_work()
+    except Exception as e:
+        log.error("failed", exc_info=e)
+  - |
+    try:
+        do_work()
+    except ValueError:
+        raise
+invalid:
+  - |
+    try:
+        do_work()
+    except Exception:
+        pass
+  - |
+    try:
+        do_work()
+    except:
+        pass

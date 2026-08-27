@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: anon — anonymous denial — no credential / blank / wrong / unknown-tenant => 401 empty body, no existence leak. Proven by test/api.test.mjs '401' case.

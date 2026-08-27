@@ -1,0 +1,110 @@
+id: walteur-floating-catch-js
+snapshots:
+  ? |
+    doThing().catch(() => {});
+  : labels:
+    - source: doThing().catch(() => {})
+      style: primary
+      start: 0
+      end: 25
+    - source: catch
+      style: secondary
+      start: 10
+      end: 15
+    - source: doThing().catch
+      style: secondary
+      start: 0
+      end: 15
+    - source: '{}'
+      style: secondary
+      start: 22
+      end: 24
+    - source: () => {}
+      style: secondary
+      start: 16
+      end: 24
+    - source: () => {}
+      style: secondary
+      start: 16
+      end: 24
+  ? |
+    doThing().catch((e) => {});
+  : labels:
+    - source: doThing().catch((e) => {})
+      style: primary
+      start: 0
+      end: 26
+    - source: catch
+      style: secondary
+      start: 10
+      end: 15
+    - source: doThing().catch
+      style: secondary
+      start: 0
+      end: 15
+    - source: '{}'
+      style: secondary
+      start: 23
+      end: 25
+    - source: (e) => {}
+      style: secondary
+      start: 16
+      end: 25
+    - source: (e) => {}
+      style: secondary
+      start: 16
+      end: 25
+  ? |
+    doThing().catch(e => {});
+  : labels:
+    - source: doThing().catch(e => {})
+      style: primary
+      start: 0
+      end: 24
+    - source: catch
+      style: secondary
+      start: 10
+      end: 15
+    - source: doThing().catch
+      style: secondary
+      start: 0
+      end: 15
+    - source: '{}'
+      style: secondary
+      start: 21
+      end: 23
+    - source: e => {}
+      style: secondary
+      start: 16
+      end: 23
+    - source: e => {}
+      style: secondary
+      start: 16
+      end: 23
+  ? |
+    doThing().catch(function () {});
+  : labels:
+    - source: doThing().catch(function () {})
+      style: primary
+      start: 0
+      end: 31
+    - source: catch
+      style: secondary
+      start: 10
+      end: 15
+    - source: doThing().catch
+      style: secondary
+      start: 0
+      end: 15
+    - source: '{}'
+      style: secondary
+      start: 28
+      end: 30
+    - source: function () {}
+      style: secondary
+      start: 16
+      end: 30
+    - source: function () {}
+      style: secondary
+      start: 16
+      end: 30

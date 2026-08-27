@@ -1,0 +1,1 @@
+webhooks-api authz evidence: rls — row-level isolation is structural: {tenantId -> Map<id,sub>} buckets, no shared id namespace; core.owned() is the single chokepoint. See core.mjs.

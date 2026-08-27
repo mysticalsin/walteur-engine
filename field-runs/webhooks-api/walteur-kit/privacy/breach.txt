@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: breach — breach response: signing-secret exposure is mitigated by one-time reveal + fingerprint-only storage; rotate-secret lets a tenant invalidate a leaked secret immediately.

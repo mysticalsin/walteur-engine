@@ -1,0 +1,333 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-kit/schemas/harness-state.schema.json",
+  "title": "WALTEUR harness run state",
+  "description": "Machine-checkable state for the WALTEUR enterprise harness loop. Tracks where a run is, what evidence gates passed, and what remains open. It is not a retrieval index; graphify remains the retrieval brain.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "goal",
+    "build_class",
+    "risk_tier",
+    "phase",
+    "autonomy_policy",
+    "recovery_policy",
+    "context_sentinel",
+    "budgets",
+    "stages",
+    "gates",
+    "evidence",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "goal": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string" },
+    "build_class": {
+      "type": "string",
+      "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "regulated"]
+    },
+    "phase": {
+      "type": "string",
+      "enum": ["intake", "discover", "plan", "build", "verify", "review", "ship", "reflect", "stopped"]
+    },
+    "autonomy_policy": {
+      "type": "string",
+      "enum": ["full_autopilot", "pause_at_plan_and_audit", "pause_at_review", "pause_per_task"]
+    },
+    "recovery_policy": {
+      "type": "object",
+      "required": ["posture", "obstacle_trigger", "paths_required", "dimensions_required", "decision_log_path", "validation_required", "escalation_rule"],
+      "additionalProperties": false,
+      "properties": {
+        "posture": {
+          "type": "string",
+          "enum": ["i_will_figure_it_out"]
+        },
+        "obstacle_trigger": { "type": "string", "minLength": 1 },
+        "paths_required": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 3
+        },
+        "dimensions_required": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["what", "artefact", "assumption", "cost", "failure_mode", "validation"]
+          }
+        },
+        "decision_log_path": { "type": "string", "minLength": 1 },
+        "validation_required": { "type": "boolean" },
+        "escalation_rule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "context_sentinel": {
+      "type": "object",
+      "required": ["user_name", "response_prefix", "every_response", "missing_prefix_action", "compaction_target", "baton_path"],
+      "additionalProperties": false,
+      "properties": {
+        "user_name": { "type": "string", "minLength": 1 },
+        "response_prefix": { "type": "string", "minLength": 1 },
+        "every_response": { "type": "boolean" },
+        "missing_prefix_action": {
+          "type": "string",
+          "enum": ["compact_and_resume"]
+        },
+        "compaction_target": { "type": "string", "minLength": 1 },
+        "baton_path": { "type": "string", "minLength": 1 },
+        "degradation_signal": { "type": "string" }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["time_minutes", "input_tokens", "output_tokens", "cost_usd"],
+      "additionalProperties": false,
+      "properties": {
+        "time_minutes": { "type": "number", "minimum": 0 },
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "protected_paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["intake", "discover", "plan", "build", "verify", "review", "ship", "reflect"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "in_progress", "passed", "failed", "skipped", "blocked"]
+          },
+          "owner": { "type": "string" },
+          "started_at": { "type": "string" },
+          "completed_at": { "type": "string" },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "recovery_decision_id": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "stage", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "stage": {
+            "type": "string",
+            "enum": ["intake", "discover", "plan", "build", "verify", "review", "ship", "reflect"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "SKIP", "BLOCKED", "ACCEPTED_RISK"]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "reason": { "type": "string" },
+          "recovery_decision_id": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string" },
+          "timestamp": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "verdict"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+            "enum": ["command", "report", "screenshot", "review", "audit", "decision", "source", "manual_check"]
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "SKIP", "NOT_FOUND", "ACCEPTED_RISK"]
+          },
+          "command": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "timestamp": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "verdict": { "const": "PASS" },
+                "kind": { "enum": ["report", "audit", "screenshot", "source"] }
+              },
+              "required": ["verdict", "kind"]
+            },
+            "then": { "required": ["path"] }
+          },
+          {
+            "if": {
+              "properties": {
+                "verdict": { "const": "PASS" },
+                "kind": { "const": "command" }
+              },
+              "required": ["verdict", "kind"]
+            },
+            "then": { "required": ["command", "path", "timestamp"] }
+          },
+          {
+            "if": {
+              "properties": {
+                "verdict": { "const": "PASS" },
+                "kind": { "enum": ["review", "decision", "manual_check"] }
+              },
+              "required": ["verdict", "kind"]
+            },
+            "then": {
+              "anyOf": [
+                { "required": ["path"] },
+                { "required": ["owner", "timestamp", "summary"] }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decision", "why"],
+        "additionalProperties": false,
+        "properties": {
+          "decision": { "type": "string", "minLength": 1 },
+          "why": { "type": "string", "minLength": 1 },
+          "rejected": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "owner": { "type": "string" },
+          "timestamp": { "type": "string" }
+        }
+      }
+    },
+    "signoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "owner", "status", "reason", "timestamp"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+              "enum": ["ship", "high_risk", "regulated", "accepted_risk", "scope_change", "external", "production", "data", "money", "contract", "irreversible", "confidential_data"]
+          },
+          "owner": { "type": "string", "minLength": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["approved", "rejected", "pending"]
+          },
+          "reason": { "type": "string", "minLength": 1 },
+          "covers": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "timestamp": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "description", "owner"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+            "enum": ["external", "money", "contract", "production", "irreversible", "confidential_data", "data"]
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "requires_signoff": { "type": "boolean" },
+          "status": {
+            "type": "string",
+            "enum": ["active", "not_applicable", "accepted_risk", "closed"]
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["blocker", "next_action"],
+        "additionalProperties": false,
+        "properties": {
+          "blocker": { "type": "string", "minLength": 1 },
+          "next_action": { "type": "string", "minLength": 1 },
+          "recovery_decision_id": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string" },
+          "deadline": { "type": "string" }
+        }
+      }
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "gap": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "owner": { "type": "string" },
+          "accepted_reason": { "type": "string" }
+        }
+      }
+    },
+    "next_action": { "type": "string" },
+    "baton_path": { "type": "string" },
+    "updated_at": { "type": "string", "minLength": 1 }
+  }
+}

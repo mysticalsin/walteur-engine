@@ -1,0 +1,239 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/operate-readiness.schema.json",
+  "title": "WALTEUR Operate Readiness",
+  "description": "Operate-stage readiness proof for enterprise software, workflow, data/AI, cloud/IaC, and mixed builds: SLOs, DORA targets, incident ownership, on-call, observability, rollback rehearsal, support handoff, and post-incident learning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_date",
+    "owner",
+    "service",
+    "slo",
+    "dora",
+    "incident_response",
+    "observability",
+    "rollback",
+    "support"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "run_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "tier", "runtime_ref"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["internal", "customer-facing", "regulated", "mission-critical"]
+        },
+        "runtime_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "slo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objectives", "error_budget_policy_ref"],
+      "properties": {
+        "objectives": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "target", "window", "measurement_ref"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target": {
+                "type": "string",
+              "pattern": "^(>=|<=|>|<|=)\\s*\\S.*$"
+              },
+              "window": {
+                "type": "string",
+                "minLength": 1
+              },
+              "measurement_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "error_budget_policy_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dora": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lead_time", "deployment_frequency", "change_fail_rate", "mttr"],
+      "properties": {
+        "lead_time": {
+          "$ref": "#/definitions/metric_target"
+        },
+        "deployment_frequency": {
+          "$ref": "#/definitions/metric_target"
+        },
+        "change_fail_rate": {
+          "$ref": "#/definitions/metric_target"
+        },
+        "mttr": {
+          "$ref": "#/definitions/metric_target"
+        }
+      }
+    },
+    "incident_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runbook_refs", "severity_matrix_ref", "on_call_owner", "escalation_path", "comms_template_ref"],
+      "properties": {
+        "runbook_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "severity_matrix_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "on_call_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "escalation_path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "comms_template_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "observability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dashboard_refs", "alert_refs", "smoke_check_ref", "trace_or_log_ref"],
+      "properties": {
+        "dashboard_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "alert_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "smoke_check_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace_or_log_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rollback_command", "rehearsal_ref", "rto_minutes", "rpo_minutes"],
+      "properties": {
+        "rollback_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rehearsal_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rto_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rpo_minutes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "support": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support_model", "handoff_ref", "post_incident_review_ref"],
+      "properties": {
+        "support_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoff_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "post_incident_review_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "definitions": {
+    "metric_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "measurement_ref"],
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "measurement_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

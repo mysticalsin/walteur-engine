@@ -1,0 +1,1 @@
+documents-api privacy evidence: encrypt-transit — encryption in transit — terminated at the platform edge (TLS) in a real deploy; tokens are only ever sent over the encrypted channel and compared in constant time.

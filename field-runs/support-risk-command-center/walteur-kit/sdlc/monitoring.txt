@@ -1,0 +1,1 @@
+Monitoring: client-side app, no runtime telemetry; correctness gated by the test suite re-run.

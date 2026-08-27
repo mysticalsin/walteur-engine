@@ -1,0 +1,1 @@
+feature-flags privacy evidence: deletion-test — node --test test/erasure.test.mjs (2/2): caller flags+audit fully removed, sibling untouched.

@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/migration-proof.schema.json",
+  "title": "WALTEUR Migration Proof",
+  "description": "Fresh database migration proof for enterprise software builds, including forward command, rollback command, verification evidence, lock-risk assessment, and backfill plan.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_date",
+    "owner",
+    "migration_scope",
+    "strategy",
+    "forward_command",
+    "rollback_command",
+    "verification_refs",
+    "rollback_refs",
+    "lock_risk",
+    "data_backfill"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "run_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "migration_scope": {
+      "type": "string",
+      "minLength": 10
+    },
+    "strategy": {
+      "type": "string",
+      "enum": ["expand-contract", "online-compatible", "no-data-change"]
+    },
+    "forward_command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rollback_command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verification_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "rollback_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "lock_risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assessed", "max_lock_ms", "evidence_ref"],
+      "properties": {
+        "assessed": {
+          "type": "boolean",
+          "const": true
+        },
+        "max_lock_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "data_backfill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "plan_ref"],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "plan_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

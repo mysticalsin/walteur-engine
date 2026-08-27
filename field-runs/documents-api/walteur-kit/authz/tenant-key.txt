@@ -1,0 +1,1 @@
+documents-api authz evidence: tenant-key — tenant key — tenantId, supplied as the X-Tenant header, resolved by authenticate() and carried into every core.mjs call; it is the sole isolation key.

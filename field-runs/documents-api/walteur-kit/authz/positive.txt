@@ -1,0 +1,1 @@
+documents-api authz evidence: positive — positive authz — a tenant with valid X-Tenant + Bearer can create/list/read/update/delete its OWN docs (test/api.test.mjs 200/201/204).

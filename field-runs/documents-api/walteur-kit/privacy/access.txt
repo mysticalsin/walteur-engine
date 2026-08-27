@@ -1,0 +1,1 @@
+documents-api privacy evidence: access — access control — every authenticated request is scoped to its tenant via owned(); a tenant can never access another tenant's documents or audit rows.

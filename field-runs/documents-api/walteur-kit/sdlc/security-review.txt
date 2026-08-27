@@ -1,0 +1,1 @@
+security review — constant-time token compare, env-injected secrets, redacted logs, deny-by-default 401/403/404 verified against running tests + live curl.

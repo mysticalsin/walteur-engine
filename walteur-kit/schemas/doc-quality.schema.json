@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/doc-quality.schema.json",
+  "title": "WALTEUR Document Quality",
+  "description": "Class-specific quality proof for the `document` build class (memo, deck, PRD, proposal, policy). Covers the document extra-proof that generic gates miss: structure, source-citation/audit, readability, and a humanizer pass for external docs. Validated by doc-quality-gate.sh.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ts", "verdict", "audience", "deliverables", "structure", "sourcing", "readability"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "ts": { "type": "string", "minLength": 1 },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "audience": { "type": "string", "enum": ["internal", "external"], "description": "External docs require a humanizer pass (HARNESS-LOOP document extra-proof)." },
+    "deliverables": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The actual document files this build produced.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "type"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "description": "Project-relative path to the deliverable; must exist." },
+          "type": { "type": "string", "description": "memo | deck | prd | proposal | policy | other" }
+        }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["has_sections", "sections"],
+      "properties": {
+        "has_sections": { "type": "boolean", "description": "The doc is sectioned, not an unbroken wall of text." },
+        "sections": { "type": "array", "items": { "type": "string" }, "description": "Named sections/headings present." }
+      }
+    },
+    "sourcing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claims_total", "claims_cited", "source_audit_ref"],
+      "properties": {
+        "claims_total": { "type": "integer", "minimum": 0, "description": "Load-bearing factual claims in the doc." },
+        "claims_cited": { "type": "integer", "minimum": 0, "description": "Claims with a cited source. Gate requires cited == total." },
+        "source_audit_ref": { "type": "string", "minLength": 1, "description": "Path/ref to the source-audit evidence." }
+      }
+    },
+    "readability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_paragraph_words", "has_headings"],
+      "properties": {
+        "max_paragraph_words": { "type": "integer", "minimum": 0, "description": "Longest paragraph length; gate caps it to flag walls of text." },
+        "has_headings": { "type": "boolean" }
+      }
+    },
+    "humanizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed"],
+      "properties": {
+        "passed": { "type": "boolean", "description": "AI-tell humanizer/best pass ran and passed. Required true for external audience." },
+        "evidence_ref": { "type": "string", "description": "Path/ref to the humanizer-pass evidence." }
+      }
+    },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

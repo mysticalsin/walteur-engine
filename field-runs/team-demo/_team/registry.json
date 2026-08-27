@@ -1,0 +1,31 @@
+{
+  "peers": {
+    "ATLAS": {
+      "role": "lead-orchestrator",
+      "pid": 23776,
+      "host": "DESKTOP-E5NECPM",
+      "status": "active",
+      "summary": "lead-orchestrator — just joined",
+      "first_seen": "2026-07-02T18:10:55.466Z",
+      "last_heartbeat": "2026-07-02T18:10:55.572Z"
+    },
+    "SENTINEL": {
+      "role": "security-reviewer",
+      "pid": 23776,
+      "host": "DESKTOP-E5NECPM",
+      "status": "active",
+      "summary": "security-reviewer — just joined",
+      "first_seen": "2026-07-02T18:10:55.500Z",
+      "last_heartbeat": "2026-07-02T18:10:55.868Z"
+    },
+    "FORGE": {
+      "role": "builder-backend",
+      "pid": 26892,
+      "host": "DESKTOP-E5NECPM",
+      "status": "active",
+      "summary": "builder-backend — just joined",
+      "first_seen": "2026-07-02T18:10:55.534Z",
+      "last_heartbeat": "2026-07-02T18:10:55.723Z"
+    }
+  }
+}

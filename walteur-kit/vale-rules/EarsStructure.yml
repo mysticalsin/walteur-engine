@@ -1,0 +1,13 @@
+# WALTEUR EARS Rule — EarsStructure
+# Overall structural check: an acceptance-criteria line that starts with "AC"
+# (e.g., "AC1:", "- AC2:") should contain at least one EARS keyword
+# (WHEN / WHILE / IF / WHERE / SHALL) to be structurally EARS-compliant.
+# Fires on AC-labeled lines that contain none of the EARS grammar markers.
+# Authored by WALTEUR (approximation of tbhb/vale-ears, MIT provenance).
+extends: existence
+message: "EARS: AC line lacks EARS grammar markers (WHEN/WHILE/IF/WHERE/SHALL). Shape: WHEN <trigger>, THE <system> SHALL <response>."
+level: warning
+scope: sentence
+# Fires when a sentence begins with AC<digit> but contains no EARS keyword.
+tokens:
+  - '(?i)^[-\s]*AC[0-9]+[:\s](?!.*\b(WHEN|WHILE|IF|WHERE|SHALL)\b)'

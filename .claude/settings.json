@@ -1,0 +1,76 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run test*)",
+      "Bash(npm run lint*)",
+      "Bash(npm run build*)",
+      "Bash(opensrc*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git add*)",
+      "Read",
+      "Grep",
+      "Glob"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/id_rsa)",
+      "Bash(rm -rf /*)",
+      "Bash(curl* | bash)",
+      "Bash(cat **/.env*)",
+      "Bash(cat **/id_rsa*)",
+      "Bash(cat **/*.pem)",
+      "Bash(cat **/secrets/**)",
+      "Bash(head **/.env*)",
+      "Bash(tail **/.env*)",
+      "Bash(less **/.env*)",
+      "Bash(more **/.env*)",
+      "Bash(strings **/.env*)",
+      "Bash(xxd **/.env*)",
+      "Bash(od **/.env*)",
+      "Bash(base64 **/.env*)",
+      "Bash(cp **/.env* *)",
+      "Bash(cat **/.aws/credentials*)",
+      "Bash(cat **/.ssh/*)",
+      "Bash(security find-generic-password*)",
+      "Bash(security find-internet-password*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/kill-switch.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/gate-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/tdd-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/kill-switch.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/ship-gate.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

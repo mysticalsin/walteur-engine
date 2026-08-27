@@ -1,0 +1,5 @@
+blocker: walteur-kit/hooks/excellence-loop-gate.sh:10 still defines CAP as refine_history length == refine_max and lines 19-21 still say length > refine_max / cap without residuals fail, but code at 108,125,147-150 uses refined_count and permits an all-green final; the gate header contract still contradicts implementation/spec.
+blocker: WALTEUR-builder-CLAUDE.md:145 and walteur/SKILL.md:145 still claim WALTEUR self-scores 98/100, while walteur-kit/harness-audit-report.json reports PASS score 100 and §5.7 claims 100/100; mirrored spec is internally inconsistent.
+blocker: walteur-kit/release-ledger.json:5 still says integrator-audit selftest is 20/20 in the v10.20 correction note, but walteur-kit/selftest.sh:1909 and §5.7 now assert 24/24; ledger evidence count is stale.
+risk: walteur-kit/hooks/ship-gate.sh:137-153 still treats any non-2 gate exit as SKIP; acceptable as documented for these two new gates only if they continue to constrain runtime exits to 0/2, but the kit-wide contract remains a ship-time footgun for unexpected shell/runtime rc.
+VERDICT: REVISE

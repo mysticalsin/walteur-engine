@@ -1,0 +1,1 @@
+documents-api privacy evidence: dpia — DPIA — low residual risk: single-purpose tenant-scoped store, deny-by-default, no special-category data, real erasure path. Reviewed and accepted by owner.

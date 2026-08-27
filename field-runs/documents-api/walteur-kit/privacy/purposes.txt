@@ -1,0 +1,1 @@
+documents-api privacy evidence: purposes — purposes — provide a multi-tenant document store to the owning tenant. Single purpose; no secondary use of tenant content.

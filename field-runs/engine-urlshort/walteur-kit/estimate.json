@@ -1,0 +1,1 @@
+{"tokens":{"min":1620000,"expected":1935000,"max":2250000},"minutes":{"min":43,"expected":52,"max":60},"usd":{"expected":58,"hard_ceiling":40},"agents":{"min":36,"expected":43,"max":50},"basis":"~45k output tokens/agent, ~1.2 min/agent wall (parallelized); range = best (0 refine/0 forks) .. worst (full refine + forks). Estimate, not an invoice."}

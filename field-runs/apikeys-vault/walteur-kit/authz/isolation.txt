@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: isolation — isolation evidence — across many tenants/ids, no cross-tenant read or mutation ever occurs (core.test.mjs isolation invariant) and the same holds over HTTP (test/cross-tenant.test.mjs).

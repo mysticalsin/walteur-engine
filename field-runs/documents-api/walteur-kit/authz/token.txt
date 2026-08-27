@@ -1,0 +1,1 @@
+documents-api authz evidence: token — token policy — tokens are env-injected via WALTEUR_TENANT_TOKENS only; never committed; rotated per ops/secrets-policy.json (90d max age); redacted to *** in every log line.

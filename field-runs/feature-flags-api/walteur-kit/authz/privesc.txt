@@ -1,0 +1,1 @@
+feature-flags authz evidence: privesc — a valid tenant B cannot escalate to read/write/erase tenant A; same-key writes stay independent. Proven by test/cross-tenant.test.mjs.

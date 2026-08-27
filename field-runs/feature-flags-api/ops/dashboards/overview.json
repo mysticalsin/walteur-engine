@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "title": "feature-flags-api — overview",
+  "service": "feature-flags-api",
+  "data_source": "structured-json-logs (stdout, token-redacted)",
+  "panels": [
+    {
+      "id": "request-rate",
+      "title": "Request rate by path/status",
+      "type": "timeseries",
+      "query": "count by (path, status) of request log lines",
+      "group_by": ["path", "status"]
+    },
+    {
+      "id": "deny-rate",
+      "title": "Deny rate (401 unauth / 403 cross-tenant)",
+      "type": "timeseries",
+      "query": "count of status in (401,403)",
+      "note": "Deny responses are correct behavior; excluded from the availability error SLI."
+    },
+    {
+      "id": "error-rate",
+      "title": "5xx error rate (SLI: api-availability)",
+      "type": "timeseries",
+      "query": "count of status >= 500 / total",
+      "slo_ref": "ops/slo.json#api-availability"
+    },
+    {
+      "id": "read-latency",
+      "title": "GET /flags latency p50/p99",
+      "type": "histogram",
+      "query": "ms where path='/flags' and method='GET'",
+      "slo_ref": "ops/slo.json#flag-read-latency-p99"
+    },
+    {
+      "id": "write-latency",
+      "title": "POST /flags latency p50/p99",
+      "type": "histogram",
+      "query": "ms where path='/flags' and method='POST'",
+      "slo_ref": "ops/slo.json#flag-write-latency-p99"
+    },
+    {
+      "id": "per-tenant-mutations",
+      "title": "Mutations per tenant (audit-derived)",
+      "type": "table",
+      "query": "count by (tenant, action) of audit rows where action in (set, delete)"
+    }
+  ]
+}

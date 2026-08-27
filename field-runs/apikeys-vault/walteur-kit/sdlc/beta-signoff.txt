@@ -1,0 +1,1 @@
+beta signoff — owner accepted beta against observed adversarial denial.

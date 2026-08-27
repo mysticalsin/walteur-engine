@@ -1,0 +1,1 @@
+webhooks-api authz evidence: anon — no-credential request to any /subscriptions route => 401 empty body. Proven by test/api.test.mjs 401 case.

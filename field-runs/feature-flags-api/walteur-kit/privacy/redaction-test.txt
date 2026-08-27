@@ -1,0 +1,1 @@
+feature-flags privacy evidence: redaction-test — request logs show authorization:'***' (never the token). Observed in test/api.test.mjs run output.

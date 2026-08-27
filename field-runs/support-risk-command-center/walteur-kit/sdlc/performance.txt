@@ -1,0 +1,1 @@
+Performance: pure synchronous array ops over seeded tickets; O(n log n) sort; negligible.

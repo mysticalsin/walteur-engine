@@ -1,0 +1,29 @@
+# R-AST-3  BANNED / HALLUCINATED API CALL.  *** GENERATED FILE — DO NOT HAND-EDIT ***
+# This is the SHAPE. WALTEUR emits one `any:` clause per symbol that is NOT in the opensrc-verified
+# symbol list (the §5.5 intent-vs-implemented evidence set). The list is the INPUT; this YAML is output.
+#
+# Generator contract (shape, not run here):
+#   verified=$(jq -r '.verified_symbols[]' walteur-kit/opensrc-verified.json)   # the allow-list
+#   banned=<symbols the build CALLS but that are NOT in $verified>               # the deny set
+#   for each banned symbol S: append  `- pattern: S($$$ARGS)`  (and member form `- pattern: $OBJ.S($$$ARGS)`)
+# A call to a symbol no upstream package actually exports = a hallucinated API. EXACT at the call-site
+# (real AST call node); the JUDGEMENT of which symbols are 'banned' is PROTOCOL (depends on the verified list).
+#
+# Below: ONE materialized example — `os.system` banned in app code, and a fabricated `requests.fetch`
+# (requests has no .fetch — a classic LLM hallucination). Replace `any:` contents from the generator.
+id: walteur-banned-api-call
+language: python
+severity: warning   # PROVEN advisory (twin: banned-api-call-test.yml). NOT universal-HARD: the deny-set is PROJECT-SPECIFIC (generator template); the orchestrator promotes it to error per-project after filling the real ban list from opensrc-verified.json.
+message: "Call to banned/unverified API '$$$' — not present in the opensrc-verified symbol list (possible hallucinated or forbidden API)."
+note: "WALTEUR R3 (AST call-site EXACT; ban-set is PROTOCOL from opensrc-verified.json). If the symbol is real, add it to the verified list with provenance; if forbidden, replace the call."
+files:
+  - "**/*.py"
+ignores:
+  - "**/tests/**"
+  - "**/*_test.py"
+rule:
+  any:
+    # --- BEGIN GENERATED (one entry per banned symbol; this block is overwritten by the generator) ---
+    - pattern: requests.fetch($$$ARGS)     # hallucinated: the requests lib exposes get/post/..., not fetch
+    - pattern: os.system($$$ARGS)          # forbidden-by-policy example (shell injection surface)
+    # --- END GENERATED ---

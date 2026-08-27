@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/outcome-eval.schema.json",
+  "title": "WALTEUR Outcome Evaluation",
+  "description": "Independent evaluator contract for proving the delivered artifact satisfies the requested outcome.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "verdict",
+    "subject",
+    "evaluator",
+    "rubric",
+    "overall",
+    "blockers",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL", "BLOCKED"] },
+    "subject": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["artifact_ref", "task_context_ref"],
+      "properties": {
+        "artifact_ref": { "type": "string", "minLength": 1 },
+        "task_context_ref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evaluator": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["kind", "name", "independent_from_builder"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["human", "llm", "hybrid"] },
+        "name": { "type": "string", "minLength": 1 },
+        "model": { "type": "string" },
+        "independent_from_builder": { "type": "boolean", "const": true },
+        "bias_checks": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "leniency": { "type": "string", "minLength": 1 },
+            "verbosity": { "type": "string", "minLength": 1 },
+            "self_preference": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["scale", "pass_threshold", "criteria"],
+      "properties": {
+        "scale": {
+          "type": "object",
+          "required": ["min", "max"],
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        },
+        "pass_threshold": { "type": "number" },
+        "criteria": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["id", "name", "weight", "score", "confidence", "evidence_ref", "feedback"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "name": { "type": "string", "minLength": 1 },
+              "weight": { "type": "number", "exclusiveMinimum": 0 },
+              "score": { "type": "number" },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "critical": { "type": "boolean" },
+              "evidence_ref": { "type": "string", "minLength": 1 },
+              "feedback": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "overall": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["score", "confidence", "summary"],
+      "properties": {
+        "score": { "type": "number" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "summary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "blockers": { "type": "array" },
+    "ts": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

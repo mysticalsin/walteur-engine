@@ -1,0 +1,1 @@
+feature-flags authz evidence (rollup): node --test core.test.mjs + test/ green; live curl confirmed 401 (no token), 403 (cross-tenant delete), 404 (cross-tenant read). cross_tenant_probe = node --test test/cross-tenant.test.mjs (exit 0).

@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "gate": "self-regress",
+  "total": 11,
+  "matched": 11,
+  "regressions": [],
+  "errors": []
+}

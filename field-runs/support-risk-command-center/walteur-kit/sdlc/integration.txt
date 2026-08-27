@@ -1,0 +1,1 @@
+Integration: view.mjs consumes risk.mjs output (summarizeTickets -> renderSummaryCards; sortByRisk -> renderRiskRows). view.test.mjs exercises the seam.

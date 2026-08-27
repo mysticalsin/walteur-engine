@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: unit — node --test core.test.mjs = 12/12 (isolation invariant, DSAR, audit-scoping, snapshot/load).

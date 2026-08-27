@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: rollback — rollback: ops/rollback.sh --check verifies a healthy prior version marker (exit 0); --execute is gated behind ROLLBACK_CONFIRM=1.

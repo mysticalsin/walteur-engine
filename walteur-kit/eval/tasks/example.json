@@ -1,0 +1,17 @@
+{
+  "id": "graphify-context-pays",
+  "prompt": "Explain what the resilience-lint R2 rule catches and why.",
+  "model": "claude-sonnet-4-6",
+  "pillar": {
+    "name": "graphify-context",
+    "with": { "append_system_prompt": "Use the retrieved repo context below:\n<...>" },
+    "without": {},
+    "mcp_config_with": null,
+    "mcp_config_without": null
+  },
+  "rubric": [
+    { "name": "names-timeout", "contains": "timeout" },
+    { "name": "names-the-rule", "regex": "R2|network call" }
+  ],
+  "judge": { "enabled": false, "dimensions": ["accuracy", "clarity"] }
+}

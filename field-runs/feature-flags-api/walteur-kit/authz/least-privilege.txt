@@ -1,0 +1,1 @@
+feature-flags authz evidence: least-privilege — a tenant can ONLY reach its own per-tenant bucket via core.mjs owned(); no cross-tenant path exists. Proven by core.test.mjs + test/cross-tenant.test.mjs.

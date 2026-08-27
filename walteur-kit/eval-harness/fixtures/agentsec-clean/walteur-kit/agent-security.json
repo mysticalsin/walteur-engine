@@ -1,0 +1,5 @@
+{
+  "trust_split": true,
+  "no_secret_in_prompt": true,
+  "prompt_injection_control": "dual-llm-quarantine"
+}

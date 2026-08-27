@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: evidence — privacy evidence root: erasure OBSERVED by execution (node --test test/erasure.test.mjs exit 0); data.json scanned, zero raw secrets; logs token+secret-redacted.

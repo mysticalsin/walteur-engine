@@ -1,0 +1,8 @@
+{
+  "title": "Multitenant Tasks — service overview",
+  "panels": [
+    { "id": "request_error_rate", "sli": "errors", "query": "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m])" },
+    { "id": "request_latency_p99", "sli": "latency", "query": "histogram_quantile(0.99, http_request_duration_seconds_bucket)" },
+    { "id": "tenant_denied_rate", "sli": "errors", "query": "rate(http_requests_total{status=~\"40[13]\"}[5m])" }
+  ]
+}

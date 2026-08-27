@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-integrations",
+  "title": "WALTEUR integrations manifest",
+  "description": "Per-build registry of every external dependency. Enforced by integration-proof-gate.sh: no integration may silently mock. Refines §14 layer 5 (external_integrations).",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["integrations"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "allow_mock_prototype": {
+      "type": "boolean",
+      "description": "If true, status=mock is permitted — but ONLY for risk_tier low|medium, and ONLY while prototype_expires is in the future. A time-boxed, owned, auditable trapdoor; never silent."
+    },
+    "prototype_owner": { "type": "string", "description": "Required when allow_mock_prototype:true." },
+    "prototype_expires": { "type": "string", "description": "YYYY-MM-DD. Required when allow_mock_prototype:true; the gate FAILS once past." },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["name", "kind", "status"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["database", "auth", "email", "calendar", "chat", "crm", "automation", "payments", "storage", "llm", "search", "analytics", "external-api", "other"] },
+          "criticality": { "enum": ["core", "supporting", "optional"] },
+          "status": { "enum": ["live-wired", "signed-deferred", "mock"] },
+          "env_keys": { "type": "array", "items": { "type": "string" }, "description": "Env var NAMES only — never values." },
+          "proof": {
+            "type": "object",
+            "description": "REQUIRED when status=live-wired: a real round-trip artifact.",
+            "required": ["command", "command_output_ref", "captured_at"],
+            "properties": {
+              "kind": { "enum": ["round-trip", "response-capture", "webhook-capture"] },
+              "command": { "type": "string", "minLength": 1 },
+              "command_output_ref": { "type": "string", "description": "Path to the captured output; must exist and be non-empty, fresher than WALTEUR_INTEGRATION_MAX_AGE_DAYS (default 14)." },
+              "captured_at": { "type": "string", "description": "YYYY-MM-DD or ISO; not in the future, not stale." },
+              "request_ref": { "type": "string" },
+              "response_ref": { "type": "string" },
+              "assertion": { "type": "string" },
+              "status_observed": { "type": "string" }
+            }
+          },
+          "deferral": {
+            "type": "object",
+            "description": "REQUIRED when status=signed-deferred: the production-grade, owner-signed defer (survives risk_tier high|regulated).",
+            "required": ["reason", "owner", "ticket", "review_trigger"],
+            "properties": {
+              "reason": { "type": "string", "minLength": 1 },
+              "owner": { "type": "string", "minLength": 1 },
+              "ticket": { "type": "string", "minLength": 1 },
+              "review_trigger": { "type": "string", "minLength": 1 },
+              "approved_by": { "type": "string" },
+              "approved_at": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

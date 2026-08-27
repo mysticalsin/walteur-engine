@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/project-context.schema.json",
+  "title": "WALTEUR Project Context Contract",
+  "description": "Typed proof that project-specific AI context, baton, rules, and subagent handoffs exist and stay within context budget.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "generated_context",
+    "subagent_handoffs",
+    "context_budget",
+    "specificity",
+    "freshness",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": { "type": "string", "enum": ["PASS"] },
+    "generated_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agents_ref", "claude_ref", "rules", "relay_ref", "source_refs"],
+      "properties": {
+        "agents_ref": { "type": "string", "minLength": 1 },
+        "claude_ref": { "type": "string", "minLength": 1 },
+        "relay_ref": { "type": "string", "minLength": 1 },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "why_specific", "evidence_ref", "verification"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "why_specific": { "type": "string", "minLength": 1 },
+              "evidence_ref": { "type": "string", "minLength": 1 },
+              "verification": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "subagent_handoffs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "artifact_ref", "validation_ref", "baton_ref", "status"],
+        "properties": {
+          "from": { "type": "string", "minLength": 1 },
+          "to": { "type": "string", "minLength": 1 },
+          "artifact_ref": { "type": "string", "minLength": 1 },
+          "validation_ref": { "type": "string", "minLength": 1 },
+          "baton_ref": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["planned", "completed", "blocked"] }
+        }
+      }
+    },
+    "context_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_agents_bytes", "max_claude_lines", "actual_agents_bytes", "actual_claude_lines"],
+      "properties": {
+        "max_agents_bytes": { "type": "integer", "minimum": 1, "maximum": 32768 },
+        "max_claude_lines": { "type": "integer", "minimum": 1, "maximum": 200 },
+        "actual_agents_bytes": { "type": "integer", "minimum": 1 },
+        "actual_claude_lines": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "specificity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commands_verified", "snippets_from_project", "generic_rules_removed", "no_placeholders"],
+      "properties": {
+        "commands_verified": { "type": "boolean", "const": true },
+        "snippets_from_project": { "type": "boolean", "const": true },
+        "generic_rules_removed": { "type": "boolean", "const": true },
+        "no_placeholders": { "type": "boolean", "const": true }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_refs", "generated_at"],
+      "properties": {
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "generated_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

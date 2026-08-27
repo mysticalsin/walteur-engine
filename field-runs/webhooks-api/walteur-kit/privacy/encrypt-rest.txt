@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: encrypt-rest — encryption at rest: out-of-scope for this in-memory field app (no external DB); the sensitive signing secret is never written at rest at all (fingerprint only). Honest gap noted.

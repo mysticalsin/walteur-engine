@@ -1,0 +1,1 @@
+documents-api privacy evidence: dsar — DSAR access/modify/export/erase — GET /docs (access), PUT /docs/:id (modify), GET /docs serialization (export), POST /admin/erase (erasure). Erasure proven by test/erasure.test.mjs (2/2).

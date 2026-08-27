@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: dsar — DSAR access/modify/export: GET /subscriptions + GET /audit (access), PUT /subscriptions/:id (modify), POST /admin/erase (erasure). All tenant-scoped.

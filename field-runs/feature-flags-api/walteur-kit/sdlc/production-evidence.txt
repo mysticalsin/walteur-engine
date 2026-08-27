@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: production-evidence — /health 200 smoke; structured logs to stdout; SLO alerts in ops/slo.json; rollback verified.

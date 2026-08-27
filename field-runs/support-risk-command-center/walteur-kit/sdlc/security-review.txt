@@ -1,0 +1,1 @@
+Security review: client-side only, no network/eval/secrets; renders escaped DOM strings; no injection surface in src/.

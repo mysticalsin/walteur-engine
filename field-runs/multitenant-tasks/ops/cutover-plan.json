@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "plan_id": "mt-tasks-cutover-blue-green",
+  "strategy": "blue-green",
+  "rollback_command": "bash ops/rollback.sh --execute",
+  "rollback_proof": {
+    "command": "bash ops/rollback.sh --check",
+    "exit_code": 0,
+    "ran_ts": "2026-06-29T00:49:52Z"
+  },
+  "migrations": [
+    {
+      "id": "0001_init_task_store",
+      "reversible": true,
+      "down_command": "node -e \"require('./core.mjs')\"  // in-memory store: dropping the new (blue) process reverts to the prior (green) store; no persistent schema change to undo"
+    }
+  ],
+  "health_check": {
+    "command": "curl -sf localhost:8137/health",
+    "expect_exit": 0
+  },
+  "traffic_shift_steps": [
+    { "step": 1, "percent": 10 },
+    { "step": 2, "percent": 50 },
+    { "step": 3, "percent": 100 }
+  ]
+}

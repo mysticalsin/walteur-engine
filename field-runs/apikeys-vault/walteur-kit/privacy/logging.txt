@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: logging — logging redaction — server.mjs logLine redacts authorization/token/key/secret to ***; the one-time raw key is never passed to a log call. Verified: live-run log scan found zero raw-key occurrences.

@@ -1,0 +1,304 @@
+{
+  "schema_version": 1,
+  "contract_id": "example-build-contract",
+  "request": {
+    "summary": "Build a verified operational dashboard for a support workflow.",
+    "user_outcome": "Support leads can see current workload, aging items, and blocked cases without manual spreadsheet work.",
+    "primary_user": "Support lead",
+    "non_goals": [
+      "Do not replace the source ticketing system in this release."
+    ]
+  },
+  "build_class": "mixed",
+  "risk_tier": "medium",
+  "data_classification": "internal",
+  "success_metrics": [
+    {
+      "name": "Freshness",
+      "target": "Dashboard data is no more than 15 minutes old.",
+      "check": "Run the freshness query and read the generated report."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "c1",
+      "kind": "privacy",
+      "description": "No customer PII appears in screenshots, logs, or demo fixtures.",
+      "status": "active"
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "Dashboard",
+      "type": "ui",
+      "owner": "Support operations",
+      "contract": "Shows workload, aging, and blocked case views with verified empty, loading, and error states."
+    }
+  ],
+  "verification": {
+    "gates": [
+      {
+        "id": "build-contract-lint",
+        "stage": "intake",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Build contract report is PASS or NOT_APPLICABLE for a non-runtime snapshot."
+      },
+      {
+        "id": "gate-registry-lint",
+        "stage": "intake",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Gate registry report confirms all required class and risk gates are declared."
+      },
+      {
+        "id": "estimate-gate",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Pre-build estimate is valid and reconciles with STATE.budgets."
+      },
+      {
+        "id": "harness-state-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Harness state report is PASS once runtime state exists."
+      },
+      {
+        "id": "phase-gate",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Phase order and prior-stage evidence are valid before advancement."
+      },
+      {
+        "id": "evidence-gate",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Referenced evidence exists and supports the verdict it is used for."
+      },
+      {
+        "id": "risk-acceptance-gate",
+        "stage": "review",
+        "hardness": "hard",
+        "expected_evidence": "Accepted risks and high-risk ship decisions have approved owner signoff with evidence."
+      },
+      {
+        "id": "adr-gate",
+        "stage": "review",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "debate/OPEN.json is empty at ship, and any ADR records have rejected alternatives, dissent, ownership, and a typed index."
+      },
+      {
+        "id": "prompt-refinement-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Prompt refinement rewrites the raw request into an enterprise build brief with outcome, acceptance criteria, routing, specialist plan, verification plan, and stop conditions."
+      },
+      {
+        "id": "delivery-orchestration-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Delivery orchestration proves the selected agent roster, SDLC gates, role independence, frontend/backend coverage, handoffs, worktree boundaries, and audit trail."
+      },
+      {
+        "id": "project-context-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Project context proves AGENTS/CLAUDE/rules context, context budget, baton, source refs, and subagent handoff artifact/validation refs."
+      },
+      {
+        "id": "self-improvement-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Self-improvement report mines traces, scouts current GitHub repos or source patterns, validates bounded proposals, and captures reusable lessons with result evidence."
+      },
+      {
+        "id": "outcome-eval-gate",
+        "stage": "review",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Independent evaluator report scores the artifact against the requested outcome with rubric evidence, confidence, bias checks, and no blockers."
+      },
+      {
+        "id": "qa-contract-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "QA report proves unit/integration, functional, logic, integration, data integrity, security, and UX/resilience checks with fresh evidence."
+      },
+      {
+        "id": "skill-readiness",
+        "stage": "review",
+        "hardness": "hard",
+        "expected_evidence": "Declared required skills have machine-readable breadcrumbs or no skill floor applies."
+      },
+      {
+        "id": "docrun",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Documented shell blocks parse cleanly."
+      },
+      {
+        "id": "spec-lint",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Plan and specification lint pass."
+      },
+      {
+        "id": "spec-trace",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Requirements trace to implementation tasks."
+      },
+      {
+        "id": "prd-gate",
+        "stage": "discover",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Product intent has a non-stub PRD or is explicitly not applicable."
+      },
+      {
+        "id": "benchmark-gate",
+        "stage": "discover",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "User-facing product work has a dated best-in-class benchmark or is explicitly not applicable."
+      },
+      {
+        "id": "product-standard-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Product/company completeness is explicit across value loop, app surface, business model, trust, ops, and launch."
+      },
+      {
+        "id": "production-layers-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Every production layer is owned, evidenced, or consciously deferred with risk ownership."
+      },
+      {
+        "id": "design-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "UI work has a design contract or no UI surface applies."
+      },
+      {
+        "id": "resilience-lint",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Error handling and async failure checks pass."
+      },
+      {
+        "id": "devenv-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Code-producing work has a reproducible developer environment or no code stack applies."
+      },
+      {
+        "id": "config-validation",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Configuration access is validated and committed env secrets are absent."
+      },
+      {
+        "id": "nfr-lint",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Non-functional requirements are quantified when NFR discipline is present."
+      },
+      {
+        "id": "observe-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Observability anti-patterns are absent or no source files apply."
+      },
+      {
+        "id": "perf-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Performance context has tail-latency budgets and no detected regression."
+      },
+      {
+        "id": "security-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Security report passes or records an explicit skip."
+      },
+      {
+        "id": "osv-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Dependency advisory report passes or records an explicit skip."
+      },
+      {
+        "id": "contract-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Declared API surfaces have machine-readable contracts."
+      },
+      {
+        "id": "schema-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Schema and migration checks pass or do not apply."
+      },
+      {
+        "id": "confidentiality-gate",
+        "stage": "review",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Confidentiality review is recorded where sensitive output exists."
+      },
+      {
+        "id": "scoreboard-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Eight-dimension scoreboard meets target, per-dimension floors, security floor, locked targets, evidence refs, and freshness."
+      },
+      {
+        "id": "audit-contract-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Terminal audit certificate has scores, 13-layer walk, intended-vs-implemented evidence, no blockers, no shortfalls, and fresh reproduced evidence."
+      },
+      {
+        "id": "release-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Release, handoff, and recovery evidence are present where applicable."
+      },
+      {
+        "id": "quickstart-check",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "README quickstart is present and runnable, or the project has no README yet."
+      },
+      {
+        "id": "tool-readiness",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Declared required tools are installed."
+      },
+      {
+        "id": "verify-dashboard",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Fresh test output plus a browser screenshot or accessibility snapshot."
+      }
+    ],
+    "commands": [
+      {
+        "command": "npm test",
+        "purpose": "Run unit and integration tests."
+      }
+    ],
+    "manual_checks": [
+      "Review the final handoff against the requested support workflow outcome."
+    ]
+  },
+  "evidence_required": [
+    "Test command output",
+    "UI verification artifact",
+    "Known gaps and accepted risks"
+  ],
+  "unknowns": [
+    {
+      "question": "Which ticket fields are contractually safe to display?",
+      "owner": "Support operations",
+      "resolution_status": "open"
+    }
+  ],
+  "created_at": "2026-06-22T00:00:00Z"
+}

@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: docs — docs: walteur-kit/PRD.md (6 stories), ops/dashboards.md (runbooks), this evidence tree; comments in core.mjs/server.mjs document the chokepoint + secret lifecycle.

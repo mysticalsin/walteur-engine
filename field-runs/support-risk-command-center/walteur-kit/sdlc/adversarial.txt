@@ -1,0 +1,1 @@
+Adversarial: empty ticket list, missing slaDueAt, unknown status handled by riskLabel defaults.

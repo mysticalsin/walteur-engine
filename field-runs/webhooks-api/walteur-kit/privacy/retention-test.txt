@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: retention-test — retention test: snapshot/load round-trips subscriptions + audit without cross-tenant bleed or secret leak. Proven by core.test.mjs snapshot/load test.

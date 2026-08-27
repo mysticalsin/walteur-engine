@@ -1,0 +1,247 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/sdlc-run.schema.json",
+  "title": "WALTEUR SDLC Run Proof",
+  "description": "Runtime proof that the five-stage enterprise SDLC actually executed in order: local_build, shared_dev, staging, beta, and production, with independent review, QA, adversarial checks, rollback, monitoring, signoff, and retro evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "run_date",
+    "build_class",
+    "risk_tier",
+    "verdict",
+    "participants",
+    "stages",
+    "independence",
+    "signoff",
+    "retro",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "build_class": {
+      "type": "string",
+      "enum": ["software", "workflow", "data-ai", "cloud-iac", "mixed"]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "regulated"]
+    },
+    "verdict": {
+      "type": "string",
+      "const": "PASS"
+    },
+    "participants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["builder_ids", "reviewer_ids", "release_owner"],
+      "properties": {
+        "builder_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "release_owner": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "owner", "verdict", "started_at", "completed_at", "gate_refs", "evidence_refs", "required_refs"],
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": ["local_build", "shared_dev", "staging", "beta", "production"]
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verdict": {
+            "type": "string",
+            "const": "PASS"
+          },
+          "started_at": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+          },
+          "completed_at": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+          },
+          "gate_refs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/definitions/ref"
+            }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/definitions/ref"
+            }
+          },
+          "required_refs": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "properties": {
+              "tdd_ref": { "$ref": "#/definitions/ref" },
+              "unit_ref": { "$ref": "#/definitions/ref" },
+              "lint_ref": { "$ref": "#/definitions/ref" },
+              "build_ref": { "$ref": "#/definitions/ref" },
+              "code_review_ref": { "$ref": "#/definitions/ref" },
+              "security_review_ref": { "$ref": "#/definitions/ref" },
+              "integration_ref": { "$ref": "#/definitions/ref" },
+              "qa_ref": { "$ref": "#/definitions/ref" },
+              "e2e_ref": { "$ref": "#/definitions/ref" },
+              "environment_parity_ref": { "$ref": "#/definitions/ref" },
+              "performance_ref": { "$ref": "#/definitions/ref" },
+              "adversarial_ref": { "$ref": "#/definitions/ref" },
+              "accessibility_ref": { "$ref": "#/definitions/ref" },
+              "docs_ref": { "$ref": "#/definitions/ref" },
+              "rollback_ref": { "$ref": "#/definitions/ref" },
+              "signoff_ref": { "$ref": "#/definitions/ref" },
+              "deploy_ref": { "$ref": "#/definitions/ref" },
+              "smoke_ref": { "$ref": "#/definitions/ref" },
+              "monitoring_ref": { "$ref": "#/definitions/ref" },
+              "rollback_trigger_ref": { "$ref": "#/definitions/ref" }
+            }
+          }
+        }
+      }
+    },
+    "independence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code_review", "security_review", "qa_review"],
+      "properties": {
+        "code_review": {
+          "$ref": "#/definitions/review_record"
+        },
+        "security_review": {
+          "$ref": "#/definitions/review_record"
+        },
+        "qa_review": {
+          "$ref": "#/definitions/review_record"
+        }
+      }
+    },
+    "signoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "approver", "signoff_ref"],
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "approver": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signoff_ref": {
+          "$ref": "#/definitions/ref"
+        }
+      }
+    },
+    "retro": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retro_ref", "lessons_ref"],
+      "properties": {
+        "retro_ref": {
+          "$ref": "#/definitions/ref"
+        },
+        "lessons_ref": {
+          "$ref": "#/definitions/ref"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_agent_spawns", "gate_failures", "figure_it_out_recoveries"],
+      "properties": {
+        "total_agent_spawns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "gate_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "figure_it_out_recoveries": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "independent_from", "evidence_ref"],
+      "properties": {
+        "reviewer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independent_from": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence_ref": {
+          "$ref": "#/definitions/ref"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-security-baseline",
+  "title": "WALTEUR security baseline",
+  "description": "The 11-point production-security baseline. Enforced by security-baseline-gate.sh: a security-relevant build (UI/auth/db/api/payments/external surface) may not ship with a required check unaddressed. HARD on existence/addressed; the actual security correctness is PROTOCOL (security QA + org-secure-coding-checklist + an OWASP pentest e.g. CyberStrike).",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["checks"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id", "status"],
+        "properties": {
+          "id": {
+            "enum": ["privacy_legal", "rls", "auth_failure_tests", "security_headers", "owasp_review", "server_side_validation", "no_data_leaks", "no_frontend_secrets", "rate_limits", "captcha_cors", "safe_error_messages"]
+          },
+          "status": { "enum": ["verified", "signed-deferred", "not-applicable"] },
+          "layer": { "type": "string", "description": "the §14 production layer this maps to" },
+          "evidence": { "type": "string", "description": "required when status=verified — a command/report/review ref" },
+          "reason": { "type": "string", "description": "required when status=not-applicable" },
+          "prompt": { "type": "string", "description": "the recommended AI hardening prompt for this check" },
+          "deferral": {
+            "type": "object",
+            "description": "required when status=signed-deferred; NOT permitted at risk_tier high|regulated",
+            "required": ["reason", "owner", "ticket", "review_trigger"],
+            "properties": {
+              "reason": { "type": "string", "minLength": 1 },
+              "owner": { "type": "string", "minLength": 1 },
+              "ticket": { "type": "string", "minLength": 1 },
+              "review_trigger": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+id: walteur-empty-catch-js
+snapshots:
+  ? |
+    try { doWork(); } catch (e) {}
+  : labels:
+    - source: catch (e) {}
+      style: primary
+      start: 18
+      end: 30
+    - source: '{}'
+      style: secondary
+      start: 28
+      end: 30
+  ? |
+    try { doWork(); } catch (err) { ; }
+  : labels:
+    - source: catch (err) { ; }
+      style: primary
+      start: 18
+      end: 35
+    - source: '{ ; }'
+      style: secondary
+      start: 30
+      end: 35

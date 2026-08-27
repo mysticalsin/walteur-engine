@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "manifest_id": "walteur-tool-acquisition-v9.56",
+  "updated_at": "2026-06-23",
+  "policy": "Every on-demand CLI fallback used by aggregate proof must be pinned, lockfile-backed, schema-checked, generically validated, runner-nested-shape-proven, schema-uniqueness-proven, ci-preflight-proven, poison-tested, proof-asset-declared, prove-command-executed, and read from this manifest before execution.",
+  "tools": [
+    {
+      "id": "ast-grep",
+      "purpose": "P12 AST rule twin proof for resilience-lint and anti-slop-ui.",
+      "local_binaries": ["ast-grep"],
+      "preferred_local_binary": "ast-grep",
+      "on_demand": {
+        "runner": "npx",
+        "package": "@ast-grep/cli",
+        "version": "0.44.0",
+        "package_spec": "@ast-grep/cli@0.44.0",
+        "binary": "ast-grep",
+        "proof_args": ["test", "-c", "walteur-kit/sgconfig.yml"],
+        "proof": {
+          "description": "Run all configured ast-grep rule twin fixtures.",
+          "config_path": "walteur-kit/sgconfig.yml",
+          "expected_tests": 9,
+          "expected_passed": 9
+        }
+      },
+      "lockfile": {
+        "manager": "npm",
+        "workspace": "walteur-kit/tool-acquisition/ast-grep",
+        "package_json_path": "walteur-kit/tool-acquisition/ast-grep/package.json",
+        "lockfile_path": "walteur-kit/tool-acquisition/ast-grep/package-lock.json",
+        "lockfile_version": 3,
+        "package_path": "node_modules/@ast-grep/cli",
+        "resolved": "https://registry.npmjs.org/@ast-grep/cli/-/cli-0.44.0.tgz",
+        "integrity": "sha512-Jf4PuP7XjzsMa3m9gYxmzV8KyWZc4w1ZzKe/t0+90wWxmSasQJe6AtMkJxHEi98MGgfAF1nWziqjDd0/6EsBjA==",
+        "install_command": "npm ci --prefer-offline --no-audit --fund=false",
+        "local_binary_path": "walteur-kit/tool-acquisition/ast-grep/node_modules/.bin/ast-grep",
+        "prove_script": "ast-grep test -c ../../sgconfig.yml",
+        "prove_command": "npm run prove",
+        "proof_assets": [
+          "walteur-kit/sgconfig.yml",
+          "walteur-kit/ast-grep-rules",
+          "walteur-kit/ast-grep-tests"
+        ]
+      },
+      "fallback_policy": "Use the lockfile-backed local binary first, then a temp npm-ci install from the lockfile, then the manifest-pinned npx package_spec.",
+      "safety_policy": "Do not execute unpinned package specs, package aliases, or lockfiles whose resolved tarball and integrity disagree with this contract."
+    }
+  ]
+}

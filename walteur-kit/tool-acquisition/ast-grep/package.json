@@ -1,0 +1,13 @@
+{
+  "name": "walteur-tool-acquisition-ast-grep",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned WALTEUR acquisition workspace for ast-grep aggregate proof.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "prove": "ast-grep test -c ../../sgconfig.yml"
+  },
+  "dependencies": {
+    "@ast-grep/cli": "0.44.0"
+  }
+}

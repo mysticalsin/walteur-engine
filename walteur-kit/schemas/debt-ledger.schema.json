@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/debt-ledger.schema.json",
+  "title": "WALTEUR Debt Ledger",
+  "description": "A structured register of EVERY knowingly-incurred code-debt marker in the repo. Each suppression (eslint-disable / FIXME / TODO / test.skip / it.only) MUST appear here with an owner, a reason, and a hard expiry date — otherwise it is invisible, unowned, and immortal. The maintainability-gate cross-checks live markers in the source against this ledger and fails on any unrecorded marker. 'id' values MUST be unique across the array.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "kind",
+      "location",
+      "reason",
+      "owner",
+      "expires"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Stable unique identifier for this debt item (e.g. DEBT-0007). Must be unique within the ledger.",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+        "minLength": 1
+      },
+      "kind": {
+        "type": "string",
+        "description": "The class of debt marker. 'todo' = a TODO; 'fixme' = a FIXME; 'skip' = a skipped/focused test (test.skip/it.only/xit/describe.skip); 'disable' = a linter suppression (eslint-disable, type: ignore, noqa, etc.).",
+        "enum": ["todo", "fixme", "skip", "disable"]
+      },
+      "location": {
+        "type": "string",
+        "description": "Where the marker lives — a repo-relative path, ideally with a line reference (e.g. src/api/users.ts:142).",
+        "minLength": 1
+      },
+      "reason": {
+        "type": "string",
+        "description": "Why the debt exists and what is blocked. Must be a real sentence, not a placeholder — a downstream reviewer should understand the trade-off without reading the code.",
+        "minLength": 8
+      },
+      "owner": {
+        "type": "string",
+        "description": "The single accountable human (handle, email, or name). Debt with no owner is debt that never gets paid.",
+        "minLength": 1
+      },
+      "expires": {
+        "type": "string",
+        "description": "Hard expiry date (ISO 8601, YYYY-MM-DD). After this date the debt is overdue and a downstream gate may escalate. Forces every shortcut to carry a deadline.",
+        "format": "date",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      },
+      "issue": {
+        "type": "string",
+        "description": "Optional link to the tracking issue/ticket where the debt is scheduled to be repaid.",
+        "format": "uri"
+      },
+      "created": {
+        "type": "string",
+        "description": "Optional ISO 8601 date the debt was first recorded.",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      }
+    }
+  }
+}

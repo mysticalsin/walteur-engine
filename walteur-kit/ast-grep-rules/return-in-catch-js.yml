@@ -1,0 +1,49 @@
+# R-AST-4 (js/ts arm)  INDISTINGUISHABLE FALLBACK — a catch whose body just `return`s an empty
+# value (null / undefined / 0 / [] / {}) AND does NOT log or re-throw. The caller cannot tell a real
+# empty result from a swallowed failure — the error vanishes silently. NET-NEW vs resilience-lint R1
+# (empty-catch) and the swallowed-error rule (named-binding-unused): this fires even with NO bound
+# name, when the ONLY thing the handler does is hand back a benign-looking empty fallback.
+# VERIFIED against ast-grep 0.43.x: catch_clause > field:body statement_block > return_statement, whose
+# value node is null|undefined|number "0"|empty array|empty object; AND the block has NO call_expression
+# (a log/notify call would make the failure observable) and NO throw_statement (a re-throw is honest).
+# Proven by ../ast-grep-tests/return-in-catch-js-test.yml (ast-grep test).
+# APPROX honesty: scoped to the handler's own subtree (not interprocedural). A handler that records the
+# error via assignment to an outer field then returns [] is a FALSE NEGATIVE. Tuned for low false-POSITIVES
+# (any logging call OR a non-empty literal OR a named-variable return is treated as a legitimate fallback).
+id: walteur-return-in-catch-js
+language: js
+severity: warning   # WARNING-FIRST (v9.2 #13). Promote to error per-project once the twin proof is wired and the team has triaged the initial findings — do NOT ship as universal-HARD.
+message: "catch returns an empty fallback ($$$) with no log or re-throw — a real empty result is indistinguishable from a swallowed error."
+note: "WALTEUR R6 (AST, NEW vs grep floor / empty-catch / swallowed-error). Log the error (so the failure is observable), re-throw, or return a value that signals failure to the caller (Result/Either, sentinel, throw)."
+files:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.cjs"
+ignores:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "**/__tests__/**"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+rule:
+  kind: catch_clause
+  has:
+    field: body
+    kind: statement_block
+    all:
+      - has:
+          kind: return_statement
+          stopBy: end
+          has:
+            any:
+              - { kind: "null" }
+              - { kind: undefined }
+              - { kind: number, regex: "^0$" }
+              - { kind: array, not: { has: { pattern: $X } } }
+              - { kind: object, not: { has: { pattern: $Y } } }
+      - not: { has: { stopBy: end, kind: throw_statement } }
+      - not: { has: { stopBy: end, kind: call_expression } }

@@ -1,0 +1,23 @@
+id: walteur-swallowed-error-py
+snapshots:
+  ? |
+    def f():
+        try:
+            work()
+        except Exception as e:
+            return None
+  : labels:
+    - source: |-
+        except Exception as e:
+                return None
+      style: primary
+      start: 37
+      end: 79
+    - source: e
+      style: secondary
+      start: 57
+      end: 58
+    - source: e
+      style: secondary
+      start: 57
+      end: 58

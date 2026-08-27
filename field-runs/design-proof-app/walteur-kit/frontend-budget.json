@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "bundles": [
+    { "name": "index (app bundle, React+app)", "max_kb": 165 }
+  ],
+  "core_web_vitals": {
+    "lcp_ms": 2000,
+    "inp_ms": 200,
+    "cls": 0.1
+  }
+}

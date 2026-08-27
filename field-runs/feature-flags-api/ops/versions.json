@@ -1,0 +1,8 @@
+{
+  "current": "v2",
+  "previous": "v1",
+  "history": [
+    { "version": "v1", "git_sha": "seed-ff-0001", "deployed_ts": "2026-06-22T00:00:00Z", "color": "green", "health": "ok" },
+    { "version": "v2", "git_sha": "seed-ff-0002", "deployed_ts": "2026-06-28T00:00:00Z", "color": "blue",  "health": "ok" }
+  ]
+}

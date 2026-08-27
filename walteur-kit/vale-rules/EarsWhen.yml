@@ -1,0 +1,11 @@
+# WALTEUR EARS Rule — EarsWhen
+# Checks that acceptance-criteria lines beginning with "WHEN" follow the
+# canonical EARS trigger shape: WHEN <trigger>, THE <system> SHALL <response>.
+# Authored by WALTEUR (approximation of tbhb/vale-ears, MIT provenance).
+extends: existence
+message: "EARS: 'WHEN' trigger found but missing 'SHALL' response clause. Full shape: WHEN <trigger>, THE <system> SHALL <response>."
+level: warning
+scope: sentence
+# Fires when a sentence contains WHEN but lacks SHALL — incomplete EARS trigger.
+tokens:
+  - '(?i)\bWHEN\b(?!.*\bSHALL\b)'

@@ -1,0 +1,1 @@
+webhooks-api authz evidence: role-matrix — single tenant role; every /subscriptions + /admin/erase op requires X-Tenant + Bearer; see server.mjs authenticate(). Proven by test/api.test.mjs + test/cross-tenant.test.mjs.

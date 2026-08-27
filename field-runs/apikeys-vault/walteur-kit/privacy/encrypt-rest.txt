@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: encrypt-rest — encryption at rest — the secret material is NEVER stored in plaintext: only sha256(raw) is persisted, which is a one-way digest. data.json therefore contains no recoverable secret even unencrypted.

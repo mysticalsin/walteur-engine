@@ -1,0 +1,1 @@
+feature-flags privacy evidence: deletion-path — DELETE /flags/:key removes one owned flag; POST /admin/erase removes ALL of the caller-tenant's flags + audit rows. Proven by test/erasure.test.mjs.

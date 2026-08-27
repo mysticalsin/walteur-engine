@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/prompt-refinement.schema.json",
+  "title": "WALTEUR Prompt Refinement Contract",
+  "description": "Typed Improve-this-prompt contract that turns a raw user request into an enterprise build brief before planning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "raw_request",
+    "improved_prompt",
+    "build_brief",
+    "routing",
+    "specialist_plan",
+    "verification_plan",
+    "quality_bar",
+    "open_questions",
+    "source_refs",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": { "type": "string", "enum": ["PASS"] },
+    "raw_request": { "type": "string", "minLength": 1 },
+    "improved_prompt": { "type": "string", "minLength": 80 },
+    "build_brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "primary_user", "success_metrics", "non_goals", "acceptance_criteria", "constraints", "delivery_mode"],
+      "properties": {
+        "outcome": { "type": "string", "minLength": 1 },
+        "primary_user": { "type": "string", "minLength": 1 },
+        "success_metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "target", "check"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "target": { "type": "string", "minLength": 1 },
+              "check": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "non_goals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "criterion", "verification"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "criterion": { "type": "string", "minLength": 1 },
+              "verification": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "delivery_mode": {
+          "type": "string",
+          "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+        }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["build_class", "risk_tier", "data_classification", "requires_ui", "requires_backend", "requires_external_actions"],
+      "properties": {
+        "build_class": {
+          "type": "string",
+          "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+        },
+        "risk_tier": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "regulated"]
+        },
+        "data_classification": {
+          "type": "string",
+          "enum": ["public", "internal", "confidential", "restricted", "regulated"]
+        },
+        "requires_ui": { "type": "boolean" },
+        "requires_backend": { "type": "boolean" },
+        "requires_external_actions": { "type": "boolean" }
+      }
+    },
+    "specialist_plan": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reason", "output"],
+        "properties": {
+          "role": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "output": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "verification_plan": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate", "evidence", "command_or_check"],
+        "properties": {
+          "gate": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string", "minLength": 1 },
+          "command_or_check": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "quality_bar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "must_haves", "stop_conditions"],
+      "properties": {
+        "standard": { "type": "string", "minLength": 1 },
+        "must_haves": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "stop_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "owner", "blocking"],
+        "properties": {
+          "question": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "ts": { "type": "string", "format": "date-time" }
+  }
+}

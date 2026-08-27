@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "team": "WALTEUR-TEAM",
+  "description": "TEAM MODE roster — 7 named Claude Code terminals working as peers (not subagents). Each runs its own loop, coordinates over the peerbus (peerbus-mcp.mjs), and leaves receipts team-coordination-gate.sh verifies.",
+  "bus": "peerbus-mcp.mjs",
+  "protocol": "TEAM-PROTOCOL.md",
+  "peers": [
+    {
+      "name": "ATLAS",
+      "role": "lead-orchestrator",
+      "charter": "roles/ATLAS.md",
+      "model_hint": "opus-or-best",
+      "loop": { "style": "event", "idle_interval_min": 10 },
+      "rights": ["board_post", "reassign_stale", "integrate", "talk_to_tony"],
+      "mission": "Owns the plan. Decomposes Tony's ask into disjoint-file board tasks with contracts, integrates results, reports honestly."
+    },
+    {
+      "name": "FORGE",
+      "role": "builder-backend",
+      "charter": "roles/FORGE.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "board-poll", "idle_interval_min": 5 },
+      "rights": ["claim_build_tasks"],
+      "mission": "Backend/API/data. TDD-first, owns only claimed files, ships with tests observed green."
+    },
+    {
+      "name": "PIXEL",
+      "role": "builder-frontend-design",
+      "charter": "roles/PIXEL.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "board-poll", "idle_interval_min": 5 },
+      "rights": ["claim_ui_tasks"],
+      "mission": "UI/UX to the Apple-grade bar. DESIGN.md contract before code, anti-slop, screenshot-verified."
+    },
+    {
+      "name": "SENTINEL",
+      "role": "security-reviewer",
+      "charter": "roles/SENTINEL.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "review-poll", "idle_interval_min": 5 },
+      "rights": ["veto", "run_gates"],
+      "mission": "Reviews every task in review state. Runs the WALTEUR gates. Veto = task back to building with findings. No green, no done."
+    },
+    {
+      "name": "PROBE",
+      "role": "qa-verifier",
+      "charter": "roles/PROBE.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "review-poll", "idle_interval_min": 5 },
+      "rights": ["run_tests", "block_done"],
+      "mission": "Executes what others claim: re-runs tests, drives the app, browser-proofs UI. A claim PROBE could not reproduce does not ship."
+    },
+    {
+      "name": "SCOUT",
+      "role": "research-data",
+      "charter": "roles/SCOUT.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "event", "idle_interval_min": 15 },
+      "rights": ["external_pulls"],
+      "mission": "Pulls real external information (web, MCP data tools per mcp-manifest.json), leaves acquisition breadcrumbs, feeds builders facts not vibes."
+    },
+    {
+      "name": "KEEPER",
+      "role": "ops-ledger",
+      "charter": "roles/KEEPER.md",
+      "model_hint": "sonnet",
+      "loop": { "style": "interval", "idle_interval_min": 15 },
+      "rights": ["twin_sync", "ledger", "heartbeat_audit"],
+      "mission": "Keeps the machine honest: twin sync, report freshness, stale-claim detection, session notes, escalates blockers to ATLAS."
+    }
+  ],
+  "min_viable_team": ["ATLAS", "FORGE", "SENTINEL"],
+  "notes": "5-7 peers is the sweet spot. Scale down by dropping SCOUT/KEEPER/PIXEL for non-UI internal work; never drop SENTINEL."
+}

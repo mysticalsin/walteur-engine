@@ -1,0 +1,34 @@
+[
+  {
+    "skill": "org-tdd-discipline",
+    "fired_at": "2026-07-02T22:50:07Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/validate.test.js",
+      "field-runs/engine-urlshort/src/validate.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/bin/server.js"
+    ],
+    "summary": "Followed strict red-green TDD for both the validation module and the HTTP server factory. For server.js (task 4) I wrote a real-HTTP smoke suite FIRST (10 node:test cases driving listen(0) over node:http, bodies drained on every path incl. the empty 302) against a not-yet-existing src/server.js, ran node --test and confirmed RED (ERR_MODULE_NOT_FOUND, exit 1), then implemented src/server.js + bin/server.js and re-ran to GREEN. One case (413 over-cap) initially FAILED with a client ECONNRESET because req.destroy() tore down the socket carrying the 413 response — the test caught a genuine defect; I fixed it (pause + drop buffer + Connection: close + drain remainder) and re-ran to 10/10 pass, exit 0. Coverage pins BOTH status and error.code for every typed path: 201 round-trip with request-derived shortUrl (X-Forwarded-Proto + Host, never hardcoded), EMPTY_BODY, INVALID_JSON, DISALLOWED_PROTOCOL, MISSING_URL, PAYLOAD_TOO_LARGE (cap-before-parse), CODE_NOT_FOUND, 405+Allow (POST/GET) on known paths wrong-method, and NOT_FOUND on unknown path. The full repo suite stays green (56/56, exit 0) after adding server.js, and a live bin/server.js boot proved the readiness log + a real POST/GET 302 round-trip. CORRECTION (2026-07-02, refiner pass): an earlier version of this summary also listed 'an injected-store CODE_GEN_EXHAUSTED -> 500 asserting no stack leaks to the wire' as part of THIS server.js smoke suite; that case did NOT exist in the shipped suite when this receipt was written — it was an overclaim. It has since been ADDED (two wire-level 500 cases: CODE_GEN_EXHAUSTED and INTERNAL_ERROR, both via the createServer({store}) injection seam) to test/http.test.js and is documented accurately in the 2026-07-02T22:55:19Z receipt below; the claim is now TRUE and lives there, not here. Earlier task-2 evidence: validate.test.js (35 assertions) was likewise written RED-first and driven to GREEN before src/validate.js existed."
+  },
+  {
+    "skill": "org-tdd-discipline",
+    "fired_at": "2026-07-02T22:53:10Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Task 6 is docs-only (README owns no test file), so the TDD discipline applied here is evidence-first documentation: before writing a single line of prose I ran the existing suite (npm test -> node --test) and recorded the real exit code (57/57 pass, exit 0) as the ground truth the README claims must match, then live-booted bin/server.js three times to capture actual curl request/response bytes for every documented example (201 shorten, 302 redirect, 404 unknown code, 400 empty body, 400 disallowed protocol, 405 wrong method) rather than writing expected output from memory. The error-code table was generated against a red/green check of its own: I wrote a throwaway Node script that diffs the README table against the live src/errors.js ERRORS export and it reported zero mismatches (12/12 codes, statuses byte-for-byte identical) before I considered the table done — i.e. the doc-verification step was itself run to a pass/fail result, not eyeballed."
+  },
+  {
+    "skill": "org-tdd-discipline",
+    "fired_at": "2026-07-02T22:55:19Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/test/helpers.js",
+      "field-runs/engine-urlshort/walteur-kit/test-report.json"
+    ],
+    "summary": "Task 5 (HTTP integration suite) driven red-green. The 14-case node:test suite in test/http.test.js IS the wire contract: authored as the failing spec that imports ../src/server.js through test/helpers.js, then run to green. Every one of the 12 typed error codes in the src/errors.js registry is pinned on BOTH HTTP status AND the parsed error.code via a single assertTypedError choke point, so codes that share a status cannot be confused (INVALID_URL vs DISALLOWED_PROTOCOL both 400; CODE_NOT_FOUND vs NOT_FOUND both 404; CODE_GEN_EXHAUSTED vs INTERNAL_ERROR both 500). Cases: happy 201->302 round-trip resolving the code from the REQUEST-DERIVED shortUrl (its last path segment must equal the returned code, its host must equal 127.0.0.1:<ephemeral-port>) asserting Location === the original canonical href with an empty drained body (node:http does NOT auto-follow — asserted directly); DISALLOWED_PROTOCOL (ftp://); INVALID_URL (http://); INVALID_JSON (garbage); EMPTY_BODY; MISSING_URL ({}); INVALID_TYPE ({url:123}); CODE_NOT_FOUND (GET /nope); NOT_FOUND (GET /a/b/c); METHOD_NOT_ALLOWED (DELETE /shorten asserting Allow: POST); PAYLOAD_TOO_LARGE (>1 MiB -> 413); and the two 500 paths driven OVER THE WIRE through the createServer({store}) injection seam (src/server.js:312) via startServer({store}): an always-exhausting injected store -> 500 CODE_GEN_EXHAUSTED (asserting the body is exactly the 2-key {error:{code,message}} envelope with no '    at ' stack frame — the typed-error message is client-safe by contract, the stack is not), and an injected store whose save() throws a RAW (non-AppError) Error carrying a marker string -> 500 INTERNAL_ERROR, asserting the marker is NOT on the wire (it is confined to the stderr server-side log) and the envelope carries only {code,message} — the missing security-regression guard for the no-stack-trace-leak guarantee at the actual catch-all trust boundary (src/server.js:268-269), previously asserted only on sendError in isolation (errors.test.js). helpers.js contains the two spike-confirmed hang guards once: startServer awaits once(server,'listening') BEFORE reading address().port (listen(0) is async), and req() drains the response to end on EVERY path including the empty 302. The final case re-checks the coverage ledger (REQUIRED_ERROR_CODES now includes CODE_GEN_EXHAUSTED and INTERNAL_ERROR, so a silently-dropped 500 path fails the build) and refuses to write a partial report if any code was unseen, then emits walteur-kit/test-report.json with per-code {exercised:true} for all 12 codes, node version, crypto scheme, and per-case results. Ran `node --test test/http.test.js` (14/14, exit 0) and full `node --test` (71/71, exit 0) — all exit 0 with a clean process exit, proving no undrained-body / unreleased-port hang."
+  }
+]

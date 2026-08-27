@@ -1,0 +1,1 @@
+beta gate — adversarial + accessibility + docs + rollback + signoff required.

@@ -1,0 +1,5 @@
+INTERACTION: clicked the primary "Start" button on route / and observed correct state transition.
+Captured live via Playwright MCP (chromium, viewport 1440x900) against the real vite build, 2026-07-04.
+BEFORE (accessibility tree): timer "25:00" / "Focus"; status "25-minute Focus · ready when you are"; presets Focus[pressed]/Deep Work/Short Break all enabled; single button "Start".
+AFTER click:  timer "24:54" (counting down); status "Focusing on Focus"; presets all [disabled] (length locked mid-session); controls now "Pause" [active] + "Reset".
+CONCLUSION: the timer genuinely runs, state is driven by real React hooks (useTimer/useSessions), and interactive affordances update accessibly (disabled/pressed/active states). Not a static mock.

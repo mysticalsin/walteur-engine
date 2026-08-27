@@ -1,0 +1,16 @@
+{"ts":"2026-07-02T22:15:51Z","phase":"Self-Heal","model":"sonnet","tool":"Bash","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:16:56Z","phase":"Scope","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:21:20Z","phase":"Think","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:21:20Z","phase":"Think","model":"sonnet","tool":"acquisition","exit_code":"0","gate_verdict":"scout:webSearch;routing_mismatch:true(declared=opus,requested=sonnet)","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:22:10Z","phase":"Team","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:28:13Z","phase":"Plan","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:29:08Z","phase":"Preflight","model":"sonnet","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:29:08Z","phase":"Preflight","model":"sonnet","tool":"skill-router","exit_code":"0","gate_verdict":"required:8,optional:44","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:34:15Z","phase":"Debate","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T22:57:05Z","phase":"Build","model":"sonnet","tool":"parallel","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:07:56Z","phase":"Review","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:17:35Z","phase":"Refine","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:17:35Z","phase":"Refine","model":"opus","tool":"refine","exit_code":"0","gate_verdict":"iter:1","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:28:34Z","phase":"Validate","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:35:38Z","phase":"Audit","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:35:38Z","phase":"Audit","model":"n/a","tool":"reconcile","exit_code":"0","gate_verdict":"tokens_actual:0_vs_estimated_mid:1935000;routing_mismatch:true(declared=opus,requested=n/a)","tokens":{"estimate":0}}

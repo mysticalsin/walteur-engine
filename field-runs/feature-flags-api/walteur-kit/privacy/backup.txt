@@ -1,0 +1,1 @@
+feature-flags privacy evidence: backup-deletion — persistence is a single data.json snapshot rewritten atomically after each mutation; an erased tenant is absent from the next snapshot, so backups inherit the deletion. See server.mjs persist().

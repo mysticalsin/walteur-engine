@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: deletion — deletion path: DELETE /subscriptions/:id removes one sub; POST /admin/erase removes ALL of the caller tenant's subs + audit. core.eraseTenant().

@@ -1,0 +1,13 @@
+{
+  "gates": [
+    {
+      "id": "demo",
+      "stage": "verify",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "demo-gate.sh",
+      "report": "walteur-kit/demo-gate-report.json",
+      "evidence": "demo"
+    }
+  ]
+}

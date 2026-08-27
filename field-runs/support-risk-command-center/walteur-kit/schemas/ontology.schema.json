@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-kit/schemas/ontology.schema.json",
+  "title": "WALTEUR ontology-lite glossary",
+  "description": "A FILE-SCALE TYPED ENTITY GLOSSARY (walteur-kit/ontology.json) that the gates LINT against — NOT a second retrieval index. graphify stays the ONE retrieval brain (one-brain law). Each entity is a typed domain noun with optional aliases and a one-line definition; ontology-lint.sh WARNs (advisory, exit 0) when a PRD/PLAN/ADR references a capitalized domain noun that no entity name/aka defines. Schema-light by design: a glossary, not a knowledge model.",
+  "type": "object",
+  "required": ["ontology_version", "entities"],
+  "additionalProperties": true,
+  "properties": {
+    "ontology_version": { "type": "integer", "minimum": 1 },
+    "note": { "type": "string", "description": "free-text reminder that this is a glossary, not an index (one-brain law)" },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "description": "the typed domain vocabulary; each name should be unique (case-insensitive)",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "definition"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "the canonical domain-noun spelling, e.g. 'PRD', 'Tenant', 'OrderLine'"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "description": "the entity class — schema-light, free string, but a small stable vocabulary is encouraged",
+            "examples": ["System", "Artifact", "Concept", "Actor", "Resource", "Event", "Service"]
+          },
+          "aka": {
+            "type": "array",
+            "description": "accepted aliases / synonyms / casings that resolve to this entity (lint treats these as defined too)",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "definition": {
+            "type": "string",
+            "minLength": 1,
+            "description": "one-line meaning; what this noun denotes in THIS project's domain"
+          }
+        }
+      }
+    }
+  }
+}

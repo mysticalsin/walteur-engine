@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: retention-test — retention test — covered by erasure: after POST /admin/erase, GET /keys and GET /audit return [] for the caller (test/erasure.test.mjs).

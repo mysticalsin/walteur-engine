@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: processing — processing records: subscriptions are processed only to manage webhook delivery config; per-tenant scoped; no profiling, no third-party sharing.

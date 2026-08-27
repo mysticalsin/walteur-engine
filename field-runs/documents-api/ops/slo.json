@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "service": "documents-api",
+  "owner": "platform-oncall",
+  "description": "SLOs, alerts, and error budgets for the deny-by-default multi-tenant documents service. Tenant isolation is enforced by core.mjs owned() chokepoint; these SLOs keep the service available, fast, and observable. No secret values are stored here.",
+  "slos": [
+    {
+      "name": "api-availability",
+      "sli": "errors",
+      "objective": 99.9,
+      "window": "30d",
+      "error_budget": 0.1,
+      "description": "Fraction of HTTP requests that do NOT return a 5xx. 401/403 deny-by-default responses are correct behavior and are excluded from the error SLI."
+    },
+    {
+      "name": "doc-read-latency-p99",
+      "sli": "latency",
+      "objective": 99.0,
+      "window": "30d",
+      "error_budget": 1.0,
+      "description": "Fraction of GET /docs and GET /docs/:id reads served under the p99 latency target of 150ms. Reads are on the request hot path, so this budget is tight."
+    },
+    {
+      "name": "doc-write-latency-p99",
+      "sli": "latency",
+      "objective": 99.0,
+      "window": "30d",
+      "error_budget": 1.0,
+      "description": "Fraction of POST/PUT /docs writes (mutate + persist to data.json) served under the p99 latency target of 300ms."
+    }
+  ],
+  "alerts": [
+    {
+      "slo": "api-availability",
+      "condition": "error_rate > 0.1% for 5m",
+      "channel": "slack:#ops-alerts",
+      "severity": "page",
+      "runbook": "ops/dashboards.md#on-call-runbook-per-alert"
+    },
+    {
+      "slo": "doc-read-latency-p99",
+      "condition": "p99_latency > 150ms for 10m",
+      "channel": "slack:#ops-alerts",
+      "severity": "page",
+      "runbook": "ops/dashboards.md#on-call-runbook-per-alert"
+    },
+    {
+      "slo": "doc-write-latency-p99",
+      "condition": "p99_latency > 300ms for 10m",
+      "channel": "slack:#ops-alerts",
+      "severity": "warn",
+      "runbook": "ops/dashboards.md#on-call-runbook-per-alert"
+    }
+  ],
+  "dashboards": [
+    "ops/dashboards.md",
+    "ops/dashboards/overview.json"
+  ],
+  "logging": { "structured": true },
+  "tracing": { "enabled": true }
+}

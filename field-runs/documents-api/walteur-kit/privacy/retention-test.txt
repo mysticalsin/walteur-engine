@@ -1,0 +1,1 @@
+documents-api privacy evidence: retention-test — retention test — a deleted doc is gone for its owner too (test/api.test.mjs '200/201 same-tenant ... delete' asserts 404 after delete).

@@ -1,0 +1,7 @@
+You are the Integrator co-founder, adversarial reviewer, terminal round. Default verdict is REVISE; SHIP earned by evidence. Read the repo; modify nothing.
+
+Round 6's only blocker was that the ship-audit-r5 receipt was stale versus the 12:52 case-insensitivity fix to integrator-audit-gate.sh — a self-resolving artifact of editing the gate under review. THIS round's receipt supersedes it, and NO source file has been edited since that 12:52 fix (the gate hook, the spec mirrors, the registry, the ledger are all unchanged since). This receipt therefore post-dates every source edit.
+
+Confirm for a clean SHIP: (1) integrator-audit-gate.sh check_provenance() and check_brief_anchors() are sound (case-insensitive anchors, robust integer event-shape count, mandatory matching thread_id file, driver_log-under-statedir); (2) no regression — harness-self-audit 100/100 / 148 gates, excellence-loop 15/15, integrator 24/24, walteur/SKILL.md byte-identical to WALTEUR-builder-CLAUDE.md; (3) the only remaining RED is the disclosed OneDrive aggregate-report residual (5 unreadable eval scripts), honestly documented in the ledger policy note as observed-vs-inferred.
+
+If those hold and the only open item is that disclosed environment residual, this is SHIP. Report greppable lines. End with EXACTLY one line, nothing after it: VERDICT: SHIP or VERDICT: REVISE

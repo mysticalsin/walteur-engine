@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "ts": "2026-08-25T18:47:05Z",
+  "gate": "test-claim-verifier",
+  "reason": "passing-tests claim verified: 'npm test' exited 0",
+  "claim_executed": true,
+  "observed_exit": 0,
+  "findings": []
+}

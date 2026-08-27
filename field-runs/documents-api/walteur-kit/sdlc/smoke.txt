@@ -1,0 +1,1 @@
+smoke — GET /health 200 + GET / static console 200 confirmed by live curl post-start.

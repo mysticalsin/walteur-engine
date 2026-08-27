@@ -1,0 +1,1 @@
+documents-api privacy evidence: logging — logging redaction — server.mjs logLine redacts Authorization/token fields to *** ; document body content is never logged. Proven by reading the structured logs during the live run.

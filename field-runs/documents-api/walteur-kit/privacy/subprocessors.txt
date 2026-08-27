@@ -1,0 +1,1 @@
+documents-api privacy evidence: subprocessors — subprocessors — none; zero external dependencies and no network egress. The service is self-contained on Node built-ins.

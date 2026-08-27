@@ -1,0 +1,1 @@
+documents-api privacy evidence: encrypt-rest — encryption at rest — field-run scope stores data.json in plaintext locally; in a real deploy the volume is encrypted at rest by the platform. No secret VALUES are ever written to data.json.

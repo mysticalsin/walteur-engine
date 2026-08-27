@@ -1,0 +1,1 @@
+feature-flags SDLC lesson — bare 'node --test test/' fails on Node>=20; use glob 'test/**/*.test.mjs'. Captured in ops/ci.sh header.

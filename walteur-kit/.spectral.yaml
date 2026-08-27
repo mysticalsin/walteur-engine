@@ -1,0 +1,126 @@
+# WALTEUR Spectral ruleset — OpenAPI contract quality gate.
+# Extends the official spectral:oas ruleset (OpenAPI 2/3 structural + semantic rules) and adds
+# five WALTEUR house rules. Run by walteur-kit/hooks/contract-gate.sh when `spectral` is on PATH:
+#   spectral lint -r walteur-kit/.spectral.yaml <spec>
+# ERROR-severity violations fail the gate (exit 2); warnings are advisory.
+#
+# Custom rules:
+#   walteur-operation-operationId-required  — every operation has a unique operationId
+#   walteur-no-verb-in-path                 — path segments are nouns, not verbs (the HTTP method is the verb)
+#   walteur-operation-4xx-response          — every operation declares at least one 4xx response
+#   walteur-operation-5xx-response          — every operation declares at least one 5xx response
+#   walteur-property-camelCase              — schema property names are consistent (camelCase)
+#   walteur-examples-validate               — declared examples are validated against their schema
+extends:
+  - "spectral:oas"
+
+# Make spectral:oas's own example-validation rules hard errors (they ship as such, restated here
+# so the intent is explicit and so a downstream override can't silently downgrade them).
+rules:
+  oas3-valid-media-example: error
+  oas3-valid-schema-example: error
+  oas2-valid-media-example: error
+  oas2-valid-schema-example: error
+
+  # ── walteur-operation-operationId-required ──────────────────────────────────
+  # Every operation MUST carry an operationId. operationIds are how codegen names client methods,
+  # how consumer-driven contract tests key operations, and how logs/traces tie back to the spec.
+  # (spectral:oas ships operation-operationId-unique; this adds the *required* half.)
+  walteur-operation-operationId-required:
+    description: "Every operation must declare an operationId."
+    message: "Operation is missing an operationId ({{path}}). Codegen, contract tests, and traces key on it."
+    severity: error
+    given: "$.paths[*][get,put,post,delete,options,head,patch,trace]"
+    then:
+      field: operationId
+      function: truthy
+
+  # ── walteur-no-verb-in-path ─────────────────────────────────────────────────
+  # Resource paths name NOUNS; the HTTP method supplies the verb. Reject /getUsers, /createOrder,
+  # /users/{id}/delete, etc. Matches a verb as a whole path segment (after '/', before '/' or end,
+  # optionally followed by more camelCase like getUser), case-insensitively.
+  walteur-no-verb-in-path:
+    description: "Path segments must be nouns; the HTTP method is the verb (no /getX, /createX, /deleteX)."
+    message: "Path '{{value}}' contains a verb. Use the HTTP method for the action and name resources as nouns."
+    severity: error
+    given: "$.paths"
+    then:
+      field: "@key"
+      function: pattern
+      functionOptions:
+        notMatch: "(?i)/(get|list|fetch|retrieve|read|create|add|insert|new|make|update|edit|modify|set|change|patch|delete|remove|destroy|drop|put|post|do|run|exec|execute|process|handle|perform|search|find|query|filter|sort|count|validate|verify|check|send|submit|cancel|approve|reject|enable|disable|activate|deactivate|login|logout|register|signup|signin)([/A-Z]|$)"
+
+  # ── walteur-operation-4xx-response ──────────────────────────────────────────
+  # Every operation MUST declare at least one client-error (4xx) response. An operation with only a
+  # 200 is lying about its failure modes; clients can't handle errors that aren't in the contract.
+  walteur-operation-4xx-response:
+    description: "Every operation must declare at least one 4xx (client-error) response."
+    message: "Operation declares no 4xx response. Document the client-error contract (e.g. 400/404/409/422)."
+    severity: error
+    given: "$.paths[*][get,put,post,delete,options,head,patch,trace].responses"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          # At least one property key in the 4xx range (or the catch-all '4XX').
+          minProperties: 1
+          patternProperties:
+            "^(4[0-9]{2}|4XX|default)$": true
+          # Require that *some* 4xx/default key exists by asserting propertyNames includes one.
+          allOf:
+            - if:
+                propertyNames:
+                  not:
+                    pattern: "^(4[0-9]{2}|4XX|default)$"
+              then: false
+
+  # ── walteur-operation-5xx-response ──────────────────────────────────────────
+  # Every operation MUST declare at least one server-error (5xx) response (or 'default'/'5XX').
+  walteur-operation-5xx-response:
+    description: "Every operation must declare at least one 5xx (server-error) response."
+    message: "Operation declares no 5xx response. Document the server-error contract (e.g. 500/503) or a 'default'."
+    severity: error
+    given: "$.paths[*][get,put,post,delete,options,head,patch,trace].responses"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          minProperties: 1
+          allOf:
+            - if:
+                propertyNames:
+                  not:
+                    pattern: "^(5[0-9]{2}|5XX|default)$"
+              then: false
+
+  # ── walteur-property-camelCase (consistent-casing) ──────────────────────────
+  # Schema property names MUST be consistent camelCase across the whole API surface. Mixed
+  # snake_case / camelCase in one contract is the #1 client-side foot-gun.
+  walteur-property-camelCase:
+    description: "Schema property names must be consistent camelCase."
+    message: "Property '{{property}}' is not camelCase. Keep casing consistent across the whole API."
+    severity: error
+    given: "$..[?(@.properties)].properties"
+    then:
+      field: "@key"
+      function: casing
+      functionOptions:
+        type: camel
+        disallowDigits: false
+
+  # ── walteur-examples-validate ───────────────────────────────────────────────
+  # Where an example is declared inline on a schema, force it through the structural check so a
+  # malformed example is caught here too (belt-and-braces with oas3-valid-schema-example above).
+  walteur-examples-validate:
+    description: "Inline schema 'example' values must be present where examples are claimed (validated structurally by oas*-valid-*-example)."
+    message: "An 'examples' block was declared but is empty — provide at least one example, or remove the block."
+    severity: error
+    given: "$..content[*].examples"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          minProperties: 1

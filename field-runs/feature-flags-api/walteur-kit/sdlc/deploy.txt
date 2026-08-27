@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: deploy — blue-green per walteur-kit/cutover-plan.json; traffic shift 10/50/100.

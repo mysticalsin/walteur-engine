@@ -1,0 +1,25 @@
+# WALTEUR kit — transient gate outputs (regenerated on every run; not deliverables).
+# Per the repo's own "transient reports regenerate, don't hunt them" memory: keep templates,
+# ignore live-run scan results so reviewers never mistake them for hand-authored artifacts.
+# Patterns are relative to this file's directory (walteur-kit/). Already-tracked sample reports
+# are unaffected (gitignore does not untrack) — this only stops NEW live-run noise from leaking.
+# This mirrors the canonical ~/walteur/.gitignore rule, made self-contained so it travels with the kit.
+
+# per-gate scan reports written on a normal run (e.g. resilience-report.json, twin-invariant-report.json,
+# ontology-lint-report.json, stack-fingerprint-report.json, …)
+*-report.json
+# NOTE 2026-07-25: the previous rule here negated qa-report.json and the comment called it "the one
+# report intentionally checked in". Both were false. SIX *-report.json files were tracked, not one —
+# ai-safety-report.json (a committed FAIL from 2026-06-13), benchmark-gate-report.json and
+# prd-gate-report.json (both "SKIP: no argument" noise), spec-lint-report.json,
+# spec-trace-report.json (which committed an absolute home-directory path to a PUBLIC repo), and
+# qa-report.json itself, which was 0 bytes despite being criterion 4's truth file. All six are now
+# untracked. Every *-report.json is live-run gate output and is regenerated; none is a fixture.
+# Real fixtures live in walteur-kit/eval/fixtures/ and walteur-kit/schemas/.
+
+# stack-fingerprint stored baseline (dotfile; not matched by *-report.json)
+.stack-fingerprint
+
+# Fixture INPUTS, not run artifacts: cve/mutation/test-claim gates are report-driven,
+# so the *-report.json inside a fixture IS the poison or clean input.
+!eval-harness/fixtures/**/*-report.json

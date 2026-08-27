@@ -1,0 +1,1 @@
+feature-flags authz signoff: owner=Tony — accepted against running evidence (node --test green + live curl denial).

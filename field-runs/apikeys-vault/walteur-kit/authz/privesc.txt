@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: privesc — privilege escalation — there is no path from a tenant token to another tenant's keys or to a global admin; owned() makes cross-tenant addressing impossible. Proven by test/cross-tenant.test.mjs.

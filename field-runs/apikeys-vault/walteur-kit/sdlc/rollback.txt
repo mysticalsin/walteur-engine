@@ -1,0 +1,1 @@
+rollback — bash ops/rollback.sh --check verifies a healthy prior version (v1) exists; exit 0. Real on-disk verification, not a constant.

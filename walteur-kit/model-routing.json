@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "walteur-model-routing",
+  "updated_at": "2026-06-27",
+  "policy": "Rule 0 (§0a) — Opus plans, Sonnet executes; ALL reviews are Opus; the terminal AUDIT is always Opus and non-negotiable. Opus is concentrated on low-volume/high-leverage judgment; Sonnet handles high-volume bulk (execution-token-volume >> review-token-volume). Models are aliases (opus|sonnet|haiku), never pinned claude-* IDs (ai-safety-gate R3 vetoes hardcoded model literals).",
+  "default_model": "sonnet",
+  "cost_ceiling_env": "MAX_BUILD_COST_USD",
+  "lanes": {
+    "judgment": "opus",
+    "bulk": "sonnet",
+    "mechanical": "haiku"
+  },
+  "by_phase": {
+    "Self-Heal": "sonnet",
+    "Scope": "opus",
+    "Think": "opus",
+    "Team": "opus",
+    "Plan": "opus",
+    "Debate": "opus",
+    "Build": "sonnet",
+    "Review": "opus",
+    "Refine": "opus",
+    "Validate": "opus",
+    "Audit": "opus"
+  },
+  "routes": [
+    { "phase": "Self-Heal", "lane": "bulk", "model": "sonnet", "why": "§0.0 upstream drift sentinel; fail-open, cheap" },
+    { "phase": "Scope", "lane": "judgment", "model": "opus", "why": "lock the wedge precisely; greenfield/brownfield detection" },
+    { "phase": "Think", "subtask": "research + synthesis", "lane": "judgment", "model": "opus", "why": "hard reasoning + adversarial claim verification; low volume, high leverage" },
+    { "phase": "Think", "subtask": "currency-scout (quick-fix)", "lane": "bulk", "model": "sonnet", "why": "budget-gated web scout for small scopes; skips deep fan-out" },
+    { "phase": "Think", "subtask": "DIVERGE /adhd frames", "lane": "bulk", "model": "sonnet", "converge_with": "opus", "why": "many cheap isolated frames; one careful Opus pick via decision matrix" },
+    { "phase": "Team", "lane": "judgment", "model": "opus", "why": "design the specialist roster this idea needs" },
+    { "phase": "Plan", "lane": "judgment", "model": "opus", "why": "hardest reasoning + the iron-law gate; design doc + PLAN.md matrix + DoD; one pass" },
+    { "phase": "Debate", "subtask": "advocates + decider", "lane": "judgment", "model": "opus", "why": "adversarial Socratic reasoning on a real fork; the decider authored neither side and writes the ADR" },
+    { "phase": "Build", "subtask": "routine impl / drafting / scaffolding", "lane": "bulk", "model": "sonnet", "why": "bulk execution hot-path; keep it cheap (Rule 0 core)" },
+    { "phase": "Build", "subtask": "hard/critical/security/concurrency/migration/payments code", "lane": "judgment", "model": "opus", "why": "high blast-radius; tag these tasks in PLAN.md", "tags": ["security", "concurrency", "migration", "payments", "auth", "schema", "money"] },
+    { "phase": "Review", "subtask": "all 7 seniors (mid-build + post-refine)", "lane": "judgment", "model": "opus", "why": "ALL reviews are Opus for max quality; run on diffs not whole repos to bound cost" },
+    { "phase": "Validate", "subtask": "qa-gatekeeper synthesis + resilience reasoning", "lane": "judgment", "model": "opus", "why": "aggregation judgment + adversarial chaos reasoning" },
+    { "phase": "Validate", "subtask": "unit/integration, e2e, performance, accessibility runners", "lane": "bulk", "model": "sonnet", "why": "mechanical run-and-report; low judgment; parallelizable in worktrees" },
+    { "phase": "Refine", "subtask": "which-gate + fix-design", "lane": "judgment", "model": "opus", "why": "gate-finding/scoring = judgment (Opus)" },
+    { "phase": "Refine", "subtask": "routine fix edits", "lane": "bulk", "model": "sonnet", "why": "routine fix edits = bulk (Sonnet); security/arch fixes escalate to Opus" },
+    { "phase": "Audit", "lane": "judgment", "model": "opus", "why": "§5.5 terminal certification; non-negotiable; the final whole-build certification is always Opus" }
+  ],
+  "fallback_policy": {
+    "on_retry": "sonnet",
+    "note": "safeOne() retries fall back to the sonnet tier and mark the result DONE_WITH_CONCERNS; never a silent drop (S1)."
+  }
+}

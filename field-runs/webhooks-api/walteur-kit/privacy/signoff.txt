@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: signoff — privacy signoff: Tony — right-to-erasure OBSERVED by execution and secret-fingerprint-only storage verified by a live data.json scan.

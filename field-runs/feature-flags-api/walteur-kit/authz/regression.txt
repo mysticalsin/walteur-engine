@@ -1,0 +1,1 @@
+feature-flags authz regression command: node --test test/cross-tenant.test.mjs (expect exit 0).

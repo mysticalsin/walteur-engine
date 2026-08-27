@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/observability-contract.schema.json",
+  "title": "WALTEUR Observability Contract",
+  "description": "The observability contract a service must satisfy: structured logging with PII redaction, distributed tracing with context propagation, RED-method metrics with bounded label cardinality, declared SLOs, and health checks that distinguish liveness from readiness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "structured_logging",
+    "tracing",
+    "metrics",
+    "slo",
+    "health"
+  ],
+  "properties": {
+    "structured_logging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["json", "required_keys", "pii_redaction"],
+      "properties": {
+        "json": {
+          "type": "boolean",
+          "description": "True iff logs are emitted as structured JSON (not freeform text)."
+        },
+        "required_keys": {
+          "type": "array",
+          "description": "Keys every log line must carry (e.g. timestamp, level, trace_id, service).",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "pii_redaction": {
+          "type": "boolean",
+          "description": "True iff PII is redacted/masked before logs are written."
+        }
+      }
+    },
+    "tracing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["otlp_exporter", "context_propagation"],
+      "properties": {
+        "otlp_exporter": {
+          "type": "boolean",
+          "description": "True iff traces are exported via an OTLP (OpenTelemetry) exporter."
+        },
+        "context_propagation": {
+          "type": "boolean",
+          "description": "True iff trace context propagates across service boundaries (W3C traceparent / baggage)."
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["red_method", "latency_is_histogram", "max_label_cardinality"],
+      "properties": {
+        "red_method": {
+          "type": "boolean",
+          "description": "True iff Rate, Errors, Duration are instrumented for every endpoint (RED method)."
+        },
+        "latency_is_histogram": {
+          "type": "boolean",
+          "description": "True iff latency is recorded as a histogram (enabling percentiles), not a gauge/average."
+        },
+        "max_label_cardinality": {
+          "type": "integer",
+          "description": "Upper bound on label/tag cardinality per metric to prevent cardinality explosions.",
+          "minimum": 1
+        }
+      }
+    },
+    "slo": {
+      "type": "array",
+      "description": "Declared service-level objectives.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "objective"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "SLO name, e.g. 'availability', 'p99-latency'."
+          },
+          "objective": {
+            "type": "number",
+            "description": "Target value (e.g. 99.9 for availability %, or a latency ms budget)."
+          },
+          "indicator": {
+            "type": "string",
+            "description": "The SLI that measures this SLO (e.g. 'successful_requests / total_requests')."
+          },
+          "window": {
+            "type": "string",
+            "description": "Evaluation window, e.g. '30d', '7d'."
+          }
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["liveness_distinct_from_readiness", "readiness_checks_deps"],
+      "properties": {
+        "liveness_distinct_from_readiness": {
+          "type": "boolean",
+          "description": "True iff liveness and readiness are separate probes (restart vs. route-traffic semantics)."
+        },
+        "readiness_checks_deps": {
+          "type": "boolean",
+          "description": "True iff the readiness probe verifies critical downstream dependencies before reporting ready."
+        }
+      }
+    }
+  }
+}

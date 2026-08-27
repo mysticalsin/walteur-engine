@@ -1,0 +1,1 @@
+adversarial — cross-tenant read/write/erase attempts by an authenticated foreign tenant all denied (404/403); denied writes leave no audit row (test/cross-tenant.test.mjs).

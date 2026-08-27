@@ -1,0 +1,1 @@
+lessons — storing sha256(raw) + last4 only, and returning the raw key exactly once, keeps the secret scanner clean AND makes rotation a real, testable hash change.

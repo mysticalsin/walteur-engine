@@ -1,0 +1,1 @@
+local build gate — node -c on core.mjs/server.mjs + node --test core.test.mjs all green before promotion.

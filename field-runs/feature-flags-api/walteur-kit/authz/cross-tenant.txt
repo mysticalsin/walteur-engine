@@ -1,0 +1,1 @@
+feature-flags authz evidence: cross-tenant — deny-by-default tenant scoping in core.mjs (owned() + per-tenant buckets); proven by core.test.mjs + test/cross-tenant.test.mjs (HTTP).

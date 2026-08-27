@@ -1,0 +1,1 @@
+webhooks-api authz evidence: session — stateless bearer auth per request; no server session; token compared in constant time (crypto.timingSafeEqual). See server.mjs tokenMatches().

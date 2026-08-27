@@ -1,0 +1,1 @@
+documents-api authz evidence: privesc — privilege-escalation — tenantB authenticates successfully yet cannot read/update/delete/erase tenantA data; authorization is enforced AFTER authentication (test/cross-tenant.test.mjs).

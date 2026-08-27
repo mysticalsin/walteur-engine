@@ -1,0 +1,1 @@
+feature-flags privacy evidence: minimization — store holds only flag key/value/kind + audit action; no emails, names, or device data. See core.mjs flag shape.

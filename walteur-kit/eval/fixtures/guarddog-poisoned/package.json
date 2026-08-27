@@ -1,0 +1,9 @@
+{
+  "name": "guarddog-poisoned-fixture",
+  "version": "1.0.0",
+  "description": "a typosquat dep that runs code on install and exfiltrates env vars (the POISON twin)",
+  "dependencies": {
+    "left-pad": "1.3.0",
+    "expresss": "0.0.1"
+  }
+}

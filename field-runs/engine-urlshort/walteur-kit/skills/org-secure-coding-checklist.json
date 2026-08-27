@@ -1,0 +1,33 @@
+[
+  {
+    "skill": "org-secure-coding-checklist",
+    "fired_at": "2026-07-02T22:50:07Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/src/validate.js",
+      "field-runs/engine-urlshort/test/validate.test.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/bin/server.js"
+    ],
+    "summary": "Applied the secure-coding checklist across the validation layer (validate.js) AND the HTTP surface (server.js/bin/server.js). Validation: scheme allowlist is POST-parse ONLY (WHATWG new URL() is the sole authority, guard rejects on non-http(s) scheme OR empty host so javascript:/file:/data:/mailto: AND ftp:// all fail closed with typed DISALLOWED_PROTOCOL); malformed input maps to typed INVALID_URL, never a raw 500; only canonical u.href is stored/redirected. HTTP surface: body-size cap is enforced WHILE streaming (>1 MiB -> pause, drop buffered chunks, reject with typed PAYLOAD_TOO_LARGE) BEFORE any JSON.parse, closing the unbounded-memory DoS vector; the 413 sets Connection: close and drains the unread remainder so the client gets a clean 413 instead of a raw socket reset. Every client-facing error is exactly { error: { code, message } } via sendError — no stack trace, no raw exception message ever on the wire; unexpected internals are logged server-side (structured JSON to stderr, no request body/secrets) and returned as generic 500 INTERNAL_ERROR. shortUrl is request-derived (BASE_URL override else x-forwarded-proto + Host) so no host/port is ever hardcoded. Grep-audited the owned files: zero console.log, zero secrets, zero TODO/placeholder, no empty catch (each catch maps to a typed error or logs), all relative imports carry the load-bearing .js extension."
+  },
+  {
+    "skill": "org-secure-coding-checklist",
+    "fired_at": "2026-07-02T22:53:10Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Applied the secure-coding checklist to the README's disclosure obligations (Task 6, docs-only, no source touched). Before writing the typed-error table I grepped/read src/errors.js and programmatically diffed the README table against the live ERRORS registry (script-verified match, all 12 codes/statuses byte-for-byte identical, no doc-invented codes, no missing registry codes) rather than hand-transcribing it, per the past-build lesson that stale doc examples invite copy-paste bugs. Every curl example and JSON response shape in the README was captured from a live bin/server.js boot (POST /shorten 201, GET /:code 302 with Location, GET unknown code 404 CODE_NOT_FOUND, empty body 400 EMPTY_BODY, disallowed protocol 400 DISALLOWED_PROTOCOL, wrong method 405 + Allow header) rather than invented from memory. The NON-GOALS section explicitly names SSRF/private-IP/cloud-metadata (127.0.0.1, 169.254.169.254, [::1]) as unmitigated and states plainly that a validated URL is not a safe-to-fetch URL, plus no-persistence (RPO infinite/RTO=restart), no-auth, no-rate-limit, no-dedup, no-vanity/expiry, no-TLS/CORS/versioning — so the document does not silently imply any security control that the shipped code does not actually enforce."
+  },
+  {
+    "skill": "org-secure-coding-checklist",
+    "fired_at": "2026-07-02T22:55:19Z",
+    "phase": "Build",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/test/helpers.js"
+    ],
+    "summary": "Applied the secure-coding checklist to the integration-test surface (Task 5). The suite proves the server's security controls hold over REAL HTTP, not just in unit isolation: PAYLOAD_TOO_LARGE is exercised with a >1 MiB body to confirm the unbounded-memory DoS guard rejects with 413 BEFORE any JSON.parse; every client-facing error body is asserted to be exactly { error: { code, message } } with a non-empty string message and NO stack trace / internal path on the wire (assertTypedError checks the envelope shape, not just the status); the scheme allowlist is verified end-to-end (ftp:// -> DISALLOWED_PROTOCOL, http:// with no host -> INVALID_URL) so a disallowed scheme can never be shortened; 405 is asserted to carry an Allow header (correct HTTP method-disclosure). The harness itself is written to the same bar: zero third-party deps (node:http only, no supertest), it binds 127.0.0.1 on an ephemeral listen(0) port (never a fixed/public port), req() attaches error handlers on BOTH the request and the response so a transport failure rejects instead of hanging, and no secret/credential appears anywhere. All relative imports carry the load-bearing .js extension; no console.log, no TODO/placeholder, no empty catch (the one catch in req() has a documented rationale — a non-JSON body is left without .json for the caller to assert, never silently masking a failure)."
+  }
+]

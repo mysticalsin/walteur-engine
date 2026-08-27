@@ -1,0 +1,32 @@
+{
+  "layers": {
+    "logic": {
+      "recorded_command": "node --test core.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "core.mjs",
+      "note": "pure logic: deny-by-default tenant isolation, rotate-changes-hash, revoke, verify-by-hash, DSAR erasure, raw-key-never-stored"
+    },
+    "integration": {
+      "recorded_command": "node --test test/api.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "test/api.test.mjs",
+      "note": "HTTP API boundary: server.mjs route handlers + bearer auth chokepoint; issue returns raw once, list is metadata-only"
+    },
+    "component": {
+      "recorded_command": "node --test test/rotation.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "test/rotation.test.mjs",
+      "note": "key-lifecycle component: rotate mints new material, changes the stored hash, invalidates the old credential, writes a rotate audit row; revoked key -> 409"
+    },
+    "e2e": {
+      "recorded_command": "node --test test/cross-tenant.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "test/cross-tenant.test.mjs",
+      "note": "cross-tenant isolation end-to-end: tenant B cannot list/get/rotate/revoke tenant A keys (404/403), denied actions leave no audit row"
+    }
+  }
+}

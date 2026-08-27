@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: processing — processing records — keys are processed to authenticate tenant API access. Lawful basis: contract (the tenant requested key issuance). Minimal data; no profiling; no third-party sharing.

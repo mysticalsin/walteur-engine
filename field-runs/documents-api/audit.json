@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "service": "documents-api",
+  "seeded_ts": "2026-06-29T05:48:36.317Z",
+  "audit_mechanism": "core.mjs auditTrail() — auto-audits every create/update/delete; reads are not audited; tenant-scoped.",
+  "self_check": {
+    "tenant_a_rows": 2,
+    "tenant_b_rows": 1,
+    "denied_cross_tenant_write_left_no_row": true
+  },
+  "backed_by": [
+    "core.test.mjs (auto-audit + tenant-scoped + DSAR erasure)",
+    "test/api.test.mjs (GET /audit tenant-scoped over HTTP)",
+    "test/cross-tenant.test.mjs (denied write leaves no audit row)"
+  ],
+  "verification_probe": "node --test test/api.test.mjs",
+  "note": "This marker is FRESH provenance for the audit cert; runtime audit rows are produced by core.mjs, not by this file."
+}

@@ -1,0 +1,9 @@
+{
+  "has_ui": false,
+  "external_surface": false,
+  "has_api_boundary": false,
+  "has_db": true,
+  "has_auth": false,
+  "has_payments": false,
+  "has_pii": false
+}

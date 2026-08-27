@@ -1,0 +1,1 @@
+feature-flags privacy evidence: subprocessors — none; zero external dependencies, zero network egress from the service.

@@ -1,0 +1,16 @@
+id: walteur-raw-primitive-inline-style
+snapshots:
+  ? |
+    export const Bad = () => <button style={{ width: 200, padding: 8 }}>Save</button>;
+  : labels:
+    - source: '<button style={{ width: 200, padding: 8 }}>Save</button>'
+      style: primary
+      start: 25
+      end: 81
+  ? |
+    export const Bad2 = () => <input style={{ color: "red" }} />;
+  : labels:
+    - source: '<input style={{ color: "red" }} />'
+      style: primary
+      start: 26
+      end: 60

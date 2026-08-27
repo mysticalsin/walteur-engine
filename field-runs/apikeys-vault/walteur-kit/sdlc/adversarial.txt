@@ -1,0 +1,1 @@
+adversarial — tenantB attempts to read/rotate/revoke tenantA keys: all denied (404/403/403), no audit row written, A key hash unchanged. test/cross-tenant.test.mjs.

@@ -1,0 +1,1 @@
+webhooks-api authz evidence: tenant-key — tenant key is tenantId, carried from the X-Tenant header through authenticate() into every core call. See server.mjs + core.mjs reqTenant().

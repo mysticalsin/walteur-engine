@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: subprocessors — subprocessors: none — zero external dependencies, no network egress, no third-party processors.

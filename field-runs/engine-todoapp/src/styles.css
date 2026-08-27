@@ -1,0 +1,293 @@
+/*
+ * src/styles.css — the presentation tier (PLAN.md §5).
+ *
+ * Vanilla CSS, zero dependencies: native nesting + :has() (Baseline 2026 — no
+ * preprocessor). The load-bearing a11y concerns are encoded here, not decoratively:
+ *   - a VISIBLE :focus-visible ring on every interactive control (never a naked
+ *     `outline: none`), meeting WCAG 2.2 AA focus-appearance;
+ *   - AA text contrast (>= 4.5:1 body, >= 3:1 large/UI) in light and dark schemes;
+ *   - NO layout shift between the empty and populated list — the list column reserves
+ *     its width and the empty message occupies one line in the same flow;
+ *   - `done` styling is never the SOLE signal (the native checkbox's checked state
+ *     carries it); strike-through is additive;
+ *   - all motion is gated behind `prefers-reduced-motion: no-preference` so a
+ *     reduced-motion user gets instant, non-animated state changes.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Light palette (default). Contrast checked against #ffffff surface. */
+  --bg: #ffffff;
+  --surface: #f6f7f9;
+  --text: #1a1d21; /* ~15.8:1 on --bg */
+  --text-muted: #55606b; /* ~7.0:1 on --bg — AA for body */
+  --border: #c3cad2;
+  --accent: #1f5fd6; /* ~5.0:1 on --bg — AA for text/UI */
+  --accent-contrast: #ffffff;
+  --focus-ring: #0b4bc0;
+  --danger: #a4262c; /* ~6.4:1 on --bg */
+  --radius: 8px;
+  --gap: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171b;
+    --surface: #1e242b;
+    --text: #eef1f4; /* ~15:1 on --bg */
+    --text-muted: #b3bcc6; /* ~8.6:1 on --bg */
+    --border: #3a434d;
+    --accent: #6ea8ff; /* ~6.7:1 on --bg */
+    --accent-contrast: #0b1220;
+    --focus-ring: #9cc2ff;
+    --danger: #ff8a8f; /* ~7.5:1 on --bg */
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* A single, screen-reader-only utility for the persistent live region. It stays in the
+ * accessibility tree (not display:none) so announcements are read, but is invisible and
+ * takes no layout space. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.app {
+  max-width: 34rem;
+  margin-inline: auto;
+
+  & h1 {
+    margin: 0 0 1.25rem;
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ── Add form ─────────────────────────────────────────────────────────────────────── */
+
+.add-form {
+  margin-bottom: 1.25rem;
+
+  & .add-form__label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  & .add-form__row {
+    display: flex;
+    gap: var(--gap);
+  }
+
+  & .add-form__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  & .add-form__submit {
+    flex: 0 0 auto;
+  }
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────────────── */
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.add-form__submit,
+.filter {
+  padding: 0.6rem 1rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.add-form__submit {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Filters (aria-pressed toggle group) ──────────────────────────────────────────── */
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* The pressed filter is styled off its ARIA state — the state IS the style source, so the
+ * visual and the semantic can never drift. Color is not the only signal: the pressed
+ * button also gains weight and a solid border. */
+.filter[aria-pressed='true'] {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── List heading anchor ──────────────────────────────────────────────────────────── */
+
+.list-heading {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+
+  /* It receives programmatic focus after a delete; the ring must be visible there too. */
+  &:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Task list ────────────────────────────────────────────────────────────────────── */
+
+.todo-list {
+  /* list-style:none drops native bullets; role="list" on the <ul> restores list semantics
+   * for Safari/VoiceOver (which strip them when bullets are removed via CSS). */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* Reserve a stable min-height for exactly one row so toggling between the empty message
+   * and a one-item list produces no layout jump. */
+  min-height: 2.75rem;
+}
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.todo__checkbox {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+}
+
+.todo__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Done styling is ADDITIVE — the checkbox's checked state is the primary signal; the
+ * strike-through and muted color are secondary. Driven off the row's data-done via :has()
+ * so it tracks the native checkbox without extra JS classes. */
+.todo:has(.todo__checkbox:checked) .todo__text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.todo__edit,
+.todo__delete {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.6rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+.todo__delete {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.todo__edit-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+}
+
+/* ── Empty / all-filtered-out message ─────────────────────────────────────────────── */
+
+.empty-message {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+/* ── Focus visibility (WCAG 2.2 AA) — every interactive control ────────────────────── */
+
+:where(button, input, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* A hover affordance for pointer users, gated so it never affects keyboard focus styling. */
+@media (hover: hover) {
+  .add-form__submit:hover,
+  .filter:hover,
+  .todo__edit:hover,
+  .todo__delete:hover {
+    filter: brightness(1.05);
+  }
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────────────────── */
+
+/* Motion is opt-IN: only users who have not requested reduced motion get transitions.
+ * Everyone else gets instant, non-animated state changes. */
+@media (prefers-reduced-motion: no-preference) {
+  .filter,
+  .add-form__submit,
+  .todo__edit,
+  .todo__delete {
+    transition:
+      background-color 120ms ease,
+      color 120ms ease,
+      filter 120ms ease;
+  }
+}

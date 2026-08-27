@@ -1,0 +1,8 @@
+{
+  "id": "apikeys-vault",
+  "build_class": "software",
+  "risk_tier": "high",
+  "interfaces": [
+    { "type": "api", "name": "apikeys-vault HTTP", "entry": "server.mjs" }
+  ]
+}

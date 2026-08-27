@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: regression — regression command — node --test test/erasure.test.mjs (re-run to re-prove right-to-erasure).

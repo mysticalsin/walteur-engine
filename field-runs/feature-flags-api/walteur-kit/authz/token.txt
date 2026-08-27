@@ -1,0 +1,1 @@
+feature-flags authz evidence: token — constant-time compare (crypto.timingSafeEqual), env-injected WALTEUR_TENANT_TOKENS only, zero committed values. See server.mjs tokenMatches/loadTenantTokens.

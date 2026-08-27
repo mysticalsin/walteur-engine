@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: dpia — DPIA: subscriptions contain an endpoint URL (low-sensitivity) + a signing secret (sensitive, never stored raw). Residual risk is low given fingerprint-only storage.

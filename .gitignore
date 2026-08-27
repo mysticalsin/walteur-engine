@@ -1,0 +1,65 @@
+# OS / editor cruft
+.DS_Store
+**/.DS_Store
+*.swp
+*~
+
+# scratch / temp
+*.tmp
+q.tmp
+
+# local runtime outputs the gates regenerate (keep templates + sample reports, ignore live runs)
+walteur-kit/.self-heal-stamp
+walteur-kit/PAUSED
+
+# installed third-party skill marketplaces (reproducible via skills-lock.json — not vendored)
+/.agents/
+/.claude/skills/
+# runtime + scratch (not deliverables)
+/.playwright-mcp/
+/_relay/
+_walteur_verify_decide.jq
+
+# field-run build deps (regeneratable via npm install)
+node_modules/
+**/node_modules/
+
+# transient gate outputs (regenerated every run — not deliverables)
+walteur-kit/*-report.json
+walteur-kit/selftest-report.json
+*.tmp-audit
+.gate-suite-*.log
+gate-suite-run.log
+
+# agent memory + generated knowledge-graph cache (not deliverables; leak local paths)
+/_agent_state/
+/graphify-out/
+
+.claude/audit.log
+.conductor/
+
+# 2026-07-25 — run artifacts that leaked absolute home paths into this repo (787 lines / 28
+# tracked files at the time). Integrator/Codex run logs exposed ~/.codex/memories/... filenames,
+# ~/.claude/projects/... paths and the local skill inventory. These regenerate; they are not deliverables.
+walteur-kit/integrator/*.err.log
+walteur-kit/integrator/*.events.jsonl
+# nested per-field-run gate output (the outer walteur-kit/*-report.json rule does not reach these)
+field-runs/*/walteur-kit/*-report.json
+field-runs/*/src/walteur-kit/*-report.json
+# producer names this '-gate.json' not '-report.json', so it escapes the *-report.json pattern
+walteur-kit/mutation-report-gate.json
+
+# 2026-07-25 — audit-gate's registered report. It was a TRACKED ZERO-BYTE blob, which made
+# audit-gate unconvergeable by construction: the loop can never see a verdict that no run writes.
+# It is gate OUTPUT and regenerates; a real ship populates it.
+walteur-kit/audit.json
+
+# Fixture INPUTS: several fixtures deliberately plant a defect inside node_modules/ to prove the
+# gates' --exclude-dir scoping works. Those files ARE the test input, not vendored deps.
+# BOTH lines are required and the DIRECTORY line must come first. Git cannot re-include a file whose
+# PARENT DIRECTORY is excluded, so `**/node_modules/` above made the `/**` negation alone inert — it
+# looked like a working guard for as long as no fixture actually used node_modules (the only one that
+# did, slop-in-excluded, uses vendor/). Verified with `git check-ignore -v`.
+# KEPT LAST on purpose: a negation only wins if no later pattern re-excludes the path.
+!walteur-kit/eval-harness/fixtures/**/node_modules/
+!walteur-kit/eval-harness/fixtures/**/node_modules/**

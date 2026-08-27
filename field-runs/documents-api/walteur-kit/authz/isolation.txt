@@ -1,0 +1,1 @@
+documents-api authz evidence: isolation — isolation evidence — node --test core.test.mjs + test/cross-tenant.test.mjs green; no path reaches another tenant's bucket; verified by execution.

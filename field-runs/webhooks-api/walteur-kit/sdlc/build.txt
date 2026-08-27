@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: build — build: pure ESM, no build step; node >=20 engines. node -c passes on all .mjs.

@@ -1,0 +1,1 @@
+qa-review independence: QA reviewer distinct from builder.

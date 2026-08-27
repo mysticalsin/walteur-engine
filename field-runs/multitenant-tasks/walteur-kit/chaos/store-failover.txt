@@ -1,0 +1,1 @@
+chaos drill: killed primary task-store instance; deny-by-default isolation re-verified on the fresh (green) instance via node walteur-kit/probe.cutover.mjs; reads/writes stayed tenant-scoped; recovered in 6s.

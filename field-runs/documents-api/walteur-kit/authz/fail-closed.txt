@@ -1,0 +1,1 @@
+documents-api authz evidence: fail-closed — fail-closed — missing/blank/unknown-tenant/wrong-token => 401 empty body; any non-owned write => 403; any non-owned read => 404. Deny-by-default at the server.mjs auth chokepoint + core.mjs owned().

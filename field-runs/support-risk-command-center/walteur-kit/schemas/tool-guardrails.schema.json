@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/tool-guardrails.schema.json",
+  "title": "WALTEUR Tool Guardrail Coverage",
+  "description": "Runtime guardrail-coverage table for an AI/agent build: every agent-callable tool declares pre-call, post-call, and error-path guardrails. Composes on top of tool-contract.schema.json (which proves the static contract) by proving the runtime bands wired around each call and full coverage of every declared tool.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "updated_at",
+    "policy",
+    "tools"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version of this manifest shape."
+    },
+    "manifest_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier, conventionally \"tool-guardrails\"."
+    },
+    "updated_at": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO 8601 UTC timestamp of the last update."
+    },
+    "policy": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line statement of the guardrail policy this manifest enforces."
+    },
+    "no_external_tools": {
+      "type": "boolean",
+      "description": "Explicit ack that this build invokes NO agent-callable tools. Required to be true for an empty `tools` table with no tool-contracts (gate rule G7) — an empty table no longer passes silently."
+    },
+    "tools": {
+      "type": "array",
+      "description": "One entry per agent-callable tool. Every declared tool-contract must appear here (coverage rule G6, enforced by tool-guardrail-gate.sh).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tool",
+          "side_effect_class",
+          "pre_call",
+          "post_call",
+          "error_path"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tool name. When tool-contracts exist, must match a declared contract name."
+          },
+          "side_effect_class": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write_undoable",
+              "write_irreversible",
+              "external_money"
+            ],
+            "description": "Blast-radius class. Kept in lock-step with tool-contract.schema.json."
+          },
+          "external": {
+            "type": "boolean",
+            "description": "True when the tool reaches outside the process (network, payment rail, third-party API, filesystem outside the workspace). External or dangerous tools trigger the stricter invariant (G5)."
+          },
+          "pre_call": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["checks"],
+            "properties": {
+              "checks": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 },
+                "description": "Validations run BEFORE invocation: arg schema-validation, authorization/oversight, quota/rate-limit, prompt-injection scrub of arguments."
+              },
+              "evidence_ref": {
+                "type": "string",
+                "description": "Path to the code or config that implements the pre-call guardrail."
+              }
+            }
+          },
+          "post_call": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["checks"],
+            "properties": {
+              "checks": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 },
+                "description": "Validations run AFTER invocation on the tool RESULT before the model consumes it: result schema-validation, injected-instruction scrub, PII redaction, output size bound."
+              },
+              "evidence_ref": {
+                "type": "string",
+                "description": "Path to the code or config that implements the post-call guardrail."
+              }
+            }
+          },
+          "error_path": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["retryable", "fatal", "on_fatal"],
+            "properties": {
+              "retryable": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Error classes safe to retry (may be empty)."
+              },
+              "fatal": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Error classes that must NOT be silently retried (may be empty)."
+              },
+              "on_fatal": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Action taken on a fatal error. A silent no-op (\"continue\", \"ignore\", \"swallow\", \"none\", \"\") is rejected by the gate; dangerous/external tools require a halting/recovering action (halt|escalate|rollback|compensate|abort)."
+              },
+              "evidence_ref": {
+                "type": "string",
+                "description": "Path to the code or config that implements the error-path handling."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

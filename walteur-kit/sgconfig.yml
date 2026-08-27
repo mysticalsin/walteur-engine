@@ -1,0 +1,14 @@
+# WALTEUR ast-grep project config — OPT-IN AST backend for the resilience + anti-slop gates.
+# This file does NOTHING on its own. It is consumed by `ast-grep scan -c walteur-kit/sgconfig.yml`
+# ONLY when the gate preambles detect ast-grep on PATH. With ast-grep absent, the hooks fall back
+# to their zero-dep grep/awk path (LOUD SKIP) — so this never becomes a hard dependency.
+#
+# Key set verified against https://ast-grep.github.io/reference/sgconfig.html
+# ruleDirs paths resolve RELATIVE TO THIS FILE's location (walteur-kit/).
+ruleDirs:
+  - ast-grep-rules
+
+# testConfigs is OPTIONAL and points at ast-grep's own rule-test fixtures. Wired to the
+# good/POISONED-twin corpus so `ast-grep test` can self-verify the rules in CI.
+testConfigs:
+  - testDir: ast-grep-tests

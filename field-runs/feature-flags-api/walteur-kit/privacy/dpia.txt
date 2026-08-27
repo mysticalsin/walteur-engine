@@ -1,0 +1,1 @@
+feature-flags privacy evidence: dpia — low-risk B2B config data; residual risk is cross-tenant leak, mitigated by the owned() chokepoint and proven by test/cross-tenant.test.mjs.

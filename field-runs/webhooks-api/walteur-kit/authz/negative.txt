@@ -1,0 +1,1 @@
+webhooks-api authz evidence: negative — cross-tenant GET=404 (no existence oracle), update/rotate/delete=403; no-token/wrong-token=401. Proven by test/api.test.mjs + test/cross-tenant.test.mjs.

@@ -1,0 +1,102 @@
+id: walteur-return-in-catch-py
+snapshots:
+  ? |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return 0
+  : labels:
+    - source: |-
+        except Exception:
+                return 0
+      style: primary
+      start: 44
+      end: 78
+    - source: '0'
+      style: secondary
+      start: 77
+      end: 78
+    - source: return 0
+      style: secondary
+      start: 70
+      end: 78
+    - source: return 0
+      style: secondary
+      start: 70
+      end: 78
+  ? |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return None
+  : labels:
+    - source: |-
+        except Exception:
+                return None
+      style: primary
+      start: 44
+      end: 81
+    - source: None
+      style: secondary
+      start: 77
+      end: 81
+    - source: return None
+      style: secondary
+      start: 70
+      end: 81
+    - source: return None
+      style: secondary
+      start: 70
+      end: 81
+  ? |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return []
+  : labels:
+    - source: |-
+        except Exception:
+                return []
+      style: primary
+      start: 44
+      end: 79
+    - source: '[]'
+      style: secondary
+      start: 77
+      end: 79
+    - source: return []
+      style: secondary
+      start: 70
+      end: 79
+    - source: return []
+      style: secondary
+      start: 70
+      end: 79
+  ? |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return {}
+  : labels:
+    - source: |-
+        except Exception:
+                return {}
+      style: primary
+      start: 44
+      end: 79
+    - source: '{}'
+      style: secondary
+      start: 77
+      end: 79
+    - source: return {}
+      style: secondary
+      start: 70
+      end: 79
+    - source: return {}
+      style: secondary
+      start: 70
+      end: 79

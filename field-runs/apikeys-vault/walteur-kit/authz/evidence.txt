@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: evidence — evidence — node --test (core 14/14 + HTTP 24/24 = 38/38) green; live curl confirmed 401 (no token), 404 (B reads A), 403 (B rotate/revoke A), and rotate changing the stored hash.

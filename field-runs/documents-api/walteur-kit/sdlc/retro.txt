@@ -1,0 +1,1 @@
+retro — clone of the proven feature-flags pattern into a new domain (documents); isolation correctness lives in core.mjs; all proofs execution-backed.

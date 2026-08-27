@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: dpia — DPIA — low residual risk: minimal data (hashes + metadata), no special categories, strong minimization. The main risk (raw-key disclosure) is mitigated by never storing it and redacting logs.

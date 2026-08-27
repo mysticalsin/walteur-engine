@@ -1,0 +1,24 @@
+# R-AST-5  RAW <button>/<input>/<select>/<textarea> WITH INLINE style={{...}} — the anti-slop-ui shape.
+# Upgrades anti-slop-ui.sh R9/R10 from line-grep to a real JSX AST match. Covers BOTH the children form
+# (<button style={...}>...</button>) and the self-closing form (<input style={...} />). $TAG is bound by
+# the pattern and constrained to the four raw form controls. VERIFIED against ast-grep 0.42.x; proven by
+# the twin fixture ../ast-grep-tests/raw-primitive-inline-style-test.yml (ast-grep test).
+#
+# Division of labour (honest): the 'shadcn/ui present in THIS project' precondition and the per-file
+# '@/components/ui import' exemption REMAIN in the hook (anti-slop-ui.sh). The hook decides applicability;
+# ast-grep decides the per-node finding.
+id: walteur-raw-primitive-inline-style
+language: tsx
+severity: error
+message: "Raw form control (button/input/select/textarea) with an inline style={{...}} — hand-rolled, layout-in-JS primitive. Use the design-system primitive (@/components/ui) or Tailwind utility classes."
+note: "WALTEUR anti-slop R9/R10 (AST-exact). The hook only runs this rule when a shadcn/ui setup is detected."
+files:
+  - "**/*.tsx"
+  - "**/*.jsx"
+rule:
+  any:
+    - pattern: "<$TAG style={$S}>$$$C</$TAG>"
+    - pattern: "<$TAG style={$S} />"
+constraints:
+  TAG:
+    regex: "^(button|input|select|textarea)$"

@@ -1,0 +1,23 @@
+# Dependencies (this project ships zero — kept as a guard rail)
+node_modules/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Editor/IDE cruft
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Coverage / test artifacts
+coverage/

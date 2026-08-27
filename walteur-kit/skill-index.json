@@ -1,0 +1,846 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-30",
+  "source_root": "<repo>/.claude/skills",
+  "skill_count": 34,
+  "skills": [
+    {
+      "skill": "loopkit-changelog-from-diff",
+      "discipline": "communications",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "turn",
+        "commits",
+        "diff",
+        "clean",
+        "user-facing",
+        "changelog",
+        "entry",
+        "release",
+        "description"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-changelog-from-diff.json",
+      "hard_gate": false,
+      "source_path": "02 Communications/loopkit-changelog-from-diff/SKILL.md"
+    },
+    {
+      "skill": "loopkit-pr-from-diff",
+      "discipline": "communications",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "write",
+        "description",
+        "reviewer",
+        "approve",
+        "fast",
+        "opening",
+        "pull",
+        "request"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-pr-from-diff.json",
+      "hard_gate": false,
+      "source_path": "02 Communications/loopkit-pr-from-diff/SKILL.md"
+    },
+    {
+      "skill": "loopkit-readme-audit",
+      "discipline": "communications",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "check",
+        "readme",
+        "actually",
+        "lets",
+        "stranger",
+        "project",
+        "repo",
+        "publishing"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-readme-audit.json",
+      "hard_gate": false,
+      "source_path": "02 Communications/loopkit-readme-audit/SKILL.md"
+    },
+    {
+      "skill": "loopkit-a11y-pass",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_ui"
+      ],
+      "trigger_keywords": [
+        "catch",
+        "accessibility",
+        "failures",
+        "ship",
+        "almost",
+        "every",
+        "ai-built",
+        "building",
+        "interactive",
+        "component"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-a11y-pass.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-a11y-pass/SKILL.md"
+    },
+    {
+      "skill": "loopkit-bisect-regression",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "find",
+        "exact",
+        "commit",
+        "introduced",
+        "something",
+        "worked",
+        "broke",
+        "know",
+        "change"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-bisect-regression.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-bisect-regression/SKILL.md"
+    },
+    {
+      "skill": "loopkit-contract-test",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_api_boundary",
+        "has_ui"
+      ],
+      "trigger_keywords": [
+        "test",
+        "boundary",
+        "between",
+        "systems",
+        "contract",
+        "implementation",
+        "apis",
+        "integrations",
+        "shared",
+        "interfaces",
+        "validates",
+        "endpoint"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-contract-test.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-contract-test/SKILL.md"
+    },
+    {
+      "skill": "loopkit-coverage-gaps",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "find",
+        "untested",
+        "code",
+        "paths",
+        "actually",
+        "matter",
+        "just",
+        "coverage",
+        "percentage",
+        "adding",
+        "tests"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-coverage-gaps.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-coverage-gaps/SKILL.md"
+    },
+    {
+      "skill": "loopkit-decision-record",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Plan"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "capture",
+        "architectural",
+        "decision",
+        "next",
+        "session",
+        "engineer",
+        "knows",
+        "non-obvious",
+        "technical",
+        "choice"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-decision-record.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-decision-record/SKILL.md"
+    },
+    {
+      "skill": "loopkit-design-system",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [
+        "has_ui"
+      ],
+      "trigger_keywords": [
+        "make",
+        "frontend",
+        "look",
+        "intentional",
+        "ai-generated",
+        "work",
+        "components",
+        "pages",
+        "layouts"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-design-system.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-design-system/SKILL.md"
+    },
+    {
+      "skill": "loopkit-flaky-hunter",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "diagnose",
+        "tests",
+        "pass",
+        "sometimes",
+        "fail",
+        "other",
+        "times",
+        "intermittently"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-flaky-hunter.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-flaky-hunter/SKILL.md"
+    },
+    {
+      "skill": "loopkit-kill-dead-code",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "find",
+        "remove",
+        "unreachable",
+        "unused",
+        "code",
+        "safely",
+        "during",
+        "cleanup",
+        "refactor"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-kill-dead-code.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-kill-dead-code/SKILL.md"
+    },
+    {
+      "skill": "loopkit-loading-empty-error-states",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [
+        "has_ui"
+      ],
+      "trigger_keywords": [
+        "design",
+        "three",
+        "states",
+        "every",
+        "data",
+        "forgets",
+        "component",
+        "fetches",
+        "lists"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-loading-empty-error-states.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-loading-empty-error-states/SKILL.md"
+    },
+    {
+      "skill": "loopkit-read-the-trace",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "extract",
+        "actual",
+        "cause",
+        "from",
+        "stack",
+        "trace",
+        "instead",
+        "pattern-matching",
+        "error",
+        "type",
+        "crash",
+        "exception"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-read-the-trace.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-read-the-trace/SKILL.md"
+    },
+    {
+      "skill": "loopkit-reduce-nesting",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "flatten",
+        "deeply",
+        "nested",
+        "conditionals",
+        "readable",
+        "early-return",
+        "code",
+        "function",
+        "levels",
+        "indentation"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-reduce-nesting.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-reduce-nesting/SKILL.md"
+    },
+    {
+      "skill": "loopkit-simplify",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "reduce",
+        "change",
+        "minimum",
+        "solves",
+        "problem",
+        "code",
+        "over-engineered",
+        "diff",
+        "bloated"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-simplify.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-simplify/SKILL.md"
+    },
+    {
+      "skill": "loopkit-sql-review",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_db",
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "review",
+        "queries",
+        "correctness",
+        "safety",
+        "performance",
+        "they",
+        "ship",
+        "reviews",
+        "injection",
+        "security"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-sql-review.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-sql-review/SKILL.md"
+    },
+    {
+      "skill": "loopkit-systematic-debugging",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "test",
+        "failure",
+        "crash",
+        "unexpected",
+        "behavior",
+        "forces",
+        "reproduce-then-isolate",
+        "proposing",
+        "stops",
+        "agent",
+        "from",
+        "guessing"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-systematic-debugging.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-systematic-debugging/SKILL.md"
+    },
+    {
+      "skill": "loopkit-write-failing-test-first",
+      "discipline": "engineering",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "fixing",
+        "write",
+        "test",
+        "reproduces",
+        "watch",
+        "fail",
+        "every"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-write-failing-test-first.json",
+      "hard_gate": false,
+      "source_path": "04 Code (Engineering)/loopkit-write-failing-test-first/SKILL.md"
+    },
+    {
+      "skill": "multi-brand-campaign",
+      "discipline": "marketing",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [
+        "external_surface",
+        "has_ui"
+      ],
+      "trigger_keywords": [
+        "group",
+        "marketing",
+        "campaign",
+        "needs",
+        "land",
+        "across",
+        "multiple",
+        "brands",
+        "org",
+        "talent",
+        "aigora",
+        "wemanity"
+      ],
+      "breadcrumb": "walteur-kit/skills/multi-brand-campaign.json",
+      "hard_gate": false,
+      "source_path": "06 Marketing/multi-brand-campaign/SKILL.md"
+    },
+    {
+      "skill": "loopkit-clean-commits",
+      "discipline": "process",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "turn",
+        "messy",
+        "clean",
+        "atomic",
+        "commits",
+        "messages",
+        "explain",
+        "opening"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-clean-commits.json",
+      "hard_gate": false,
+      "source_path": "08 Discipline (Process)/loopkit-clean-commits/SKILL.md"
+    },
+    {
+      "skill": "loopkit-rebase-safely",
+      "discipline": "process",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "rebase",
+        "squash",
+        "rewrite",
+        "history",
+        "without",
+        "losing",
+        "work",
+        "breaking",
+        "shared",
+        "branches"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-rebase-safely.json",
+      "hard_gate": false,
+      "source_path": "08 Discipline (Process)/loopkit-rebase-safely/SKILL.md"
+    },
+    {
+      "skill": "loopkit-revert-surgical",
+      "discipline": "process",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "undo",
+        "change",
+        "without",
+        "nuking",
+        "unrelated",
+        "work",
+        "specific",
+        "commit",
+        "broke",
+        "something"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-revert-surgical.json",
+      "hard_gate": false,
+      "source_path": "08 Discipline (Process)/loopkit-revert-surgical/SKILL.md"
+    },
+    {
+      "skill": "loopkit-authz-check",
+      "discipline": "security",
+      "phase_affinity": [
+        "Audit",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_api_boundary",
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "verify",
+        "endpoint",
+        "checks",
+        "ownership",
+        "just",
+        "authentication",
+        "handler",
+        "reads",
+        "mutates",
+        "user",
+        "data",
+        "broken-access-control"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-authz-check.json",
+      "hard_gate": false,
+      "source_path": "14 Security/loopkit-authz-check/SKILL.md"
+    },
+    {
+      "skill": "loopkit-dependency-audit",
+      "discipline": "security",
+      "phase_affinity": [
+        "Plan",
+        "Audit",
+        "Review"
+      ],
+      "signal_tags": [
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "decide",
+        "keep",
+        "remove",
+        "dependency",
+        "adding",
+        "package",
+        "security",
+        "audit"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-dependency-audit.json",
+      "hard_gate": false,
+      "source_path": "14 Security/loopkit-dependency-audit/SKILL.md"
+    },
+    {
+      "skill": "loopkit-input-validation",
+      "discipline": "security",
+      "phase_affinity": [
+        "Review",
+        "Audit"
+      ],
+      "signal_tags": [
+        "external_surface",
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "validate",
+        "constrain",
+        "untrusted",
+        "input",
+        "boundary",
+        "handler",
+        "accepts",
+        "external",
+        "data",
+        "input-validation",
+        "security",
+        "hardening"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-input-validation.json",
+      "hard_gate": false,
+      "source_path": "14 Security/loopkit-input-validation/SKILL.md"
+    },
+    {
+      "skill": "loopkit-owasp-review",
+      "discipline": "security",
+      "phase_affinity": [
+        "Audit",
+        "Review"
+      ],
+      "signal_tags": [
+        "external_surface",
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "security-review",
+        "diff",
+        "against",
+        "owasp",
+        "merging",
+        "anything",
+        "touches",
+        "auth",
+        "input",
+        "handling",
+        "queries",
+        "external"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-owasp-review.json",
+      "hard_gate": false,
+      "source_path": "14 Security/loopkit-owasp-review/SKILL.md"
+    },
+    {
+      "skill": "loopkit-secret-scan",
+      "discipline": "security",
+      "phase_affinity": [
+        "Review",
+        "Audit"
+      ],
+      "signal_tags": [
+        "security_sensitive"
+      ],
+      "trigger_keywords": [
+        "catch",
+        "hardcoded",
+        "secrets",
+        "keys",
+        "tokens",
+        "they",
+        "committed",
+        "commit",
+        "file",
+        "credentials",
+        "pre-commit",
+        "security"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-secret-scan.json",
+      "hard_gate": false,
+      "source_path": "14 Security/loopkit-secret-scan/SKILL.md"
+    },
+    {
+      "skill": "loopkit-migration-writer",
+      "discipline": "operations-data",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_db"
+      ],
+      "trigger_keywords": [
+        "write",
+        "safe",
+        "reversible",
+        "database",
+        "migrations",
+        "repo",
+        "conventions",
+        "schema",
+        "change"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-migration-writer.json",
+      "hard_gate": false,
+      "source_path": "15 Operations and Data/loopkit-migration-writer/SKILL.md"
+    },
+    {
+      "skill": "loopkit-schema-diff",
+      "discipline": "operations-data",
+      "phase_affinity": [
+        "Build",
+        "Review"
+      ],
+      "signal_tags": [
+        "has_db"
+      ],
+      "trigger_keywords": [
+        "compare",
+        "schema",
+        "states",
+        "surface",
+        "risky",
+        "changes",
+        "applying",
+        "migrations",
+        "model",
+        "change"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-schema-diff.json",
+      "hard_gate": false,
+      "source_path": "15 Operations and Data/loopkit-schema-diff/SKILL.md"
+    },
+    {
+      "skill": "loopkit-adversarial-verify",
+      "discipline": "meta",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "review",
+        "diff",
+        "against",
+        "goal",
+        "spec",
+        "assuming",
+        "code",
+        "broken",
+        "reviewer",
+        "lives",
+        "maker",
+        "head"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-adversarial-verify.json",
+      "hard_gate": false,
+      "source_path": "16 Meta-Framework (Agent Infrastructure)/loopkit-adversarial-verify/SKILL.md"
+    },
+    {
+      "skill": "loopkit-context-budget",
+      "discipline": "meta",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "keep",
+        "agent",
+        "context",
+        "lean",
+        "accuracy",
+        "doesn",
+        "collapse",
+        "long",
+        "sessions",
+        "files",
+        "starts",
+        "hallucinating"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-context-budget.json",
+      "hard_gate": false,
+      "source_path": "16 Meta-Framework (Agent Infrastructure)/loopkit-context-budget/SKILL.md"
+    },
+    {
+      "skill": "loopkit-spec-first",
+      "discipline": "meta",
+      "phase_affinity": [
+        "Plan"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "write",
+        "goal",
+        "spec",
+        "disk",
+        "agent",
+        "acts",
+        "drift",
+        "multi-step",
+        "task"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-spec-first.json",
+      "hard_gate": false,
+      "source_path": "16 Meta-Framework (Agent Infrastructure)/loopkit-spec-first/SKILL.md"
+    },
+    {
+      "skill": "loopkit-subagent-fanout",
+      "discipline": "meta",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "parallelize",
+        "independent",
+        "sub-jobs",
+        "across",
+        "fresh-context",
+        "subagents",
+        "instead",
+        "bloated",
+        "context",
+        "goal",
+        "branches",
+        "many"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-subagent-fanout.json",
+      "hard_gate": false,
+      "source_path": "16 Meta-Framework (Agent Infrastructure)/loopkit-subagent-fanout/SKILL.md"
+    },
+    {
+      "skill": "loopkit-tool-restraint",
+      "discipline": "ai-governance",
+      "phase_affinity": [
+        "Review"
+      ],
+      "signal_tags": [],
+      "trigger_keywords": [
+        "over-equip",
+        "agent",
+        "tools",
+        "servers",
+        "more",
+        "ways",
+        "fail",
+        "higher",
+        "cognitive",
+        "load",
+        "wiring",
+        "underperforms"
+      ],
+      "breadcrumb": "walteur-kit/skills/loopkit-tool-restraint.json",
+      "hard_gate": false,
+      "source_path": "17 AI Governance/loopkit-tool-restraint/SKILL.md"
+    }
+  ],
+  "note": "Internal/private skill entries removed for public release; index describes only skills shipped in this repository."
+}

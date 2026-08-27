@@ -1,0 +1,8 @@
+{
+  "generated": "2026-07-03T00:14:54Z",
+  "runtime_deps": 0,
+  "dev_deps": 0,
+  "third_party_test_mocks": 0,
+  "tree": "empty",
+  "verified_cmd": "npm ls --all"
+}

@@ -1,0 +1,1 @@
+security review — confirmed: raw key never persisted/logged, constant-time token compare, deny-by-default 401/403/404, sha256-only at rest, env-injected secrets, zero committed literals.

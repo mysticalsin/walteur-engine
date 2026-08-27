@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: minimization — data minimization: only the fields needed to identify a delivery target are stored; the signing secret is NOT retained raw (fingerprint + last4 only).

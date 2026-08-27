@@ -1,0 +1,172 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/build-contract.schema.json",
+  "title": "WALTEUR Build Contract",
+  "description": "Typed intake contract for any WALTEUR build before runtime state starts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "request",
+    "build_class",
+    "risk_tier",
+    "data_classification",
+    "success_metrics",
+    "constraints",
+    "interfaces",
+    "verification",
+    "evidence_required",
+    "unknowns",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "contract_id": { "type": "string", "minLength": 1 },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "user_outcome", "primary_user", "non_goals"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "user_outcome": { "type": "string", "minLength": 1 },
+        "primary_user": { "type": "string", "minLength": 1 },
+        "non_goals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "build_class": {
+      "type": "string",
+      "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "regulated"]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": ["public", "internal", "confidential", "restricted", "regulated"]
+    },
+    "success_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "target", "check"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 },
+          "check": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "status"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+            "enum": ["business", "technical", "legal", "security", "privacy", "performance", "design", "operational"]
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["active", "accepted_risk", "deferred", "out_of_scope"]
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "type", "owner", "contract"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "type": {
+            "type": "string",
+            "enum": ["ui", "api", "database", "event", "file", "cli", "agent", "workflow", "document", "external-service"]
+          },
+          "owner": { "type": "string", "minLength": 1 },
+          "contract": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gates", "commands", "manual_checks"],
+      "properties": {
+        "gates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "stage", "hardness", "expected_evidence"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "stage": {
+                "type": "string",
+                "enum": ["intake", "discover", "plan", "build", "verify", "review", "ship", "reflect"]
+              },
+              "hardness": {
+                "type": "string",
+                "enum": ["hard", "detect_or_skip", "protocol", "manual"]
+              },
+              "expected_evidence": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["command", "purpose"],
+            "properties": {
+              "command": { "type": "string", "minLength": 1 },
+              "purpose": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "manual_checks": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "evidence_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "owner", "resolution_status"],
+        "properties": {
+          "question": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "resolution_status": {
+            "type": "string",
+            "enum": ["open", "answered", "accepted_risk"]
+          }
+        }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,1 @@
+qa-review independence — 'qa-lead' is independent of the builders.

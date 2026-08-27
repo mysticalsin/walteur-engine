@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-kit/schemas/non-regression.schema.json",
+  "title": "WALTEUR brownfield non-regression proof",
+  "description": "Machine-checkable portion of walteur-kit/non-regression.json (the PROVE-phase contract, §2.6 BROWNFIELD UPGRADE). The terminal brownfield ship blocker: it proves the upgraded app is >= the captured baseline on EVERY dimension (no silent regression), that the characterization/golden-master net is still green (behavior preserved), and that any intended behavior change carries a signed ADR. Enforced by non-regression-gate.sh (HARD for brownfield); the gate RE-DERIVES 'regressed' from before/after rather than trusting the recorded flag (evidence over assertion).",
+  "type": "object",
+  "required": ["non_regression_version", "proven_ts", "baseline_ref", "dimensions", "characterization", "verdict"],
+  "additionalProperties": true,
+  "properties": {
+    "non_regression_version": { "type": "integer", "minimum": 1 },
+    "proven_ts": { "type": "string", "description": "ISO-8601 time the after-snapshot was taken — must be after the baseline" },
+    "baseline_ref": { "type": "string", "minLength": 1, "description": "path to the walteur-kit/baseline.json this proof compares against" },
+    "after": {
+      "type": "object",
+      "description": "the after-upgrade snapshot, same shape as baseline (build/tests) — the post-upgrade state",
+      "properties": {
+        "build": { "type": "object" },
+        "tests": { "type": "object" }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "every baseline dimension compared before->after. The gate fails if any after<before unless that dimension carries a signed waiver_ref. 'regressed' is advisory — the gate recomputes it from before/after.",
+      "items": {
+        "type": "object",
+        "required": ["name", "before", "after"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "before": { "type": "number", "description": "the baseline score for this dimension" },
+          "after": { "type": "number", "description": "the post-upgrade score for this dimension" },
+          "regressed": { "type": "boolean", "description": "advisory — the gate re-derives this as (after<before)" },
+          "waiver_ref": { "type": "string", "description": "path to a signed risk-acceptance/ADR record permitting an intentional drop on this dimension (rare; e.g. removed a deprecated feature)" }
+        }
+      }
+    },
+    "characterization": {
+      "type": "object",
+      "required": ["status"],
+      "description": "the golden-master net re-run after the upgrade — green means observable behavior was preserved",
+      "properties": {
+        "status": { "type": "string", "enum": ["green", "red", "na-with-reason"] },
+        "command": { "type": "string" },
+        "evidence": { "type": "string", "description": "command-output ref proving green" },
+        "reason": { "type": "string", "description": "REQUIRED when status=na-with-reason" }
+      }
+    },
+    "behavior_changes": {
+      "type": "array",
+      "description": "intentional changes to observable behavior. Each MUST cite a signed ADR (adr_ref) — an unsigned behavior change is a silent breaking change and FAILS the gate. Empty = behavior fully preserved (the default for a refine-in-place upgrade).",
+      "items": {
+        "type": "object",
+        "required": ["change", "adr_ref"],
+        "properties": {
+          "change": { "type": "string", "minLength": 1, "description": "what observable behavior changed and why" },
+          "adr_ref": { "type": "string", "minLength": 1, "description": "path to the signed ADR (walteur-kit/adr/*) recording the decision, rationale, and Tony sign-off" }
+        }
+      }
+    },
+    "waivers": {
+      "type": "array",
+      "description": "signed exceptions permitting a specific dimension to drop (mirrors dimensions[].waiver_ref). Each names the dimension, the reason, and the signer.",
+      "items": {
+        "type": "object",
+        "required": ["dimension", "reason", "signed_by"],
+        "properties": {
+          "dimension": { "type": "string" },
+          "reason": { "type": "string" },
+          "signed_by": { "type": "string" }
+        }
+      }
+    },
+    "verdict": { "type": "string", "enum": ["pass", "fail"], "description": "self-reported verdict — the gate verifies it independently and does not trust it" }
+  }
+}

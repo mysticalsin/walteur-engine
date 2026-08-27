@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: access — access control — deny-by-default at the auth chokepoint + core.mjs owned(); a tenant reaches only its own bucket. Proven by test/cross-tenant.test.mjs.

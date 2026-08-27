@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: risks — residual risks: in-memory store has no at-rest encryption (acceptable: no raw secret is ever written at rest). No live monitoring sink in this field app (honest gap).

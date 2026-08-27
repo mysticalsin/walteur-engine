@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "run_id": "feature-flags-ship",
+  "goal": "Ship the deny-by-default multi-tenant feature-flags service with execution-backed proofs",
+  "owner": "release-owner",
+  "build_class": "software",
+  "risk_tier": "high",
+  "phase": "ship",
+  "autonomy_policy": "full_autopilot",
+  "budgets": { "time_minutes": 60, "input_tokens": 1, "output_tokens": 1, "cost_usd": 0 },
+  "protected_paths": [],
+  "stages": [],
+  "gates": [],
+  "evidence": [],
+  "decisions": [],
+  "signoffs": [],
+  "authority_boundaries": [],
+  "blockers": [],
+  "known_gaps": [],
+  "next_action": "ship",
+  "baton_path": "walteur-kit/autopilot/STATE.json",
+  "updated_at": "2026-06-29T04:40:00Z"
+}

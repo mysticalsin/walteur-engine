@@ -1,0 +1,1 @@
+feature-flags privacy evidence: encryption-at-rest — data.json holds non-sensitive flag config; deploy platform disk encryption applies. No secrets are persisted (tokens are env-only).

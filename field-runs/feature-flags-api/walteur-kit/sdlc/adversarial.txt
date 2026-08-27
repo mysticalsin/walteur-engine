@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: adversarial — cross-tenant read/write/erase + same-key overwrite attempted and denied. Proven by test/cross-tenant.test.mjs (5/5).

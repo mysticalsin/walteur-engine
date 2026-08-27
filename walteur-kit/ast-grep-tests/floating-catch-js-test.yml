@@ -1,0 +1,17 @@
+id: walteur-floating-catch-js
+valid:
+  - |
+    doThing().catch((e) => { report(e); });
+  - |
+    doThing().catch(() => { return null; });
+  - |
+    doThing().then(handle).catch(handleErr);
+invalid:
+  - |
+    doThing().catch(() => {});
+  - |
+    doThing().catch((e) => {});
+  - |
+    doThing().catch(e => {});
+  - |
+    doThing().catch(function () {});

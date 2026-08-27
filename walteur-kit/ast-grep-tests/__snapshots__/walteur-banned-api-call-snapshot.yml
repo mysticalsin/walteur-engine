@@ -1,0 +1,18 @@
+id: walteur-banned-api-call
+snapshots:
+  ? |
+    import os
+    os.system("ls")
+  : labels:
+    - source: os.system("ls")
+      style: primary
+      start: 10
+      end: 25
+  ? |
+    import requests
+    requests.fetch("https://x")
+  : labels:
+    - source: requests.fetch("https://x")
+      style: primary
+      start: 16
+      end: 43

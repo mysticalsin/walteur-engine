@@ -1,0 +1,1 @@
+documents-api privacy evidence: regression — privacy regression command — node --test test/erasure.test.mjs (2/2 green) re-runs the DSAR erasure proof on every change.

@@ -1,0 +1,14 @@
+{"ts":"2026-06-29T00:44:00Z","gate":"authz-tenant-gate","verdict":"PASS","exit":0,"probe_executed":"node --test test/cross-tenant.test.mjs","observed_exit":0}
+{"ts":"2026-06-29T00:44:01Z","gate":"privacy-data-gate","verdict":"PASS","exit":0,"probe_executed":"node --test test/erasure.test.mjs","observed_exit":0}
+{"ts":"2026-06-29T00:44:02Z","gate":"sdlc-run-gate","verdict":"PASS","exit":0,"probe_executed":"node --test test/api.test.mjs","observed_exit":0}
+{"ts":"2026-06-29T00:44:03Z","gate":"zero-downtime-cutover-gate","verdict":"PASS","exit":0,"probe_executed":"node walteur-kit/probe.cutover.mjs","observed_exit":0}
+{"ts":"2026-06-29T00:44:04Z","gate":"chaos-resilience-gate","verdict":"PASS","exit":0,"probe_executed":"observed game-day drill record (store-failover)","observed_exit":0}
+{"ts":"2026-06-29T00:44:05Z","gate":"secret-rotation-gate","verdict":"PASS","exit":0,"probe_executed":"internal perl scan_tree (zero literals)","observed_exit":0}
+{"ts":"2026-06-29T00:44:06Z","gate":"slo-error-budget-gate","verdict":"PASS","exit":0,"probe_executed":"internal slo.json checks","observed_exit":0}
+{"ts":"2026-06-29T00:44:07Z","gate":"audit-contract-gate","verdict":"PASS","exit":0,"probe_executed":"node --test test/api.test.mjs","observed_exit":0,"note":"verification_probe now EXECUTES + records observed_exit (exec-path fixed)"}
+{"ts":"2026-06-29T01:00:27Z","kind":"phase","phase":"plan","model":"claude-opus-4-8","note":"spec runnable app + ops surface vs gate contracts"}
+{"ts":"2026-06-29T01:00:27Z","kind":"phase","phase":"build","model":"claude-opus-4-8","note":"zero-dep HTTP service on deny-by-default core + real HTTP integration tests"}
+{"ts":"2026-06-29T01:00:27Z","kind":"phase","phase":"ops","model":"claude-opus-4-8","note":"accessible frontend + secrets/slo/chaos/cutover/ci artifacts, each gate PASS"}
+{"ts":"2026-06-29T01:00:27Z","kind":"phase","phase":"verify","model":"claude-opus-4-8","note":"server serves 200, cross-tenant denied over HTTP, node --test 24/24"}
+{"ts":"2026-06-29T01:00:27Z","kind":"phase","phase":"harness-ship","model":"n/a","note":"8 gates PASS; 4/5 EXEC executors re-ran real tests, observed exit 0; execution-ratio 44%"}
+{"ts":"2026-06-29T01:00:27Z","kind":"summary","build_tokens":834898,"agents":9,"model":"claude-opus-4-8","exec_ratio_pct":44,"gates_pass":8,"tests":"24/24"}

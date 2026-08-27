@@ -1,0 +1,1 @@
+e2e: NOTE — this client-side dashboard has NO automated e2e/browser test; the UI is exercised at the component layer via real DOM-string render tests (view.test.mjs). Recorded honestly, not fabricated.

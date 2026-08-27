@@ -1,0 +1,1 @@
+documents-api privacy evidence: deletion — deletion path — DELETE /docs/:id (single) and POST /admin/erase (full tenant DSAR) both go through core.mjs and remove data immediately from the in-memory store + next persist.

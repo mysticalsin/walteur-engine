@@ -1,0 +1,1 @@
+production evidence — health endpoint live, structured redacted logs, SLOs + alerts defined, chaos drill recovered (2.x s observed).

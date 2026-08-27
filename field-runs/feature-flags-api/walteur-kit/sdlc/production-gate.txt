@@ -1,0 +1,1 @@
+feature-flags SDLC gate: production — deploy + smoke + monitoring + rollback trigger wired.

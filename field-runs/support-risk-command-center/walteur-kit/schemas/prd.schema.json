@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-kit/schemas/prd.schema.json",
+  "title": "WALTEUR PRD frontmatter",
+  "description": "Machine-checkable portion of walteur-kit/PRD.md (the DISCOVER-phase contract). Mirrors create-prd's 8-section spine compressed to WALTEUR's terse standard; lets prd-gate.sh do a zero-dep structural check and lets §4 PLAN trace tasks→stories→PRD. Markets/segments are problems/jobs, never demographics; timeframes are relative, never dates.",
+  "type": "object",
+  "required": ["prd_version", "product", "outcome", "success_metrics", "scope_ranked", "assumptions", "stories"],
+  "additionalProperties": true,
+  "properties": {
+    "prd_version": { "type": "integer", "minimum": 1 },
+    "product": { "type": "string", "minLength": 1 },
+    "date": { "type": "string", "description": "run-date YYYY-MM-DD; relative timeframes elsewhere, never exact dates" },
+    "outcome": { "type": "string", "minLength": 1, "description": "the ONE measurable result — a metric, not a feature (top of the opportunity tree)" },
+    "success_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "description": "north-star + 1–5 leading inputs; each MUST carry a number+unit in baseline/target",
+      "items": {
+        "type": "object",
+        "required": ["name", "target"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "baseline": { "type": "string" },
+          "target": { "type": "string", "minLength": 1, "description": "must contain a number+unit, e.g. '40%', '<5 min', '99.9%'" },
+          "kind": { "type": "string", "enum": ["north-star", "leading", "health", "business"] }
+        }
+      }
+    },
+    "scope_ranked": {
+      "type": "array",
+      "minItems": 1,
+      "description": "prioritization output; top-N (in_v1:true) is the wedge",
+      "items": {
+        "type": "object",
+        "required": ["item", "in_v1"],
+        "properties": {
+          "item": { "type": "string", "minLength": 1 },
+          "score_model": { "type": "string", "enum": ["RICE", "ICE", "OpportunityScore", "Kano", "MoSCoW"] },
+          "score": { "type": "number" },
+          "in_v1": { "type": "boolean" }
+        }
+      }
+    },
+    "deprioritized": {
+      "type": "array",
+      "description": "what was CUT and why — an unstated cut is silent scope drift (gold-plating guard)",
+      "items": {
+        "type": "object",
+        "required": ["item", "reason"],
+        "properties": {
+          "item": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "the strategy-red-team output — load-bearing claims (false ⇒ the bet dies)",
+      "items": {
+        "type": "object",
+        "required": ["claim", "fails_if", "cheapest_test", "kill_criterion"],
+        "properties": {
+          "claim": { "type": "string", "minLength": 1 },
+          "fails_if": { "type": "string", "minLength": 1, "description": "concrete, falsifiable condition" },
+          "cheapest_test": { "type": "string", "minLength": 1, "description": "smallest experiment that moves the belief" },
+          "kill_criterion": { "type": "string", "minLength": 1, "description": "threshold at which to STOP or pivot" },
+          "confidence": { "type": "string", "enum": ["verified", "assumed", "unknown"] }
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "minItems": 1,
+      "description": "job/user stories; each story's acceptance criteria are the §5.4 QA test targets",
+      "items": {
+        "type": "object",
+        "required": ["id", "jtbd", "acceptance"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^STORY-[A-Za-z0-9._-]+$" },
+          "jtbd": { "type": "string", "minLength": 1, "description": "When <situation>, I want to <motivation>, so I can <outcome>" },
+          "acceptance": {
+            "type": "array",
+            "minItems": 1,
+            "description": "4–6 observable/testable criteria (INVEST + 3 C's; incl. edge/perf/a11y/integration). An AC is a plain string (legacy, LLM-audited=PROTOCOL) OR an object that PINS an enforceable construct with an ast_proof (intent-trace.sh proves it EXISTS at a file:line=HARD; correctness stays PROTOCOL).",
+            "items": {
+              "oneOf": [
+                { "type": "string", "minLength": 1, "description": "legacy free-text AC — LLM-audited only (PROTOCOL)" },
+                {
+                  "type": "object",
+                  "required": ["text"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": { "type": "string", "minLength": 1 },
+                    "construct": { "type": "string", "enum": ["authz-check", "fail-closed-default", "input-validation-sink", "idempotency-key"],
+                      "description": "the enforceable construct class this AC names" },
+                    "ast_proof": {
+                      "type": "object",
+                      "description": "DETERMINISTIC existence proof. HARD: proves the construct EXISTS at a file:line via tree-sitter AST (intent-trace.sh). NOT a correctness guarantee — does NOT prove it enforces the rule on the live path (PROTOCOL: §5.4 Logic-Correctness + policy-shadow). Absence of a match = NOT-FOUND, never PROVEN-ABSENT.",
+                      "required": ["lang", "pattern", "glob"],
+                      "properties": {
+                        "lang": { "type": "string", "description": "ast-grep --lang value, e.g. ts, python, go, rust" },
+                        "pattern": { "type": "string", "description": "ast-grep -p pattern; $METAVARS allowed" },
+                        "rule": { "type": "string", "description": "OPTIONAL path to a YAML rule file (scan -r) for relational/composite proofs (inside/has/all/any/not)" },
+                        "glob": { "type": "string", "description": "ast-grep --globs scope, e.g. 'src/**/*.ts' — narrows the proof to the live path" },
+                        "min_matches": { "type": "integer", "minimum": 1, "default": 1, "description": "how many matches constitute proof; default 1" }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "benchmark_ref": { "type": "string", "description": "path to walteur-kit/benchmark.md (§2.0b) for user-facing products" }
+  }
+}

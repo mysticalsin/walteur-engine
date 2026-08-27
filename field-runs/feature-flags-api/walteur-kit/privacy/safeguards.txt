@@ -1,0 +1,1 @@
+feature-flags privacy evidence: safeguards — tenant isolation (owned()), env-only secrets, redacted logs, DSAR erase. Proven by core.test.mjs + test/.

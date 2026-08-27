@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: safeguards — safeguards: tenant isolation (owned() buckets), constant-time auth compare, https+SSRF URL guard, secret fingerprinting, token+secret log redaction.

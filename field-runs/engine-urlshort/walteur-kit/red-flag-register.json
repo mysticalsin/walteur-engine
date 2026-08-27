@@ -1,0 +1,80 @@
+{
+  "reviewer": "senior-pm",
+  "fits_together": true,
+  "summary": "Plan is buildable and the DAG is sound (T1 -> T2/T3 -> T4 -> T5, T6 off T1+T4). PLAN.md/AGENTS.md are unusually well-specified and internally consistent. But the orchestrator task list drops one file that four other tasks import, renumbers the tasks away from PLAN.md's owner map, and leaves three cross-task interfaces (AppError shape, store generator seam, request-derived shortUrl) unowned in writing. Fix these on day one or they bite at T4/T5 integration.",
+  "high_severity_count": 3,
+  "red_flags": [
+    {
+      "id": "RF1",
+      "severity": "high",
+      "area": "missing-file / unowned interface",
+      "risk": "src/errors.js is the single source of truth for the AppError class and the code->status registry. PLAN.md §3 lists it as its own file; AGENTS.md §7 and CLAUDE.md name it explicitly; validate.js, store.js, server.js, the tests, AND the README all import from or must match it byte-for-byte. But the orchestrator's task files= lists ONLY put errors.js under T1 (skeleton). T2 (validate) imports AppError, T3 (store) throws CODE_GEN_EXHAUSTED, T4 (server) maps codes, T5 (tests) assert error.code, T6 (README) mirrors the table -- yet none of them list errors.js and T1 is scoped as 'skeleton so downstream has a stable base'. If T1 ships errors.js as a stub (empty AppError, empty registry) every downstream task invents its own codes/statuses and the envelope drifts. errors.js must be FULLY authored in T1 with the complete 12-code registry from PLAN.md §5, not stubbed.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (T1)",
+      "mitigation": "T1's Definition of Done must include the COMPLETE errors.js: AppError{code,status,message} + the canonical registry covering all codes in PLAN.md §5 table (PAYLOAD_TOO_LARGE, EMPTY_BODY, INVALID_JSON, MISSING_URL, INVALID_TYPE, INVALID_URL, DISALLOWED_PROTOCOL, CODE_GEN_EXHAUSTED, METHOD_NOT_ALLOWED, CODE_NOT_FOUND, NOT_FOUND, INTERNAL_ERROR). T2-T6 import it, never redefine codes inline. Freeze the code->status map as the wire contract before any downstream worker starts."
+    },
+    {
+      "id": "RF2",
+      "severity": "high",
+      "area": "unowned cross-task interface / contract-first gap",
+      "risk": "This is a multi-worker build across an integration boundary but NO worker owns the shared contract in writing. Three interfaces are only implied: (a) AppError THROW vs RETURN semantics -- validate.js and store.js THROW AppError, but server.js must catch and serialize to {error:{code,message}}; if a worker returns instead of throws, or server.js does not have a single catch->sendError funnel, INTERNAL_ERROR leaks or codes drop; (b) store.save(url) return type -- PLAN.md says returns the minted code (string), but server.js consumes it as `code`; an off-contract {code} object breaks the 201 body; (c) validateShortenBody return -- does it return the url string, throw, or return {url}? server.js chains it into validateUrl. These are exactly the backend-emits-X / caller-reads-Y mismatches that pass unit tests but fail at T4 wiring.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (lead, before T2/T3 spawn)",
+      "mitigation": "Author a one-page integration contract (per build-with-agent-team CONTRACT-FIRST) pinning: validateShortenBody(parsed) -> returns the url string OR throws AppError(MISSING_URL|INVALID_TYPE); validateUrl(str) -> returns {href} OR throws AppError(INVALID_URL|DISALLOWED_PROTOCOL); createStore({generate}) -> {has(code):bool, get(code):string|undefined, save(url):string-code (throws CODE_GEN_EXHAUSTED)}; createServer({store}) -> unstarted http.Server; ALL errors THROW AppError, server.js has ONE try/catch that maps AppError->status/envelope and unknown Error->500 INTERNAL_ERROR. Pin the 201 body as {code, shortUrl} and 302 as empty body + Location header. Publish before T2/T3."
+    },
+    {
+      "id": "RF3",
+      "severity": "high",
+      "area": "test-injectability seam / forced-collision path",
+      "risk": "PLAN.md §6 requires a forced-collision test driving store.save to CODE_GEN_EXHAUSTED, and §3 says 'inject a stub generator / pre-seed the map'. The orchestrator's T3 signature IS createStore({generate}={}) -- good, the seam exists. BUT T5 (http integration tests) is the ONLY test task in the orchestrator plan; it drives the REAL server over HTTP. You CANNOT force CODE_GEN_EXHAUSTED over HTTP without a generate stub that always collides, and server.js/bin do not expose a way to inject one into the store. PLAN.md solved this by making it a STORE UNIT test (store.test.js, listed under T3) that calls createStore({generate: ()=>'FIXED'}) directly. If the orchestrator's T3 store.test.js does not include the exhaustion test (it is only listed as store's own suite) and T5 tries to hit it over HTTP, the CODE_GEN_EXHAUSTED 500 path ships UNTESTED -- a named failure mode (§6) with no covering test.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (T3 store.test.js) + node:test Integration Engineer (T5)",
+      "mitigation": "Assign the forced-collision -> CODE_GEN_EXHAUSTED test explicitly to T3's store.test.js (unit-level, inject generate:()=>'DUP' + pre-seed the map), NOT to T5. T5 asserts the HTTP taxonomy it CAN reach over the wire (413/404/405/400 family/round-trip 302). Write into both DoDs which layer owns the exhaustion assertion so it is not dropped in the gap between them."
+    },
+    {
+      "id": "RF4",
+      "severity": "med",
+      "area": "task-numbering drift vs PLAN.md owner map",
+      "risk": "The orchestrator renumbers tasks: its T2=validate, T3=store, T4=server, T5=http-test, T6=README. PLAN.md §6 uses a DIFFERENT scheme: T2 owns validation, T2b owns the store collision test, T3 owns the server 413 test, T4 owns the test suite, T5 owns the README. Any worker who reads PLAN.md/CLAUDE.md to find 'who owns my failing test' (e.g. '413 is owned by T3', 'README is T5') will resolve to the WRONG orchestrator task. Commit-message convention (AGENTS.md §6) also references PLAN.md task IDs -- commits will cite the wrong ID.",
+      "owner_role": "senior-pm / chief-of-staff (coordination)",
+      "mitigation": "Publish a task-ID crosswalk in the relay (orchestrator T2->PLAN validate, T3->PLAN store+T2b, T4->PLAN server+T3 413, T5->PLAN T4 suite, T6->PLAN T5 README). Instruct workers to cite orchestrator IDs in commits and treat PLAN.md §6 owner tags as the failure-mode map, not the task number. Zero code impact; pure coordination hazard."
+    },
+    {
+      "id": "RF5",
+      "severity": "med",
+      "area": "server createServer signature contract",
+      "risk": "Orchestrator T4 signature is createServer({store}={}) -- server takes an INJECTED store. PLAN.md §3 describes createServer() with no args and bin/server.js as createServer().listen(...). If T4 requires a store arg but bin/server.js (also T4's file) calls createServer() with none, the {store}={} default must construct a real store internally -- otherwise the production entrypoint gets an undefined store and every request 500s. The default-store construction is an unwritten requirement sitting between the two files T4 owns.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (T4)",
+      "mitigation": "Pin in the contract: createServer({store = createStore()} = {}) defaults to a fresh module-scoped store so bin/server.js can call createServer() bare, while tests can inject a controlled store. T4's DoD must exercise BOTH the injected-store path (tests) and the default-store path (bin actually boots and serves)."
+    },
+    {
+      "id": "RF6",
+      "severity": "med",
+      "area": "shortUrl request-derived seam (round-trip correctness)",
+      "risk": "PLAN.md §2 is emphatic: shortUrl must be request-derived (${proto}://${req.headers.host}/${code}) because the test suite binds listen(0) on an ephemeral port and only a request-derived shortUrl carries the real bound port so GET on the returned shortUrl resolves. This is a server.js (T4) responsibility that the T5 round-trip test DEPENDS ON. If T4 hardcodes a base (e.g. http://localhost:3000) the T5 round-trip 302 test will hit the wrong port and fail -- and it will look like a test bug, not a server bug. The dependency is real but the shortUrl builder is not called out as a T4 deliverable in the orchestrator file list.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (T4) + Integration Engineer (T5)",
+      "mitigation": "T4 DoD: shortUrl built from req.headers.host (+ x-forwarded-proto else http, BASE_URL env override priority), never a hardcoded base. T5 round-trip test parses the port out of the returned shortUrl and issues the GET against it -- proving the request-derivation end to end. Name this coupling in both DoDs."
+    },
+    {
+      "id": "RF7",
+      "severity": "med",
+      "area": "README byte-for-byte drift + non-goals",
+      "risk": "T6 (README) depends on T1+T4 and PLAN.md mandates the error table match src/errors.js byte-for-byte AND state SSRF/private-IP, auth, rate-limiting, persistence, HA as explicit non-goals. Two hazards: (a) if T6 runs before errors.js is FINAL (see RF1) the table is copied from a stub and drifts; (b) the orchestrator T6 note says 'grep/read the shipped src/errors.js before writing the error table' -- good -- but does NOT mention the non-goals list, which AGENTS.md and PLAN.md §6/§Layer-depth treat as mandatory. A README that silently implies SSRF is handled is a stated failure of this build.",
+      "owner_role": "Technical Writer (API README) (T6)",
+      "mitigation": "T6 must run AFTER errors.js is frozen (RF1), grep the shipped registry and reproduce it verbatim, and include the explicit non-goals section (SSRF/private-IP incl. 127.0.0.1 & 169.254.169.254 & ::1, no auth, no rate limiting, no TLS, in-memory RPO=inf/RTO=restart). Add non-goals to T6's Definition of Done, not just the error table."
+    },
+    {
+      "id": "RF8",
+      "severity": "low",
+      "area": "over-scope / same-wave file collision check",
+      "risk": "No two tasks write the same file in one wave (checked: errors.js T1 only, validate.js/validate.test.js T2, store.js/store.test.js T3, server.js/bin/server.js T4, http.test.js/helpers.js/test-report.json T5, README.md T6) -- clean disjoint ownership, no write collisions. No task exceeds 5 files (max is T5 at 3). One minor note: T5 owns walteur-kit/test-report.json (a kit artifact) alongside test code -- fine, but that file is a REPORT output, so T5's DoD should require it be GENERATED from a real `node --test` run, not hand-written, or it becomes a vacuous-green artifact.",
+      "owner_role": "node:test HTTP Integration-Test Engineer (T5)",
+      "mitigation": "Keep the disjoint file map as-is (it is correct). Add to T5 DoD: test-report.json must be emitted from an actual `node --test` execution (pass/fail counts real), not authored by hand -- otherwise it is an unfalsifiable green marker."
+    },
+    {
+      "id": "RF9",
+      "severity": "low",
+      "area": "body-cap / DoS acceptance clarity",
+      "risk": "PLAN.md §3 flow step 1 requires the 1MB body cap to fire BEFORE JSON.parse (req.destroy() + 413). This is a T4 server responsibility with a T5 covering test. The subtlety: after req.destroy() the socket is torn down, so the 413 response must be written BEFORE destroy, and the T5 test must send a >1MB body and still be able to read the 413 (a destroyed socket mid-write can make the client see ECONNRESET instead of 413). Easy to get a flaky/wrong 413 test.",
+      "owner_role": "Node/HTTP API & Validation-Security Engineer (T4) + Integration Engineer (T5)",
+      "mitigation": "T4: on exceeding the cap, write the 413 envelope THEN stop consuming (pause/destroy after the response head is flushed), so the client reliably receives 413. T5: assert statusCode===413 and error.code==='PAYLOAD_TOO_LARGE'; tolerate the write-then-reset ordering. Confirm on Node v24.13.1 as PLAN.md §2 did for the other paths."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+documents-api authz evidence: signoff — authz signoff — owner: Tony; deny-by-default authorization reviewed against running tests (29/29 green) + live curl (401/403/404). Accepted.

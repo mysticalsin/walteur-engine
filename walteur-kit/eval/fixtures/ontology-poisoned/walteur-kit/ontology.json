@@ -1,0 +1,10 @@
+{
+  "ontology_version": 1,
+  "note": "glossary, NOT a retrieval index — graphify is the one brain",
+  "entities": [
+    { "name": "Tenant", "type": "Actor", "aka": ["tenants", "TenantOrg"], "definition": "an isolated customer organisation; the unit of data isolation." },
+    { "name": "OrderLine", "type": "Resource", "aka": ["order line"], "definition": "one priced line item within an order." },
+    { "name": "Invoice", "type": "Artifact", "aka": [], "definition": "a billing document issued to a Tenant for a billing period." },
+    { "name": "Ledger", "type": "Service", "aka": [], "definition": "the append-only record of money movements." }
+  ]
+}

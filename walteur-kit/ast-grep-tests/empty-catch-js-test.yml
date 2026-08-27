@@ -1,0 +1,11 @@
+id: walteur-empty-catch-js
+valid:
+  - |
+    try { doWork(); } catch (e) { console.error(e); }
+  - |
+    try { doWork(); } catch (e) { throw e; }
+invalid:
+  - |
+    try { doWork(); } catch (e) {}
+  - |
+    try { doWork(); } catch (err) { ; }

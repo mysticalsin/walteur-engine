@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/estimate.schema.json",
+  "title": "WALTEUR Estimate",
+  "description": "Pre-build estimate for time, tokens, and cost before expensive phases start.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "estimate_id",
+    "goal",
+    "phase",
+    "minutes",
+    "tokens",
+    "usd",
+    "assumptions",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "estimate_id": { "type": "string", "minLength": 1 },
+    "goal": { "type": "string", "minLength": 1 },
+    "phase": {
+      "type": "string",
+      "enum": ["intake", "discover", "plan"]
+    },
+    "minutes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["best", "expected", "worst"],
+      "properties": {
+        "best": { "type": "number", "minimum": 0 },
+        "expected": { "type": "number", "minimum": 0 },
+        "worst": { "type": "number", "minimum": 0 }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["best", "expected", "worst"],
+      "properties": {
+        "best": { "type": "integer", "minimum": 0 },
+        "expected": { "type": "integer", "minimum": 0 },
+        "worst": { "type": "integer", "minimum": 0 },
+        "input": { "type": "integer", "minimum": 0 },
+        "output": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "usd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["best", "expected", "worst"],
+      "properties": {
+        "best": { "type": "number", "minimum": 0 },
+        "expected": { "type": "number", "minimum": 0 },
+        "worst": { "type": "number", "minimum": 0 }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

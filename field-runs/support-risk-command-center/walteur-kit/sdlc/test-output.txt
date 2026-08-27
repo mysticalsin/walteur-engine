@@ -1,0 +1,14 @@
+✔ riskLabel ranks blocked tickets as critical action (0.4147ms)
+✔ riskLabel ranks SLA-near tickets above aging open tickets (0.1053ms)
+✔ sortByRisk orders the highest operational risks first (0.3644ms)
+✔ summarizeTickets returns decision-ready counts and owner load (0.1596ms)
+✔ renderSummaryCards exposes the decision counts (0.4279ms)
+✔ renderRiskRows includes the risk label and owner for each ticket (0.1435ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45.4142

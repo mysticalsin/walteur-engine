@@ -1,0 +1,1 @@
+lint — node -c (syntax check) on core.mjs and server.mjs passes; zero external deps so no dependency lint surface.

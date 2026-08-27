@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "proof_id": "mt-tasks-privacy",
+  "run_date": "2026-06-29",
+  "build_class": "software",
+  "risk_tier": "high",
+  "verdict": "PASS",
+  "applicability": {
+    "personal_data": true,
+    "sensitive_data": false,
+    "regulated_data": true,
+    "ai_context_data": false,
+    "children_data": false
+  },
+  "inventory": {
+    "data_inventory_ref": "walteur-kit/privacy/inventory.txt",
+    "processing_records_ref": "walteur-kit/privacy/processing.txt",
+    "purposes_ref": "walteur-kit/privacy/purposes.txt",
+    "data_minimization_ref": "walteur-kit/privacy/minimization.txt",
+    "lawful_basis_ref": "walteur-kit/privacy/lawful.txt"
+  },
+  "retention_deletion": {
+    "retention_schedule_ref": "walteur-kit/privacy/retention.txt",
+    "deletion_path_ref": "walteur-kit/privacy/deletion.txt",
+    "dsar_access_modify_export_ref": "walteur-kit/privacy/dsar.txt",
+    "backup_deletion_policy_ref": "walteur-kit/privacy/backup.txt",
+    "erasure_probe": {
+      "command": "node --test test/erasure.test.mjs",
+      "expect_exit": 0
+    }
+  },
+  "protection": {
+    "encryption_at_rest_ref": "walteur-kit/privacy/encrypt-rest.txt",
+    "encryption_in_transit_ref": "walteur-kit/privacy/encrypt-transit.txt",
+    "logging_redaction_ref": "walteur-kit/privacy/logging.txt",
+    "access_control_ref": "walteur-kit/privacy/access.txt",
+    "breach_response_ref": "walteur-kit/privacy/breach.txt"
+  },
+  "transfers": {
+    "subprocessors_ref": "walteur-kit/privacy/subprocessors.txt",
+    "third_country_transfer_ref": "walteur-kit/privacy/transfer.txt",
+    "safeguards_ref": "walteur-kit/privacy/safeguards.txt"
+  },
+  "risk": {
+    "dpia_required": true,
+    "dpia_ref": "walteur-kit/privacy/dpia.txt",
+    "residual_risks_ref": "walteur-kit/privacy/risks.txt",
+    "owner_acceptance_ref": "walteur-kit/privacy/acceptance.txt"
+  },
+  "tests": {
+    "pii_scan_ref": "walteur-kit/privacy/scan.txt",
+    "retention_test_ref": "walteur-kit/privacy/retention-test.txt",
+    "deletion_test_ref": "walteur-kit/privacy/deletion-test.txt",
+    "logging_redaction_test_ref": "walteur-kit/privacy/redaction-test.txt",
+    "regression_command_ref": "walteur-kit/privacy/regression.txt"
+  },
+  "evidence_refs": [
+    "walteur-kit/privacy/evidence.txt"
+  ],
+  "signoff": {
+    "required": true,
+    "owner": "Tony",
+    "signoff_ref": "walteur-kit/privacy/signoff.txt"
+  }
+}

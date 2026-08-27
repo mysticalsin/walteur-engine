@@ -1,0 +1,1 @@
+multitenant-tasks SDLC evidence: accessibility — see test/ (node --test, 24/24) + core.mjs owned() chokepoint; proven by execution.

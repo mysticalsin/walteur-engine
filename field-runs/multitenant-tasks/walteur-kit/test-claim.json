@@ -1,0 +1,1 @@
+{"tests_pass": true, "command": "node --test", "layers": ["logic", "http"], "note": "deny-by-default tenant isolation + DSAR erasure proven by node --test (24/24: core 9, api 9, cross-tenant 4, erasure 2)"}

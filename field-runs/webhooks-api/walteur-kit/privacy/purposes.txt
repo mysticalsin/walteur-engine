@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: purposes — purpose: let a tenant register/manage HTTPS delivery endpoints for platform events. Delivery URL + event type are the only tenant-supplied fields.

@@ -1,0 +1,20 @@
+# R-AST-2  SWALLOWED ERROR — caught into a NAMED binding (`except X as e:`) that is never used, logged,
+# or re-raised. NET-NEW coverage vs resilience-lint R1 (which only catches literally-empty/pass bodies):
+# `except Exception as e: return None` swallows the error and slips past the grep floor entirely.
+# VERIFIED against ast-grep 0.42.x: except_clause > as_pattern_target (the binding) + block (the body).
+# Proven by ../ast-grep-tests/swallowed-error-test.yml (ast-grep test).
+# APPROX honesty: scoped to the handler's own subtree (not interprocedural) — a handler that stashes the
+# error into a field and reads it elsewhere is a FALSE NEGATIVE. Tuned for low false-POSITIVES.
+id: walteur-swallowed-error-py
+language: python
+severity: error
+message: "Caught exception '$ERR' is bound but never used, logged, or re-raised — the error is swallowed."
+note: "WALTEUR R2 (AST, NEW vs grep floor). Use $ERR (log/inspect), re-raise, or drop the binding and narrow the except."
+rule:
+  kind: except_clause
+  all:
+    - has: { stopBy: end, kind: as_pattern_target, has: { kind: identifier, pattern: $ERR } }
+    - not: { has: { kind: block, has: { stopBy: end, pattern: $ERR } } }
+    - not: { has: { kind: block, has: { stopBy: end, kind: raise_statement } } }
+constraints:
+  ERR: { regex: "^[A-Za-z_][A-Za-z0-9_]*$" }

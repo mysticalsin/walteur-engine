@@ -1,0 +1,25 @@
+{
+  "layers": {
+    "logic": {
+      "recorded_command": "node --test core.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "core.mjs",
+      "note": "pure logic: tenant-scoped task model, deny-by-default access checks"
+    },
+    "integration": {
+      "recorded_command": "node --test test/api.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "test/api.test.mjs",
+      "note": "HTTP API boundary: server.mjs route handlers + auth middleware"
+    },
+    "e2e": {
+      "recorded_command": "node --test test/cross-tenant.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "file": "test/cross-tenant.test.mjs",
+      "note": "cross-tenant isolation: tenant A cannot read/mutate tenant B artifacts end-to-end"
+    }
+  }
+}

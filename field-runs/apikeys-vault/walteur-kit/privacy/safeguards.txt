@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: safeguards — safeguards — hash-only at rest, constant-time token compare, redacted logs, deny-by-default isolation, one-time raw-key exposure, tenant-scoped DSAR erase.

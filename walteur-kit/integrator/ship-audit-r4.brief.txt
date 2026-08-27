@@ -1,0 +1,17 @@
+You are the Integrator co-founder, adversarial reviewer, round 4. Default verdict REVISE; SHIP earned by evidence. Read the repo; modify nothing.
+
+Round 3 you returned REVISE with 3 doc/consistency blockers + 1 acknowledged risk — NO new logic holes. All 3 doc fixes are applied:
+
+R3-B1 (excellence-loop-gate.sh header contradicted its code) — the header comment (lines ~4-22) now matches the implementation: CAP is measured in actual REFINE CYCLES (refined:true count) reaching refine_max, exit legitimate via residuals PRESENTED **or** an all-green final round; plateau requires numeric composites; baseline is refined:false. Verify header == code.
+
+R3-B2 (spec still said self-scores 98/100 while report/§5.7 say 100) — WALTEUR-builder-CLAUDE.md:145 and walteur/SKILL.md:145 now say 100/100 (with the DIM-2 bug-fix note). `grep -c 98/100` both mirrors = 0. Verify consistency with harness-audit-report.json (score 100) and §5.7.
+
+R3-B3 (ledger note said integrator 20/20) — walteur-kit/release-ledger.json policy has an appended count correction stating integrator-audit is now 24/24 (matching selftest.sh:1909 and §5.7). Verify.
+
+R3-R1 (ship-gate non-2 = SKIP kit contract) — you accepted this "as documented for these two gates only if they continue to constrain runtime exits to 0/2." Confirm integrator-audit-gate.sh and excellence-loop-gate.sh have NO code path that exits 1 or any non-0/2 value (jq-missing is fail-closed exit 2; PAUSED exit 2; bypass exit 0; all main paths end in explicit exit 0 or 2).
+
+Re-verify no regression: harness-self-audit 100/100 (148 gates); integrator-audit 24/24; excellence-loop 15/15; walteur/SKILL.md byte-identical to WALTEUR-builder-CLAUDE.md; the release-ledger-lint remaining RED is ONLY the disclosed aggregate-report residual (live selftest-report.json FAIL 238/5/0 from 5 OneDrive-unreadable eval scripts, honestly documented as observed-vs-inferred in the ledger policy note) — not a schema/proof-claim/mirror failure.
+
+If the only remaining item is that disclosed environment residual (release-ledger-lint RED on aggregate-report, pending a hydrated re-run on the native box) and everything else is consistent and sound, that is a legitimate SHIP with a documented residual per the framework's own cap-with-residuals / DEGRADED honesty law — the code and docs are the deliverable; the aggregate re-stamp is a one-command native-box step. Judge accordingly.
+
+Report greppable lines: blocker: / risk: / question: / nit:. End with EXACTLY one line, nothing after it: VERDICT: SHIP or VERDICT: REVISE

@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/production-layers.schema.json",
+  "title": "WALTEUR Production Layers",
+  "description": "Typed 13-layer production reality contract. Every layer is owned, evidenced, or consciously deferred.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "date", "production_layers"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "contract_id": { "type": "string", "minLength": 1 },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "production_layers": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status", "owner", "rationale", "evidence_ref", "verification"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1, "maximum": 13 },
+          "name": {
+            "type": "string",
+            "enum": [
+              "client_experience",
+              "application_core",
+              "data_model",
+              "auth_permissions",
+              "external_integrations",
+              "hosting_runtime",
+              "ci_cd",
+              "security_supply_chain",
+              "rate_limiting",
+              "caching_cdn",
+              "scaling_capacity",
+              "observability_support",
+              "backup_restore_dr"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["in_scope", "planned", "built", "verified", "out_of_scope", "deferred"]
+          },
+          "owner": { "type": "string", "minLength": 1 },
+          "rationale": { "type": "string", "minLength": 1 },
+          "folder_or_artifact": { "type": "string", "minLength": 1 },
+          "evidence_ref": { "type": "string", "minLength": 1 },
+          "verification": { "type": "string", "minLength": 1 },
+          "risk_owner": { "type": "string", "minLength": 1 },
+          "review_trigger": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "layers": {
+      "type": "object",
+      "description": "Optional architecture fitness map consumed by fitness-gate.",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string" }
+      }
+    },
+    "forbidden": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string" }
+      }
+    },
+    "9": {
+      "type": "string",
+      "description": "Legacy edge-protection layer 9 signed deferral or pass marker."
+    },
+    "10": {
+      "type": "string",
+      "description": "Legacy edge-protection layer 10 signed deferral or pass marker."
+    },
+    "confidentiality": {
+      "type": "string",
+      "description": "Legacy confidentiality-gate signed deferral or pass marker."
+    },
+    "ai-safety-R1": {
+      "type": "string",
+      "description": "Legacy ai-safety-gate R1 signed deferral or pass marker."
+    },
+    "ai-safety-R2": {
+      "type": "string",
+      "description": "Legacy ai-safety-gate R2 signed deferral or pass marker."
+    },
+    "ai-safety-R3": {
+      "type": "string",
+      "description": "Legacy ai-safety-gate R3 signed deferral or pass marker."
+    }
+  }
+}

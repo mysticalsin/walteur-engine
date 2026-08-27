@@ -1,0 +1,1 @@
+Lint: node --check on src/*.mjs (risk.mjs, view.mjs, app.mjs) parses clean; no syntax errors.

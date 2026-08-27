@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/data-inventory.schema.json",
+  "title": "WALTEUR Data Inventory",
+  "description": "Inventory of every field the system stores or processes, classified for privacy and compliance. One entry per field: its data class, lawful basis, purposes, retention, residency, and the sinks it flows to.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "name",
+      "data_class",
+      "lawful_basis",
+      "purpose",
+      "retention_ttl_days",
+      "residency_region",
+      "sinks"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Field name as it appears in the system.",
+        "minLength": 1
+      },
+      "data_class": {
+        "type": "string",
+        "description": "Privacy classification of the field's content.",
+        "enum": [
+          "pii.name",
+          "pii.email",
+          "pii.id",
+          "pii.location",
+          "pii.health",
+          "secret",
+          "anonymous"
+        ]
+      },
+      "lawful_basis": {
+        "type": "string",
+        "description": "Legal basis for processing this field (e.g. GDPR Art.6: consent, contract, legal_obligation, vital_interests, public_task, legitimate_interests; or 'n/a' for anonymous).",
+        "minLength": 1
+      },
+      "purpose": {
+        "type": "array",
+        "description": "Specific, enumerated purposes for which this field is processed (purpose limitation).",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "retention_ttl_days": {
+        "type": ["integer", "null"],
+        "description": "Number of days the field is retained before deletion. Null means indefinite/no-TTL (must be justified by lawful_basis).",
+        "minimum": 0
+      },
+      "residency_region": {
+        "type": "string",
+        "description": "Geographic region where the field is stored/processed (e.g. eu-west-1, EU, US, global).",
+        "minLength": 1
+      },
+      "sinks": {
+        "type": "array",
+        "description": "Downstream destinations the field flows to (datastores, logs, third-party processors, analytics).",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

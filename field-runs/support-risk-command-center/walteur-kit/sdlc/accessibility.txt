@@ -1,0 +1,1 @@
+Accessibility: index.html uses semantic table/cards; labels present in rendered output (asserted by view.test.mjs).

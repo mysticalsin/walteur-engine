@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# TDD guard. Blocks editing SOURCE when the repo has zero tests (write a failing test first).
+# Conservative: allows test files, config, docs, and allows everything if tests already exist.
+# Override: WALTEUR_TDD=off. Honors the kill switch. Reads tool JSON on stdin (path in tool_input).
+# --help: self-documentation BEFORE any side effect (S033 usability contract)
+case "${1:-}" in
+  -h|--help)
+  printf '%s\n' "tdd-guard - TDD guard. Blocks editing SOURCE when the repo has zero tests (write a failing test first)."
+  printf '%s\n' "usage: bash tdd-guard.sh [--selftest|--help|<default run>]"
+  printf '%s\n' "report: see hook header - fix recipes: walteur-kit/REMEDIATION.md (## tdd-guard)"
+  printf '%s\n' "bypass: WALTEUR_TDD=off (recorded, not free)"
+  exit 0 ;;
+esac
+
+set -uo pipefail
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+[ -f "$ROOT/walteur-kit/PAUSED" ] && { echo "WALTEUR PAUSED." >&2; exit 2; }
+[ "${WALTEUR_TDD:-on}" = "off" ] && exit 0
+payload="$(cat 2>/dev/null || true)"
+path="$(printf '%s' "$payload" | jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null)"
+[ -z "$path" ] && exit 0
+case "$path" in
+  *test*|*spec*|*.md|*.json|*.yaml|*.yml|*.toml|*.lock|*.txt|*.css|*.svg) exit 0 ;;
+esac
+# any test file in repo? if yes, allow (TDD presumed in motion); if none, block.
+if [ -z "$(find "$ROOT" -path "*/node_modules" -prune -o \( -name "*test*" -o -name "*spec*" \) -type f -print -quit 2>/dev/null)" ]; then
+  echo "TDD: no tests exist yet. Write a FAILING test first, then implement. (bypass: WALTEUR_TDD=off)" >&2
+  exit 2
+fi
+exit 0

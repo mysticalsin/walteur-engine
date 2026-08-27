@@ -1,0 +1,1 @@
+feature-flags SDLC gate: beta — adversarial + a11y + docs + rollback before production.

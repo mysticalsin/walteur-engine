@@ -1,0 +1,12 @@
+# WALTEUR EARS Rule — EarsShall
+# Checks that "SHALL" in acceptance criteria appears in a response clause,
+# not in isolation. Fires when SHALL lacks a preceding system subject.
+# Canonical shape: THE <system> SHALL <response>.
+# Authored by WALTEUR (approximation of tbhb/vale-ears, MIT provenance).
+extends: existence
+message: "EARS: 'SHALL' used without a 'THE <system>' subject. Full shape: THE <system> SHALL <response>."
+level: warning
+scope: sentence
+# Fires when SHALL appears but no "THE <word(s)> SHALL" subject pattern precedes it.
+tokens:
+  - '(?i)\bSHALL\b(?<!\bTHE\s+\w+\s+SHALL\b)'

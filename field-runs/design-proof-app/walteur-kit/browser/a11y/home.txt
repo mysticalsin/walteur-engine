@@ -1,0 +1,46 @@
+Cadence — accessibility tree of route "/" (home), captured live via Playwright MCP browser_snapshot
+against the real vite build served over http://localhost:8141/ (chromium, viewport 1440x900), 2026-07-04.
+This is the INITIAL render (timer idle at 25:00), the state the home.png screenshot and browser-proof.json
+accessibility_ref document. Re-generated from the actual Cadence page (a prior bundle had shipped a stale
+snapshot of a different artifact; panel #5 caught it — this file now matches the screenshot + source).
+
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - img [ref=e7]
+      - generic [ref=e11]: Cadence
+    - paragraph [ref=e12]: Focus in blocks. Watch the day add up.
+  - main "Focus timer" [ref=e13]:
+    - generic [ref=e14]:
+      - img [ref=e15]
+      - generic [ref=e18]:
+        - generic [ref=e19]: 25:00
+        - generic [ref=e20]: Focus
+    - status [ref=e21]: 25-minute Focus · ready when you are
+    - group "Session length" [ref=e22]:
+      - button "Focus 25m" [pressed] [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: Focus
+        - generic [ref=e25]: 25m
+      - button "Deep Work 50m" [ref=e26] [cursor=pointer]:
+        - generic [ref=e27]: Deep Work
+        - generic [ref=e28]: 50m
+      - button "Short Break 5m" [ref=e29] [cursor=pointer]:
+        - generic [ref=e30]: Short Break
+        - generic [ref=e31]: 5m
+    - button "Start" [ref=e34] [cursor=pointer]:
+      - img [ref=e35]
+      - generic [ref=e37]: Start
+  - region "Today's sessions" [ref=e38]:
+    - generic [ref=e39]:
+      - heading "Today" [level=2] [ref=e40]
+      - generic [ref=e41]: Saturday, July 4
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - generic [ref=e44]: "0"
+        - generic [ref=e45]: Sessions
+      - generic [ref=e47]:
+        - generic [ref=e48]: "0"
+        - generic [ref=e49]: Minutes focused
+    - generic [ref=e50]:
+      - paragraph [ref=e51]: No sessions yet today
+      - paragraph [ref=e52]: Start your first focus block. Finished sessions land here so the day adds up in front of you.

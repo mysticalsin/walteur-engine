@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: tenant-key — tenant key — the isolation key is tenantId, carried from the X-Tenant header straight into core.mjs owned(tenantId); records live in {tenantId -> {id -> record}} buckets with no shared id namespace.

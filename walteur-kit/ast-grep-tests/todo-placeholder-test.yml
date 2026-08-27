@@ -1,0 +1,12 @@
+id: walteur-todo-placeholder-py
+valid:
+  - |
+    def real():
+        return compute()
+invalid:
+  - |
+    def todo():
+        pass
+  - |
+    def stub():
+        raise NotImplementedError

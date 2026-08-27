@@ -1,0 +1,1 @@
+feature-flags privacy evidence: access-control — every data path requires X-Tenant + Bearer and is scoped to the caller's bucket (deny-by-default). See server.mjs authenticate + core.mjs owned().

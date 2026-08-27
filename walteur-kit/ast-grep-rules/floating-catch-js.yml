@@ -1,0 +1,50 @@
+# R-AST-5  FLOATING-PROMISE EMPTY .catch() — a `.catch(() => {})` / `.catch(e => {})` /
+# `.catch(function(){})` whose handler body is empty (only `;` allowed). The rejection is "handled" in
+# name only: the error is swallowed and the promise rejection vanishes. NET-NEW vs resilience-lint R1
+# (synchronous catch_clause only) — R1's awk floor never sees the Promise `.catch()` member-call form.
+# VERIFIED against ast-grep 0.43.x: call_expression whose function is a member_expression with
+# property `catch`, and whose argument is an arrow_function / function_expression with an empty
+# statement_block body (no child other than empty_statement). A named callback — `.catch(handleErr)` —
+# is NOT matched (not an inline empty handler). Proven by ../ast-grep-tests/floating-catch-js-test.yml.
+# APPROX honesty: matches the inline empty-handler form only; `.catch(noop)` where noop is a separately
+# defined empty function is a FALSE NEGATIVE (not visible at this call site). Tuned for low false-POSITIVES.
+id: walteur-floating-catch-js
+language: js
+severity: warning   # WARNING-FIRST (v9.2 #13). Promote to error per-project once the twin proof is wired and the team has triaged the initial findings — do NOT ship as universal-HARD.
+message: "Empty .catch() handler — the promise rejection is swallowed (handled in name only). Log, re-throw, or surface the error."
+note: "WALTEUR R8 (AST, NEW vs grep floor). An empty `.catch(() => {})` hides every rejection. Log the error with context, re-throw, or route it to an error boundary / reporter."
+files:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.cjs"
+ignores:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "**/__tests__/**"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+rule:
+  kind: call_expression
+  all:
+    - has:
+        field: function
+        kind: member_expression
+        has: { field: property, regex: "^catch$" }
+    - has:
+        field: arguments
+        has:
+          any:
+            - kind: arrow_function
+              has:
+                field: body
+                kind: statement_block
+                not: { has: { pattern: $S, not: { kind: empty_statement } } }
+            - kind: function_expression
+              has:
+                field: body
+                kind: statement_block
+                not: { has: { pattern: $S2, not: { kind: empty_statement } } }

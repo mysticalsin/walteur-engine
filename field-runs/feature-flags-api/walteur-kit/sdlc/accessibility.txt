@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: accessibility — public/index.html uses labeled forms, aria-live status, focus-visible outlines, reduced-motion query; never renders foreign data.

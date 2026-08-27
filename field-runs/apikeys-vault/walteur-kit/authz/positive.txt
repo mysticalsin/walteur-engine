@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: positive — positive authz — an authenticated tenant CAN issue/list/get/rotate/revoke its OWN keys (HTTP 201/200). Proven by test/api.test.mjs + test/rotation.test.mjs.

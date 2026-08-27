@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "report_id": "mt-tasks-process-kill-drill",
+  "drills": [
+    {
+      "hypothesis": "If the task-store process is hard-killed mid-operation, a freshly restarted (green) instance restores the /healthz steady state within the SLO recovery budget, and deny-by-default tenant isolation is preserved by core.mjs on the new instance (no in-memory state can leak across the restart because the store is rebuilt empty).",
+      "fault_injected": "process-kill",
+      "steady_state_metric": "GET /healthz returns HTTP 200 (liveness); listener accepts connections on the configured port",
+      "blast_radius_observed": "in-flight requests dropped at kill (post-kill GET /healthz -> HTTP 000, connection refused); no requests served until the green instance bound the port",
+      "recovered": true,
+      "recovery_seconds": 2.3,
+      "ran_ts": "2026-06-29T00:49:33Z",
+      "evidence_ref": "ops/chaos.log"
+    }
+  ]
+}

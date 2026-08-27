@@ -1,0 +1,1 @@
+feature-flags privacy evidence: processing-records — flags are set/read/deleted only by the owning tenant over the HTTP API; audit rows record set/delete. See core.mjs + server.mjs.

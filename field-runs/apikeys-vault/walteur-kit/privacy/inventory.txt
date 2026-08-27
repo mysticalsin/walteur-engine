@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: inventory — data inventory — the vault stores per tenant: key records {id, label, sha256 hash, last4, status, createdAt, rotatedAt, revokedAt} and audit rows {ts, tenantId, action, id}. NO raw key material is ever stored.

@@ -1,0 +1,1 @@
+code review — reviewed core.mjs (owned chokepoint, hashKey, mint, rotate replaces hash) and server.mjs (auth, redaction, routes) against running tests.

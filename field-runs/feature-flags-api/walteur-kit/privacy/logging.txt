@@ -1,0 +1,1 @@
+feature-flags privacy evidence: logging-redaction — server.mjs logLine redacts authorization/token/bearer/x-token/tenant_tokens to '***'. Observed in test run logs.

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":pinDevDependencies",
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigestsToSemver",
+    "security:openssf-scorecard"
+  ],
+  "timezone": "Europe/Paris",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "rangeStrategy": "bump",
+  "prHourlyLimit": 4,
+  "prConcurrentLimit": 12,
+  "rebaseWhen": "conflicted",
+  "configMigration": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "all",
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "schedule": ["at any time"],
+    "prPriority": 10
+  },
+  "packageRules": [
+    {
+      "description": "Pin all GitHub Actions to a full-length commit SHA (supply-chain hardening).",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
+    },
+    {
+      "description": "Pin every container/base image to an immutable digest.",
+      "matchDatasources": ["docker"],
+      "pinDigests": true
+    },
+    {
+      "description": "Group all non-major updates to cut PR noise; humans review majors individually.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "non-major dependencies",
+      "automerge": false
+    },
+    {
+      "description": "Major upgrades are never auto-grouped and never auto-merged — they need eyes.",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "major"],
+      "minimumReleaseAge": "3 days"
+    }
+  ]
+}

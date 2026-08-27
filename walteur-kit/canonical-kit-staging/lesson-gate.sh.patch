@@ -1,0 +1,75 @@
+# ============================================================================
+# PATCH to walteur-starter/walteur-kit/memory/lesson-gate.sh
+# REPLACES step 3 (current lines 37-53, the contradiction-HOLD block) with a
+# contradiction-RESOLUTION block. Steps 1,2,4,5 are unchanged. Adds the two
+# nullable fields at accept-time (step 4). ~20 lines of jq net. Zero new deps.
+#
+# WHAT CHANGES vs today: today a contradiction ONLY parks the candidate in
+# conflicts.jsonl and the live store keeps serving the stale lesson (the gap).
+# NEW: if the candidate SUPERSEDES an old lesson (conservative test below),
+# we CLOSE the old lesson's window in the LIVE store (atomic rewrite) AND log
+# the supersession to conflicts.jsonl for audit. Ambiguous conflicts are still
+# HELD (parked, store untouched) exactly as before — do NOT auto-close on doubt.
+# ============================================================================
+
+# ---- (place near the top, after CONFLICTS=... is defined) -------------------
+# "supersedes" is CONSERVATIVE. The OLD lesson's window auto-closes ONLY when:
+#   (1) the candidate carries an explicit  supersedes:"<old_id>"  link, OR
+#   (2) EXACT-KEY contradiction: candidate.key == old.key  (same canonical subject slug)
+#       AND opposite polarity (already computed by pol() below).
+# Everything else -> HOLD (park in conflicts.jsonl; live store untouched).
+
+# ---- REPLACE step 3 with this -----------------------------------------------
+# 3. contradiction-resolution — same subject, opposite directive?
+pol() { case "$(printf '%s' "$1" | tr 'A-Z' 'a-z')" in *never*|*avoid*|*"don't"*|*dont*|*"do not"*|*"no "*) echo neg;; *) echo pos;; esac; }
+NP="$(pol "$NL_TEXT")"
+NEW_KEY="$(echo "$NEW" | jq -r '.key // empty')"
+NEW_SUPS="$(echo "$NEW" | jq -r '.supersedes // empty')"
+NEW_WORDS="$(printf '%s' "$NL" | tr ' ' '\n' | awk 'length>4' | sort -u)"
+CLOSE_IDS=""   # collect old ids that the candidate explicitly supersedes / exact-key contradicts
+if [ -s "$MEM" ]; then
+  while IFS= read -r line; do
+    [ -n "$line" ] || continue
+    ex="$(echo "$line" | jq -r '.lesson // empty' 2>/dev/null)"; [ -n "$ex" ] || continue
+    eid="$(echo "$line" | jq -r '.id // empty')"; ekey="$(echo "$line" | jq -r '.key // empty')"
+    # only consider lessons whose window is still OPEN (back-compat: missing field == open)
+    open="$(echo "$line" | jq -r '(.invalidated_at // null) == null')"; [ "$open" = "true" ] || continue
+    exn="$(norm "$ex")"
+    # --- auto-close path 1: explicit supersedes link ---
+    if [ -n "$NEW_SUPS" ] && [ "$NEW_SUPS" = "$eid" ]; then CLOSE_IDS="$CLOSE_IDS $eid"; continue; fi
+    # --- only opposite-polarity pairs can conflict at all ---
+    [ "$(pol "$ex")" = "$NP" ] && continue
+    # --- auto-close path 2: EXACT-KEY contradiction (same canonical subject, opposite polarity) ---
+    if [ -n "$NEW_KEY" ] && [ "$NEW_KEY" = "$ekey" ]; then CLOSE_IDS="$CLOSE_IDS $eid"; continue; fi
+    # --- otherwise: AMBIGUOUS conflict (>=2 shared significant words) -> HOLD, do NOT auto-close ---
+    shared="$(comm -12 <(printf '%s\n' "$NEW_WORDS") <(printf '%s' "$exn" | tr ' ' '\n' | awk 'length>4' | sort -u) | grep -c . || true)"
+    if [ "${shared:-0}" -ge 2 ]; then
+      echo "$NEW" | jq -c --arg ts "$TS" --arg against "$ex" '. + {held_ts:$ts, conflicts_with:$against}' >> "$CONFLICTS"
+      echo "lesson-gate: CONFLICT-HELD (ambiguous contradiction; logged to conflicts.jsonl for review) — not auto-added, old NOT closed"
+      exit 0
+    fi
+  done < "$MEM"
+fi
+
+# 3b. RESOLVE supersessions — close each superseded OLD window in the LIVE store, atomically, and log for audit.
+if [ -n "$CLOSE_IDS" ]; then
+  NEW_SRC="$(echo "$NEW" | jq -r '.source_build // .id // "unknown"')"
+  for cid in $CLOSE_IDS; do
+    tmp="$(mktemp "$DIR/.lessons.XXXXXX")" || { echo "lesson-gate: mktemp failed — store untouched"; exit 0; }
+    # close ONLY the open target; jq exit code gates the atomic mv (failed rewrite => store unchanged)
+    if jq -c --arg id "$cid" --arg now "$TS" --arg by "$NEW_SRC" \
+         'if .id == $id and (.invalidated_at // null) == null then .invalidated_at = $now | .superseded_by = $by else . end' \
+         "$MEM" > "$tmp" && mv "$tmp" "$MEM"; then
+      jq -nc --arg old "$cid" --arg by "$NEW_SRC" --arg ts "$TS" \
+         '{event:"supersede", old_id:$old, by_source_build:$by, closed_at:$ts, basis:"explicit-link-or-exact-key"}' >> "$CONFLICTS"
+      echo "lesson-gate: SUPERSEDED old=$cid (window closed in live store; logged to conflicts.jsonl)" >&2
+    else
+      rm -f "$tmp"; echo "lesson-gate: close FAILED for $cid — store untouched (fail-safe)" >&2
+    fi
+  done
+fi
+
+# ---- step 4 accept — ADD the two nullable fields (was line 56) --------------
+# (only the trailing object merge changes; everything else identical)
+echo "$NEW" | jq -c --arg ts "$TS" --arg lid "$LID" \
+  '. + {id:(.id // $lid), ts:(.ts // $ts), helpful:(.helpful // 0), harmful:(.harmful // 0), applied:(.applied // 0), invalidated_at:(.invalidated_at // null), source_build:(.source_build // null)}' >> "$MEM"

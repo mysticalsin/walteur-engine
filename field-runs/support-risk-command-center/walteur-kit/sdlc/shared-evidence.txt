@@ -1,0 +1,1 @@
+shared-evidence: view.test.mjs asserts the rendered DOM string contains labels+owner from risk scoring.

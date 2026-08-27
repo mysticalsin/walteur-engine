@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: redaction-test — redaction test: structured logs show authorization:"***" on every authenticated request; no secret field is ever emitted. Observed in live-server.log + test runs.

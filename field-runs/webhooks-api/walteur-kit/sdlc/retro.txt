@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: retro — retro: cloned the proven feature-flags/documents pattern; added a distinctive one-time-secret + SSRF control without weakening the zero-secret-in-store invariant.

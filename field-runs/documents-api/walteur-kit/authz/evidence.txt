@@ -1,0 +1,1 @@
+documents-api authz evidence: evidence — authz evidence bundle — see role-matrix/fail-closed/least-privilege/cross-tenant + cross_tenant_probe 'node --test test/cross-tenant.test.mjs' (5/5).

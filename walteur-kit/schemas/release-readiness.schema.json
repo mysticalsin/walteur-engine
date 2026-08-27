@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/release-readiness.schema.json",
+  "title": "WALTEUR Release Readiness",
+  "description": "Pre-promotion readiness record for a release artifact: signed and SBOM'd provenance, an explicit deploy strategy, a non-empty rehearsed rollback command, an automated promotion gate, and reversible migrations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_digest",
+    "signature_verified",
+    "sbom_path",
+    "provenance_slsa_level",
+    "deploy_strategy",
+    "rollback_command",
+    "rollback_rehearsed",
+    "promotion_gate",
+    "migration_reversible"
+  ],
+  "properties": {
+    "artifact_digest": {
+      "type": "string",
+      "description": "Content-addressed digest of the release artifact (e.g. sha256:...).",
+      "minLength": 1
+    },
+    "signature_verified": {
+      "type": "boolean",
+      "description": "True iff the artifact's cryptographic signature has been verified."
+    },
+    "sbom_path": {
+      "type": "string",
+      "description": "Path or URI to the Software Bill of Materials for the artifact.",
+      "minLength": 1
+    },
+    "provenance_slsa_level": {
+      "type": "integer",
+      "description": "SLSA provenance level of the build (0 = none, 1-4 per SLSA spec).",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "deploy_strategy": {
+      "type": "string",
+      "description": "How the release is rolled out.",
+      "enum": ["rolling", "blue_green", "canary", "recreate"]
+    },
+    "rollback_command": {
+      "type": "string",
+      "description": "Exact command that reverts the deployment. Must be non-empty.",
+      "minLength": 1
+    },
+    "rollback_rehearsed": {
+      "type": "boolean",
+      "description": "True iff the rollback_command has actually been executed/rehearsed in a non-prod or game-day setting."
+    },
+    "promotion_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "threshold", "auto_rollback"],
+      "properties": {
+        "metric": {
+          "type": "string",
+          "description": "Metric that gates promotion (e.g. error_rate, p99_latency_ms).",
+          "minLength": 1
+        },
+        "threshold": {
+          "type": "number",
+          "description": "Threshold value the metric must satisfy to allow promotion."
+        },
+        "auto_rollback": {
+          "type": "boolean",
+          "description": "True iff breaching the threshold triggers an automatic rollback."
+        }
+      }
+    },
+    "migration_reversible": {
+      "type": "boolean",
+      "description": "True iff every schema/data migration in this release has a tested down-path."
+    }
+  }
+}

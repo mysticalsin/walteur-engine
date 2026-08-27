@@ -1,0 +1,1 @@
+documents-api authz evidence: rls — row-level-scoping equivalent — per-tenant Map buckets behind owned() ARE the row-level isolation policy; no row is reachable outside its tenant bucket.

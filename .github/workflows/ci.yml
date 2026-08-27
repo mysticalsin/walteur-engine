@@ -1,0 +1,264 @@
+# WALTEUR CI — the engine's own hardened GitHub Actions workflow (S033 sdlc upgrade, C2).
+# Derived from walteur-starter/ci.github-actions.yml but FIXED so it passes this repo's own
+# ci-hardening-gate.sh: every `uses:` pinned to a real 40-char commit SHA (resolved live via
+# `git ls-remote --tags` against each action's upstream repo — none are placeholders), a
+# least-privilege top-level `permissions: contents: read`, `persist-credentials: false` on
+# every checkout step's own with: block, and no `pull_request_target`.
+#
+# House convention (matches .github/workflows/twin-invariant.yml): least-privilege permissions,
+# SHA-pinned actions with a `# vX.Y.Z` comment for humans, never a moving `@vN` tag.
+#
+# Resolved pins (git ls-remote --tags, this session):
+#   actions/checkout        de0fac2e4500dabe0009e67214ff5f5447ce83dd  = v6.0.2
+#   actions/setup-node       48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e = v6.4.0
+#   rhysd/actionlint         a443f344ff32813837fa49f7aa6cbc478d770e62 = v1.7.12
+#   zizmorcore/zizmor-action 192e21d79ab29983730a13d1382995c2307fbcaa = v0.5.7
+#   gitleaks/gitleaks-action e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e = v3.0.0
+#
+# NOTE: this repo does not (yet) have walteur-kit/eval/run-all.sh or walteur-kit/bootstrap.sh —
+# those are referenced in the starter's *template* for scaffolded projects. This workflow instead
+# runs what actually exists in this canonical repo: walteur-kit/selftest.sh (the hook aggregate
+# self-test) and walteur-kit/hooks/gate-suite.sh --selftest (the gate-suite meta-runner's own
+# self-test), so CI is honest about this repo's real surface, not the scaffold template's.
+name: walteur-ci
+
+on:
+  push:
+  pull_request:
+
+# Least privilege: the default GITHUB_TOKEN is read-only for the whole workflow. Any job that
+# genuinely needs more must opt in with its own narrower `permissions:` block.
+permissions:
+  contents: read
+
+jobs:
+  # (a) Prove the WALTEUR hooks actually fire — the engine's primary honesty gate.
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+          jq --version
+      - name: Run hook self-test
+        run: bash walteur-kit/selftest.sh
+
+  # (a1b) EVAL-HARNESS EXECUTION. gate-suite runs each gate's hermetic --selftest, which cannot see a
+  #       gate that goes blind on REAL input. self-regress drives poisoned/clean fixture twins through
+  #       the real gates; eval-coverage fails closed if fixture coverage regresses OR if the fixtures
+  #       have not actually been executed recently. Before this job existed the fixtures fired only when
+  #       a human remembered — the same dormancy the playbook records for memory-staleness-gate.
+  eval-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+          jq --version
+      # Two fixture pairs assert scan freshness relative to now and reject future dates, so they decay
+      # on calendar drift alone. Refresh, then prove the refresh did not change any twin's verdict.
+      - name: Refresh freshness-windowed fixtures (and prove verdicts unchanged)
+        run: |
+          set -euo pipefail
+          bash walteur-kit/eval-harness/refresh-fixture-dates.sh
+          WALTEUR_FRAMEWORK="$PWD" bash walteur-kit/eval-harness/refresh-fixture-dates.sh --verify
+      # Runs BEFORE self-regress: a fixture INPUT silently untracked by .gitignore makes self-regress
+      # report a false "gate went blind" on a clean clone while the working tree stays green. That has
+      # happened five times in this repo; it is checked against the ARCHIVE, never the working tree.
+      - name: Fixture inputs survive a clean clone
+        run: bash walteur-kit/hooks/fixture-integrity.sh
+      - name: Measured self-regression (poison caught, clean clean)
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/eval-harness/self-regress.sh
+      - name: Fixture coverage has not regressed, and the fixtures actually ran
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/eval-coverage-gate.sh
+      # Measurements, not blockers: reported every run so the numbers cannot quietly rot.
+      - name: Detection surface (advisory)
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/detection-surface.sh
+      - name: Gate mutation kill rate (advisory)
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/gate-mutation.sh
+
+  # (a2) Design field-proof (critic #6): the design gates fire against the real React/Vite UI field-run
+  #      (FR-8, field-runs/design-proof-app) every CI run, so the Apple-grade design evidence stays a
+  #      continuously re-verified fact, not a one-time claim. Source-eval + committed browser-proof — no
+  #      npm/build/browser needed. (Runs on the committed tree; effective once the repo can commit — B01.)
+  design-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+      - name: Design gates against the UI field-run (FR-8)
+        run: |
+          set -euo pipefail
+          cd field-runs/design-proof-app
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/apple-grade-design-gate.sh
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/design-depth-gate.sh
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/anti-slop-ui.sh "$PWD"
+          bash ../../walteur-kit/hooks/design-gate.sh "$PWD"
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/browser-proof-gate.sh
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/design-contrast-gate.sh
+          WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/design-scale-gate.sh
+
+  # (a3) Executed injection-resistance proof (panel-6 security ADOPTION): the injection-resistance-gate
+  #      RUNS its adversarial corpus against real field-run targets every CI run, so "the harness proves
+  #      injection resistance by execution, not posture" stays a continuously re-verified fact. jsonlint-cli
+  #      probes the real parser; apikeys-vault drives the real secrets-store core and asserts
+  #      raw-key-never-leaks / cross-tenant isolation / no-prototype-pollution. (Runs on the committed tree;
+  #      effective once the repo can commit — B01.)
+  injection-resistance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+      - name: Executed injection probe against real field-run targets
+        run: |
+          set -euo pipefail
+          for fr in jsonlint-cli apikeys-vault; do
+            echo "== injection-resistance probe: $fr =="
+            ( cd "field-runs/$fr" && WALTEUR_ROOT="$PWD" bash ../../walteur-kit/hooks/injection-resistance-gate.sh )
+          done
+
+  # (b) gate-suite.sh's own hermetic self-test (good fixture PASSes, poisoned fixtures are caught).
+  gate-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+      - name: Run gate-suite self-test
+        run: bash walteur-kit/hooks/gate-suite.sh --selftest
+
+  # (c) Twin-invariant guard: the repo's declared [both] twin set stays byte-identical and every
+  #     rubric keeps its cite-or-VETO contract. Hermetic — builds throwaway twin trees, never
+  #     touches the real distributions.
+  twin-invariant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Syntax-check the guard
+        run: bash -n walteur-kit/eval/twin-invariant.sh
+      - name: Run twin-invariant hermetic self-test (good passes, poison caught)
+        run: bash walteur-kit/eval/twin-invariant.sh --selftest
+
+  # (d) Lint every shell script in the repo. shellcheck failures fail the build.
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install shellcheck
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck --version
+      - name: Run shellcheck
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(.claude/hooks/*.sh walteur-kit/*.sh walteur-kit/hooks/*.sh walteur-kit/eval/*.sh)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "no shell scripts matched the lint globs — nothing to check"
+            exit 0
+          fi
+          printf 'shellcheck: %s\n' "${files[@]}"
+          shellcheck --severity=warning "${files[@]}"
+
+  # (e) Harden the workflow itself: actionlint validates workflow syntax + embedded shell;
+  #     zizmor is a static auditor for GitHub Actions supply-chain / least-privilege issues.
+  #     Both pins below were resolved live via `git ls-remote --tags` this session — real
+  #     releases, not placeholders — so this job itself passes ci-hardening-gate.sh.
+  harden:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: actionlint (workflow + embedded shell lint)
+        uses: rhysd/actionlint@a443f344ff32813837fa49f7aa6cbc478d770e62 # v1.7.12
+      - name: zizmor (Actions supply-chain audit)
+        uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+      - name: Run this repo's own ci-hardening-gate against this workflow
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+          mkdir -p walteur-kit
+          printf '{"risk_tier":"high"}\n' > walteur-kit/build-contract.json
+          WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/ci-hardening-gate.sh
+
+  # (f) Secret scan: gitleaks audits the full checkout (fetch-depth 0 -> whole history). This is
+  #     the CI peer of the local pre-commit hook and the runtime security-gate; any real finding
+  #     fails the build.
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: gitleaks (secret scan)
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  # (g) Real-file QA truth: run the self-audit gate, gate-registry-lint, and release-ledger-lint
+  #     against the REAL checked-out repo (no --selftest fixtures), so gate-registry.json /
+  #     release-ledger.json parity drift (e.g. expected_gate_count going stale) fails CI loudly
+  #     instead of only being caught by the fixture selftest.
+  self-audit-real-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install jq (gate hard-dep)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq
+      - name: Run harness-self-audit-gate against the real repo
+        run: bash walteur-kit/hooks/harness-self-audit-gate.sh
+      - name: Run gate-registry-lint against the real repo
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/gate-registry-lint.sh
+      - name: Run release-ledger-lint against the real repo
+        run: WALTEUR_ROOT="$PWD" bash walteur-kit/hooks/release-ledger-lint.sh

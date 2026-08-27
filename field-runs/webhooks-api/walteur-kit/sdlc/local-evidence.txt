@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: local-evidence — node --test core.test.mjs + test/ = 34/34 green (15 core + 11 api + 6 cross-tenant + 2 erasure); core.mjs owned() chokepoint; secret shown once, fingerprint-only persisted; proven by execution.

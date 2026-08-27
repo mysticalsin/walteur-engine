@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: access — access control: deny-by-default bearer auth + per-tenant owned() chokepoint. See authz-tenant.json.

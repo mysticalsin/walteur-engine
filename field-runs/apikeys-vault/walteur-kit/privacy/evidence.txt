@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: evidence — evidence — node --test test/erasure.test.mjs 2/2 green + core.test.mjs DSAR test; live curl confirmed erase removes caller data and the raw key never reaches data.json or logs.

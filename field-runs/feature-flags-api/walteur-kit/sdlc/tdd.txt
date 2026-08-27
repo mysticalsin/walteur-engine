@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: tdd — core.test.mjs asserts isolation/erasure/audit at the unit level; HTTP tests assert the same over the wire. Tests are the contract.

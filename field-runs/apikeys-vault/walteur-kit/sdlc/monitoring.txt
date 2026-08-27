@@ -1,0 +1,1 @@
+monitoring — structured JSON logs (redacted) feed ops/dashboards/overview.json panels: status mix, latency p50/p99, key-lifecycle, rotation cadence, erase events.

@@ -1,0 +1,1 @@
+accessibility — public console: semantic forms, labels, aria-live status, focus-visible outlines, reduced-motion guard, one-time key reveal as role=alert.

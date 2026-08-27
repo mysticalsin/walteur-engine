@@ -1,0 +1,1 @@
+feature-flags authz evidence: isolation — many-tenant/many-key invariant: no tenant reads another's private key; shared key name resolves per-tenant. Proven by core.test.mjs isolation-invariant test.

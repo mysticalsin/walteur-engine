@@ -1,0 +1,1 @@
+integration — node --test test/api.test.mjs (12/12) + test/cross-tenant.test.mjs (6/6) + test/rotation.test.mjs (4/4) + test/erasure.test.mjs (2/2) over an ephemeral port. Reviewed against running code + tests.

@@ -1,0 +1,1 @@
+unit — node --test core.test.mjs = 14/14 green (isolation, rotation/hash-change, revoke, verify-by-hash, audit, erasure, validation, snapshot/load, raw-never-stored).

@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: rollback-trigger — api-availability SLO breach pages and triggers ROLLBACK_CONFIRM=1 bash ops/rollback.sh --execute.

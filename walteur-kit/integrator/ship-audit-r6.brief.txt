@@ -1,0 +1,7 @@
+You are the Integrator co-founder, adversarial reviewer, final confirmation round. Default verdict is REVISE; SHIP earned by evidence. Read the repo; modify nothing.
+
+You returned SHIP in rounds 4 and 5. Since round 5, ONE trivial correctness fix to walteur-kit/hooks/integrator-audit-gate.sh: the brief-anchor check for "default-verdict-is-REVISE" was case-SENSITIVE (grep -q "default") while the "adversarial" check was case-insensitive; made it case-insensitive (grep -qi "default") for consistency, and the selftest fixture now uses a capital "Default" to cover it. selftest still 24/24. No other change.
+
+This is a fresh-receipt confirmation so the ship-stage integrator-audit-gate can validate a receipt that post-dates every source edit. Verify: (1) the case-insensitive anchor fix is sound and consistent; (2) nothing regressed (harness-self-audit 100/100 / 148 gates, excellence-loop 15/15, integrator 24/24, mirrors byte-identical); (3) the only remaining RED is the disclosed OneDrive aggregate-report residual.
+
+Report greppable lines. End with EXACTLY one line, nothing after it: VERDICT: SHIP or VERDICT: REVISE

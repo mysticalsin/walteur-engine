@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/cost-budget.schema.json",
+  "title": "WALTEUR Cost Budget",
+  "description": "Per-request / per-run / per-LLM-task spend ceilings for an application that spends money to serve a request — paid cloud-provider calls and/or LLM completions. CONSTRAINT: an app that calls an LLM or a paid cloud API with NO declared budget is unbounded slop. At least one of `units` (cloud/compute cost ceilings per request or per run) or `llm` (per-task LLM spend + token ceilings) MUST be declared; declare both when the app does both. Money is a first-class budget, not an afterthought.",
+  "type": "object",
+  "additionalProperties": false,
+  "minProperties": 1,
+  "anyOf": [
+    { "required": ["units"] },
+    { "required": ["llm"] }
+  ],
+  "properties": {
+    "units": {
+      "type": "array",
+      "description": "One entry per billable unit of work (e.g. 'api-request', 'batch-job', 'image-resize'). Each declares the USD ceiling for ONE request OR ONE run — exactly one of the two must be set.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "oneOf": [
+          { "required": ["max_usd_per_request"] },
+          { "required": ["max_usd_per_run"] }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Identifier for the billable unit (e.g. 'api-request', 'nightly-batch').",
+            "minLength": 1
+          },
+          "max_usd_per_request": {
+            "type": "number",
+            "description": "Maximum US dollars this unit may cost to serve a single request. REQUIRED when the unit is request-scoped. Mutually exclusive with max_usd_per_run.",
+            "exclusiveMinimum": 0
+          },
+          "max_usd_per_run": {
+            "type": "number",
+            "description": "Maximum US dollars this unit may cost for a single run (job/batch invocation). REQUIRED when the unit is run-scoped. Mutually exclusive with max_usd_per_request.",
+            "exclusiveMinimum": 0
+          }
+        }
+      }
+    },
+    "llm": {
+      "type": "array",
+      "description": "One entry per LLM-backed feature (e.g. 'summarize', 'chat', 'classify'). Each declares the per-task USD ceiling AND the per-task token ceiling — both are mandatory so a single task cannot silently blow either money or context.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["feature", "max_usd_per_task", "max_tokens"],
+        "properties": {
+          "feature": {
+            "type": "string",
+            "description": "Identifier for the LLM-backed feature (e.g. 'summarize', 'chat', 'extract').",
+            "minLength": 1
+          },
+          "max_usd_per_task": {
+            "type": "number",
+            "description": "Maximum US dollars this feature may spend on LLM calls for a single task. REQUIRED and non-null.",
+            "exclusiveMinimum": 0
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "Maximum total tokens (prompt + completion) this feature may consume for a single task. REQUIRED and non-null.",
+            "exclusiveMinimum": 0
+          }
+        }
+      }
+    }
+  }
+}

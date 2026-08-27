@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "contract_id": "walteur-build-a-support-risk-command-center-that-helps-s-20260624095838",
+  "request": {
+    "summary": "Build a support risk command center that helps support leads spot aging, blocked, and SLA-near tickets from seeded data",
+    "user_outcome": "Deliver verified outcome: Build a support risk command center that helps support leads spot aging, blocked, and SLA-near tickets from seeded data",
+    "primary_user": "Support lead",
+    "non_goals": [
+      "Do not expand beyond the stated outcome without approval."
+    ]
+  },
+  "build_class": "software",
+  "risk_tier": "medium",
+  "data_classification": "internal",
+  "success_metrics": [
+    {
+      "name": "Outcome verified",
+      "target": "The requested outcome is satisfied by fresh evidence.",
+      "check": "Run the verification gates listed in this contract and read their reports."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "scope-1",
+      "kind": "business",
+      "description": "Keep the first delivery to the smallest useful slice that proves the outcome.",
+      "status": "active"
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "Primary deliverable",
+      "type": "ui",
+      "owner": "Support lead",
+      "contract": "The delivered artifact must expose the requested outcome with a clear verification path."
+    }
+  ],
+  "verification": {
+    "gates": [
+      {
+        "id": "build-contract-lint",
+        "stage": "intake",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Build contract is valid or explicitly not applicable."
+      },
+      {
+        "id": "gate-registry-lint",
+        "stage": "intake",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Gate registry is valid and required gates are declared."
+      },
+      {
+        "id": "estimate-gate",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Pre-build estimate exists, validates, and matches runtime budgets."
+      },
+      {
+        "id": "current-stack-gate",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Run-date stack choices are checked against current official/source material with evidence."
+      },
+      {
+        "id": "harness-state-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Runtime state is valid or explicitly not applicable."
+      },
+      {
+        "id": "phase-gate",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Phase order and prior-stage evidence are valid before advancement."
+      },
+      {
+        "id": "evidence-gate",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Referenced evidence exists and supports the gate or stage verdict it is used for."
+      },
+      {
+        "id": "risk-acceptance-gate",
+        "stage": "review",
+        "hardness": "hard",
+        "expected_evidence": "Accepted risks and high-risk ship decisions have approved owner signoff with evidence."
+      },
+      {
+        "id": "adr-gate",
+        "stage": "review",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "All real forks are closed in debate/OPEN.json and any ADR records include decision, rationale, rejected alternatives, dissent, owner, and index evidence."
+      },
+      {
+        "id": "prompt-refinement-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "The raw user request is refined into an enterprise build brief with outcome, scope, acceptance criteria, routing, specialists, verification, and stop conditions."
+      },
+      {
+        "id": "enterprise-blueprint-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "The raw goal is upgraded into a concrete enterprise blueprint with users, jobs, artifacts, surfaces, acceptance proof, trust, operations, cuts, and final delivery packet."
+      },
+      {
+        "id": "delivery-orchestration-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Agent roster, SDLC stage gates, role independence, frontend/backend coverage, handoffs, worktree boundaries, and audit trail are planned and checkable."
+      },
+      {
+        "id": "ai-tool-governance-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "AI tools, models, agents, MCP/plugin surfaces, data boundaries, approvals, output gates, cost controls, audit logs, and rollback controls are inventoried and approved before ship."
+      },
+      {
+        "id": "authz-tenant-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Authorization and tenant-isolation surfaces prove deny-by-default decisions, role/permission coverage, negative access tests, anonymous denial, privilege-escalation prevention, audit logging, and signed local evidence before ship."
+      },
+      {
+        "id": "privacy-data-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Personal, sensitive, regulated, or AI-context data surfaces prove inventory, purpose, minimization, lawful basis, retention, deletion/export paths, redacted logging, encryption, transfers, breach response, DPIA handling, tests, and signed local evidence before ship."
+      },
+      {
+        "id": "sdlc-run-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Code-producing and deployable work proves local build, shared dev, staging, beta, production, independent review, QA, adversarial checks, rollback, monitoring, signoff, and retro evidence actually ran before ship."
+      },
+      {
+        "id": "project-context-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Project-specific AGENTS/CLAUDE/rules context, context budget, baton, and subagent handoff refs are present and checkable."
+      },
+      {
+        "id": "source-use-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Upstream source-router receipts prove source id, immutable pinned ref, extracted pattern, rejected parts, safety checks, artifact refs, verification, and rollback where needed."
+      },
+      {
+        "id": "loop-workspace-gate",
+        "stage": "intake",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Loop workspace files, work-log grammar, signal/doc schemas, and domain-loop schema are present and checkable."
+      },
+      {
+        "id": "self-improvement-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "The run mines traces, scouts current GitHub sources, proposes bounded improvements, validates regressions, and captures compounding lessons."
+      },
+      {
+        "id": "outcome-eval-gate",
+        "stage": "review",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "An independent evaluator scores the delivered artifact against the requested outcome with rubric evidence, confidence, bias checks, and no blockers."
+      },
+      {
+        "id": "qa-contract-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "QA report proves unit/integration, functional, logic, integration, data integrity, security, and UX/resilience checks with fresh evidence."
+      },
+      {
+        "id": "docrun",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Documented shell blocks parse cleanly or are intentionally skipped."
+      },
+      {
+        "id": "spec-lint",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Plan and specification shape pass lint."
+      },
+      {
+        "id": "spec-trace",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Stories, requirements, and tasks trace across plan artifacts."
+      },
+      {
+        "id": "prd-gate",
+        "stage": "discover",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Product signal has a non-stub PRD or is explicitly not applicable."
+      },
+      {
+        "id": "benchmark-gate",
+        "stage": "discover",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "User-facing product signal has a dated best-in-class benchmark or is explicitly not applicable."
+      },
+      {
+        "id": "product-standard-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Product/company completeness is explicit across value loop, surface area, business model, trust, ops, and launch."
+      },
+      {
+        "id": "production-layers-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Every production layer is owned, evidenced, or consciously deferred with risk ownership."
+      },
+      {
+        "id": "fitness-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Architecture layers are acyclic, forbidden dependencies stay unreachable, and configured architecture fitness tools pass."
+      },
+      {
+        "id": "design-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "UI work has a design contract or no UI surface applies."
+      },
+      {
+        "id": "frontend-budget",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Frontend builds declare browser payload and Core Web Vitals budgets, and built JS stays within budget when output exists."
+      },
+      {
+        "id": "browser-proof-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "UI builds provide fresh replayable real-browser evidence: routes, browser, viewport, command output, screenshots, accessibility, and interactions."
+      },
+      {
+        "id": "a11y-content-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Frontend content accessibility checks pass: images have alt text, inputs have labels, links are descriptive, and buttons have accessible names."
+      },
+      {
+        "id": "i18n-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Internationalized frontends avoid hardcoded user-facing strings and locale catalogs keep required keys in sync."
+      },
+      {
+        "id": "migration-proof-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Database migration work provides fresh forward, rollback, verification, lock-risk, and backfill evidence."
+      },
+      {
+        "id": "migration-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Database migrations pass zero-dependency safety checks for rollback, expand-contract rollout, Postgres index locking, and unsafe NOT NULL changes."
+      },
+      {
+        "id": "migration-roundtrip",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Database migrations declare the rollback direction required for up-down-up roundtrip proof, with live DB execution recorded when available."
+      },
+      {
+        "id": "resilience-lint",
+        "stage": "verify",
+        "hardness": "hard",
+        "expected_evidence": "Error handling and async failure rules pass."
+      },
+      {
+        "id": "devenv-gate",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Code-producing work has a reproducible developer environment or no code stack applies."
+      },
+      {
+        "id": "config-validation",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Configuration access is validated and committed env secrets are absent."
+      },
+      {
+        "id": "nfr-lint",
+        "stage": "plan",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Non-functional requirements are quantified when NFR discipline is present."
+      },
+      {
+        "id": "observe-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Observability anti-patterns are absent or no source files apply."
+      },
+      {
+        "id": "perf-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Performance context has tail-latency budgets and no detected regression."
+      },
+      {
+        "id": "security-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Security checks pass or tool/context absence is recorded."
+      },
+      {
+        "id": "osv-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Known malicious dependency advisories are absent or lookup skipped loudly."
+      },
+      {
+        "id": "sbom-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Dependency inventory/SBOM is valid and non-empty, generated by syft, or missing proof tooling is recorded loudly."
+      },
+      {
+        "id": "contract-gate",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Declared API surfaces have machine-readable contracts."
+      },
+      {
+        "id": "schema-lint",
+        "stage": "verify",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Schema and migration rules pass or do not apply."
+      },
+      {
+        "id": "tool-readiness",
+        "stage": "plan",
+        "hardness": "hard",
+        "expected_evidence": "Declared required tools are installed."
+      },
+      {
+        "id": "skill-readiness",
+        "stage": "review",
+        "hardness": "hard",
+        "expected_evidence": "Declared required skills have machine-readable breadcrumbs or no skill floor applies."
+      },
+      {
+        "id": "operate-readiness-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Runtime systems prove SLOs, DORA targets, incident response, on-call, observability, rollback rehearsal, support handoff, and post-incident learning before ship."
+      },
+      {
+        "id": "release-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Release notes, handoff, and ship artifacts are present where applicable."
+      },
+      {
+        "id": "quickstart-check",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "README quickstart is present and runnable, or the project has no README yet."
+      },
+      {
+        "id": "trace-mine",
+        "stage": "reflect",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Run traces, refine logs, summary ledgers, or receipts are mined for recurring systemic patterns and proposal-only lessons."
+      },
+      {
+        "id": "release-ledger-lint",
+        "stage": "reflect",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "WALTEUR release version, proof counts, registry count, mirrored docs, and component manifest IDs are machine-readable and checked."
+      },
+      {
+        "id": "scoreboard-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Eight-dimension scoreboard meets target, per-dimension floors, security floor, locked targets, evidence refs, and freshness."
+      },
+      {
+        "id": "definition-of-done-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Definition of Done is closed at ship/reflect: no unchecked items, checked items carry typed proof references or existing local evidence files, N/A items carry reasons, placeholders are absent, and the checklist is fresh."
+      },
+      {
+        "id": "audit-contract-gate",
+        "stage": "ship",
+        "hardness": "detect_or_skip",
+        "expected_evidence": "Terminal audit certificate has scores, 13-layer walk, intended-vs-implemented evidence, no blockers, no shortfalls, and fresh reproduced evidence."
+      }
+    ],
+    "commands": [
+      {
+        "command": "bash walteur-kit/hooks/build-contract-lint.sh && bash walteur-kit/hooks/gate-registry-lint.sh && bash walteur-kit/hooks/estimate-gate.sh && bash walteur-kit/hooks/current-stack-gate.sh && bash walteur-kit/hooks/harness-state-lint.sh && bash walteur-kit/hooks/phase-gate.sh && bash walteur-kit/hooks/evidence-gate.sh && bash walteur-kit/hooks/risk-acceptance-gate.sh && bash walteur-kit/hooks/adr-gate.sh && bash walteur-kit/hooks/prompt-refinement-gate.sh && bash walteur-kit/hooks/enterprise-blueprint-gate.sh && bash walteur-kit/hooks/delivery-orchestration-gate.sh && bash walteur-kit/hooks/ai-tool-governance-gate.sh && bash walteur-kit/hooks/authz-tenant-gate.sh && bash walteur-kit/hooks/privacy-data-gate.sh && bash walteur-kit/hooks/sdlc-run-gate.sh && bash walteur-kit/hooks/project-context-gate.sh && bash walteur-kit/hooks/source-use-gate.sh && bash walteur-kit/hooks/loop-workspace-gate.sh && bash walteur-kit/hooks/self-improvement-gate.sh && bash walteur-kit/hooks/outcome-eval-gate.sh && bash walteur-kit/hooks/qa-contract-gate.sh && bash walteur-kit/hooks/docrun.sh && bash walteur-kit/hooks/spec-lint.sh && bash walteur-kit/hooks/spec-trace.sh && bash walteur-kit/hooks/prd-gate.sh && bash walteur-kit/hooks/benchmark-gate.sh && bash walteur-kit/hooks/product-standard-gate.sh && bash walteur-kit/hooks/production-layers-gate.sh && bash walteur-kit/hooks/fitness-gate.sh && bash walteur-kit/hooks/design-gate.sh && bash walteur-kit/hooks/frontend-budget.sh && bash walteur-kit/hooks/browser-proof-gate.sh && bash walteur-kit/hooks/a11y-content-lint.sh && bash walteur-kit/hooks/i18n-lint.sh && bash walteur-kit/hooks/migration-proof-gate.sh && bash walteur-kit/hooks/migration-lint.sh && bash walteur-kit/hooks/migration-roundtrip.sh && bash walteur-kit/hooks/resilience-lint.sh && bash walteur-kit/hooks/devenv-gate.sh && bash walteur-kit/hooks/config-validation.sh && bash walteur-kit/hooks/nfr-lint.sh && bash walteur-kit/hooks/observe-lint.sh && bash walteur-kit/hooks/perf-gate.sh && bash walteur-kit/hooks/security-gate.sh && bash walteur-kit/hooks/osv-gate.sh && bash walteur-kit/hooks/sbom-gate.sh && bash walteur-kit/hooks/contract-gate.sh && bash walteur-kit/hooks/schema-lint.sh && bash walteur-kit/hooks/tool-readiness.sh && bash walteur-kit/hooks/skill-readiness.sh && bash walteur-kit/hooks/operate-readiness-gate.sh && bash walteur-kit/hooks/release-gate.sh && bash walteur-kit/hooks/quickstart-check.sh && bash walteur-kit/hooks/trace-mine.sh && bash walteur-kit/hooks/release-ledger-lint.sh && bash walteur-kit/hooks/scoreboard-gate.sh && bash walteur-kit/hooks/definition-of-done-gate.sh && bash walteur-kit/hooks/audit-contract-gate.sh",
+        "purpose": "Run every selected spec-shipped gate hook in registry order; stage-blocking gates may fail until their required artifacts exist."
+      }
+    ],
+    "manual_checks": [
+      "Read every selected gate report before claiming completion."
+    ]
+  },
+  "evidence_required": [
+    "Gate reports",
+    "Fresh verification output",
+    "Known gaps or accepted risks"
+  ],
+  "unknowns": [
+    {
+      "question": "Which domain-specific constraints or owners must be added before build starts?",
+      "owner": "Support lead",
+      "resolution_status": "open"
+    }
+  ],
+  "created_at": "2026-06-24T09:58:38Z"
+}

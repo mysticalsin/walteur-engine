@@ -1,0 +1,1 @@
+smoke — curl -sf localhost:8203/health expects 200 post-deploy.

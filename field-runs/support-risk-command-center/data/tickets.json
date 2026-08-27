@@ -1,0 +1,7 @@
+[
+  { "id": "T-100", "title": "VIP login failure", "owner": "Maya", "priority": "high", "status": "blocked", "ageHours": 50, "slaDueAt": "2026-06-24T18:00:00Z" },
+  { "id": "T-101", "title": "Invoice export delay", "owner": "Noah", "priority": "medium", "status": "open", "ageHours": 30, "slaDueAt": "2026-06-25T12:00:00Z" },
+  { "id": "T-102", "title": "How-to question", "owner": "Ava", "priority": "low", "status": "open", "ageHours": 5, "slaDueAt": "2026-06-28T12:00:00Z" },
+  { "id": "T-103", "title": "Enterprise outage follow-up", "owner": "Maya", "priority": "critical", "status": "open", "ageHours": 3, "slaDueAt": "2026-06-24T13:00:00Z" },
+  { "id": "T-104", "title": "Partner API timeout", "owner": "Eli", "priority": "high", "status": "open", "ageHours": 20, "slaDueAt": "2026-06-24T16:00:00Z" }
+]

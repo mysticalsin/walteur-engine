@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: purposes — purposes — issue, rotate, revoke, and verify tenant API keys, and provide an audit trail. The raw key is shown once at issue/rotate for the tenant to store; the vault retains only a hash.

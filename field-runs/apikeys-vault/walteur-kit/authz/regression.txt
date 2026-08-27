@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: regression — regression command — node --test test/cross-tenant.test.mjs (re-run to re-prove tenant isolation).

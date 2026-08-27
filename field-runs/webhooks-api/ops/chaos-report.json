@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "drill": "process-kill",
+  "service": "webhooks-api",
+  "ran_ts": "2026-06-29T06:54:21.613Z",
+  "fault_injected": "process-kill",
+  "steady_state_http": 200,
+  "down_http": 0,
+  "recovered": true,
+  "recovered_http": 200,
+  "recovery_seconds": 2.3,
+  "health_endpoint": "/health",
+  "notes": "Primary started + steady on GET /health, hard-killed (taskkill/kill -9), fresh instance restarted and re-probed healthy. recovery_seconds = kill -> first healthy green probe (observed)."
+}

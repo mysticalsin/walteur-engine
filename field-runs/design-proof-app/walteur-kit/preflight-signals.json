@@ -1,0 +1,11 @@
+{
+  "has_ui": true,
+  "is_user_facing": true,
+  "external_surface": true,
+  "has_auth": false,
+  "has_db": false,
+  "has_payments": false,
+  "has_async": false,
+  "has_api_boundary": false,
+  "is_cloud_iac": false
+}

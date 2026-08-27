@@ -1,0 +1,1 @@
+feature-flags privacy evidence: breach-response — structured logs + SLO alerts (ops/slo.json) page on 5xx; rollback via ops/rollback.sh --execute. Runbook: ops/dashboards.md.

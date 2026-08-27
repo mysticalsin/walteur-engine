@@ -1,0 +1,1 @@
+feature-flags authz evidence: rls-or-policy — application-level row scoping: each tenant has its own Map<key,flag> bucket, so there is no shared row namespace to leak across. See core.mjs owned().

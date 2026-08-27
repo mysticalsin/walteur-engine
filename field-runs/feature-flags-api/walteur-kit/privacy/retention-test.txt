@@ -1,0 +1,1 @@
+feature-flags privacy evidence: retention-test — flags persist across snapshot/load round-trip without cross-tenant bleed. Proven by core.test.mjs snapshot/load test.

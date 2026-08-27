@@ -1,0 +1,1 @@
+documents-api authz evidence: least-privilege — least-privilege — a tenant can address ONLY its own bucket via owned(); there is no global doc-id namespace, so a tenant has zero capability to reference another tenant's document.

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "title": "webhooks-api — overview",
+  "service": "webhooks-api",
+  "data_source": "structured-json-logs (stdout, token+secret-redacted)",
+  "panels": [
+    {
+      "id": "request-rate",
+      "title": "Request rate by path/status",
+      "type": "timeseries",
+      "query": "count by (path, status) of request log lines",
+      "group_by": ["path", "status"]
+    },
+    {
+      "id": "deny-rate",
+      "title": "Deny rate (401 unauth / 403 cross-tenant / 400 validation)",
+      "type": "timeseries",
+      "query": "count of status in (400,401,403)",
+      "note": "Deny + validation responses are correct behavior; excluded from the availability error SLI."
+    },
+    {
+      "id": "error-rate",
+      "title": "5xx error rate (SLI: api-availability)",
+      "type": "timeseries",
+      "query": "count of status >= 500 / total",
+      "slo_ref": "ops/slo.json#api-availability"
+    },
+    {
+      "id": "read-latency",
+      "title": "GET /subscriptions latency p50/p99",
+      "type": "histogram",
+      "query": "ms where path='/subscriptions' and method='GET'",
+      "slo_ref": "ops/slo.json#subscription-read-latency-p99"
+    },
+    {
+      "id": "write-latency",
+      "title": "POST/PUT /subscriptions latency p50/p99",
+      "type": "histogram",
+      "query": "ms where path='/subscriptions' and method in ('POST','PUT')",
+      "slo_ref": "ops/slo.json#subscription-write-latency-p99"
+    },
+    {
+      "id": "per-tenant-mutations",
+      "title": "Mutations per tenant (audit-derived)",
+      "type": "table",
+      "query": "count by (tenant, action) of audit rows where action in (create, update, rotate, delete)"
+    }
+  ]
+}

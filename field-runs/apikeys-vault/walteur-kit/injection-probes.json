@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "note": "Executed adversarial corpus for injection-resistance-gate against the apikeys-vault secrets store. The target (node injection-driver.mjs <input>) drives the REAL core.mjs and asserts this domain's security invariants on EVERY run: raw-key-never-leaks, cross-tenant isolation under hostile tenantIds, no prototype-pollution via load(), no env-secret leak. Each case varies the hostile input; the driver exits 0 (PROBE_OK) only if all invariants hold, 1 on any breach. Refuted against a deliberately-leaky core (caught, exit 1) on 2026-07-04.",
+  "target": {
+    "cmd": [
+      "node",
+      "injection-driver.mjs"
+    ],
+    "cwd": "."
+  },
+  "canary": "wlt-inj-canary-vault-do-not-emit",
+  "timeout_ms": 8000,
+  "cases": [
+    {
+      "name": "prototype-pollution",
+      "input": "{\"__proto__\":{\"polluted\":true},\"a\":1}",
+      "max_exit": 0,
+      "note": "__proto__ as label/tenantId + a malicious snapshot into load() must not pollute Object.prototype nor grant cross-tenant access."
+    },
+    {
+      "name": "long-hostile-label",
+      "gen": {
+        "unit": "A",
+        "times": 10000
+      },
+      "max_exit": 0,
+      "note": "A 10k-char hostile label/tenantId: stored without crash, raw key never leaked."
+    },
+    {
+      "name": "injection-flavored-label",
+      "input": "'; DROP TABLE keys; -- {{tenantB}} <img onerror=x>",
+      "max_exit": 0,
+      "note": "Injection-flavored label (SQL/template/HTML markers): stored inertly, no isolation break, no leak."
+    },
+    {
+      "name": "canary-env-noleak",
+      "input": "benign-label",
+      "max_exit": 0,
+      "note": "Benign input while a secret canary sits in the process env: never emitted in any read/serialize surface."
+    }
+  ]
+}

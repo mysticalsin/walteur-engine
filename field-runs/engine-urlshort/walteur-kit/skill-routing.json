@@ -1,0 +1,466 @@
+{
+  "schema_version": 1,
+  "committed_at": "2026-07-02",
+  "build_class": "software",
+  "signals": [
+    "external_surface",
+    "has_api_boundary",
+    "is_user_facing",
+    "security_sensitive"
+  ],
+  "routed": [
+    {
+      "skill": "org-brainstorming",
+      "required": true,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-brainstorming.json",
+      "discipline": "process",
+      "reason": "process hard_gate + signal"
+    },
+    {
+      "skill": "org-confidentiality-guard",
+      "required": true,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/confidentiality-pass.json",
+      "discipline": "quality",
+      "reason": "quality hard_gate + signal",
+      "breadcrumb_verdict_key": "verdict",
+      "breadcrumb_pass_value": "PASS"
+    },
+    {
+      "skill": "org-model-risk",
+      "required": true,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-model-risk.json",
+      "discipline": "ai-governance",
+      "reason": "ai-governance hard_gate + signal"
+    },
+    {
+      "skill": "org-prd-builder",
+      "required": true,
+      "phase": "Plan",
+      "breadcrumb": "walteur-kit/skills/org-prd-builder.json",
+      "discipline": "engineering",
+      "reason": "signal:is_user_facing"
+    },
+    {
+      "skill": "org-premortem",
+      "required": true,
+      "phase": "Plan",
+      "breadcrumb": "walteur-kit/skills/org-premortem.json",
+      "discipline": "process",
+      "reason": "code-build floor"
+    },
+    {
+      "skill": "org-secure-coding-checklist",
+      "required": true,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-secure-coding-checklist.json",
+      "discipline": "engineering",
+      "reason": "signal:security_sensitive"
+    },
+    {
+      "skill": "org-socratic-build",
+      "required": true,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-socratic-build.json",
+      "discipline": "quality",
+      "reason": "quality hard_gate + signal"
+    },
+    {
+      "skill": "org-tdd-discipline",
+      "required": true,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-tdd-discipline.json",
+      "discipline": "engineering",
+      "reason": "code-build floor"
+    }
+  ],
+  "optional": [
+    {
+      "skill": "loopkit-authz-check",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/loopkit-authz-check.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-contract-test",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/loopkit-contract-test.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-dependency-audit",
+      "required": false,
+      "phase": "Plan",
+      "breadcrumb": "walteur-kit/skills/loopkit-dependency-audit.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-input-validation",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/loopkit-input-validation.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-owasp-review",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/loopkit-owasp-review.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-secret-scan",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/loopkit-secret-scan.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "loopkit-sql-review",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/loopkit-sql-review.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-adr-writer",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-adr-writer.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-agent-dreaming",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-agent-dreaming.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-ai-act-compliance",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-ai-act-compliance.json",
+      "discipline": "ai-governance",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-ai-incident-response",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-ai-incident-response.json",
+      "discipline": "ai-governance",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-ai-output-audit",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-ai-output-audit.json",
+      "discipline": "ai-governance",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-ai-vendor-governance",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-ai-vendor-governance.json",
+      "discipline": "ai-governance",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-api-design",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-api-design.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-arch-review-for-client",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-arch-review-for-client.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-best",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-best.json",
+      "discipline": "quality",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-brand-dna",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-brand-dna.json",
+      "discipline": "quality",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-browser-automation",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-browser-automation.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-client-incident-comms",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-client-incident-comms.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-codebase-context",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-codebase-context.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-computer-use",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-computer-use.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-data-engineering",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-data-engineering.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-data-incident-response",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-data-incident-response.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-database-discipline",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-database-discipline.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-documentation-skill-builder",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-documentation-skill-builder.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-docx-document",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-docx-document.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-excel-spreadsheet",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-excel-spreadsheet.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-humanizer",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-humanizer.json",
+      "discipline": "quality",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-impeccable",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-impeccable.json",
+      "discipline": "quality",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-insight-memo-for-client",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-insight-memo-for-client.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-interaction-craft",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-interaction-craft.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-mcp-tool-author",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-mcp-tool-author.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-outcome-driven-execution",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-outcome-driven-execution.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-pdf-toolkit",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-pdf-toolkit.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-pentest-discipline",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/org-pentest-discipline.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-release-notes-builder",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-release-notes-builder.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-reliability-discipline",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-reliability-discipline.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-skill-creator",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-skill-creator.json",
+      "discipline": "meta",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-stakeholder-interview",
+      "required": false,
+      "phase": "Scope",
+      "breadcrumb": "walteur-kit/skills/org-stakeholder-interview.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-static-analysis-pipeline",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/org-static-analysis-pipeline.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-supply-chain-audit",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/org-supply-chain-audit.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-systematic-diagnosis",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-systematic-diagnosis.json",
+      "discipline": "process",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-tabletop-crisis",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-tabletop-crisis.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-tech-debt-audit-for-client",
+      "required": false,
+      "phase": "Build",
+      "breadcrumb": "walteur-kit/skills/org-tech-debt-audit-for-client.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-uiux-discipline",
+      "required": false,
+      "phase": "Plan",
+      "breadcrumb": "walteur-kit/skills/org-uiux-discipline.json",
+      "discipline": "engineering",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-vendor-onboarding",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-vendor-onboarding.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-vendor-portfolio-review",
+      "required": false,
+      "phase": "Review",
+      "breadcrumb": "walteur-kit/skills/org-vendor-portfolio-review.json",
+      "discipline": "operations-data",
+      "reason": "signal_tag match"
+    },
+    {
+      "skill": "org-vendor-security-review",
+      "required": false,
+      "phase": "Audit",
+      "breadcrumb": "walteur-kit/skills/org-vendor-security-review.json",
+      "discipline": "security",
+      "reason": "signal_tag match"
+    }
+  ],
+  "note": "committed pre-build; fail-closed via skill-readiness.sh"
+}

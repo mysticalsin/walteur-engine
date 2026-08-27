@@ -1,0 +1,1 @@
+webhooks-api authz evidence: audit — every mutation (create/update/rotate/delete) writes a tenant-scoped audit row; reads do not; a DENIED cross-tenant action writes NO row. Proven by core.test.mjs + test/cross-tenant.test.mjs.

@@ -1,0 +1,13 @@
+# WALTEUR EARS Rule — EarsSystem
+# Checks that the system subject in an EARS AC uses the canonical "THE <system>"
+# form rather than a pronoun ("it", "the app") or passive construction.
+# Canonical shape: THE <system> SHALL <response>.
+# Authored by WALTEUR (approximation of tbhb/vale-ears, MIT provenance).
+extends: existence
+message: "EARS: Use 'THE <system> SHALL' not a pronoun or passive voice as the system subject."
+level: warning
+scope: sentence
+# Fires when SHALL is preceded by a weak subject (pronoun / article + generic noun) instead of
+# a named system subject.
+tokens:
+  - '(?i)\b(it|the system|the app|the application|the service)\s+SHALL\b'

@@ -1,0 +1,1 @@
+documents-api authz evidence: anon — anonymous denial — no credential => 401 empty body; blank token => 401; proven by test/api.test.mjs '401: no credential...' case.

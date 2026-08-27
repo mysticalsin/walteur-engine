@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/current-stack.schema.json",
+  "title": "WALTEUR Current Stack",
+  "description": "Run-date proof that the selected stack, APIs, and dependency assumptions were checked against current source material before planning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "run_date",
+    "build_class",
+    "domain",
+    "stack_items",
+    "sources",
+    "stale_training_checks",
+    "evidence_refs",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL", "BLOCKED"] },
+    "run_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "build_class": {
+      "type": "string",
+      "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+    },
+    "domain": { "type": "string", "minLength": 1 },
+    "stack_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "name", "decision", "source_ids", "evidence_refs", "rationale"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "category": {
+            "type": "string",
+            "enum": ["runtime", "framework", "database", "infra", "ai_model", "library", "tooling", "standard", "other"]
+          },
+          "name": { "type": "string", "minLength": 1 },
+          "version_or_constraint": { "type": "string" },
+          "decision": { "type": "string", "enum": ["use", "evaluate", "reject", "not_applicable"] },
+          "source_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "name", "url", "last_checked", "captured_ref"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+            "enum": ["official_docs", "source_repo", "release_notes", "github_repo", "security_advisory", "standards_doc", "local"]
+          },
+          "name": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "minLength": 1 },
+          "official": { "type": "boolean" },
+          "last_checked": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "captured_ref": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "stale_training_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "checked_against_source_ids", "verdict", "action", "evidence_refs"],
+        "properties": {
+          "claim": { "type": "string", "minLength": 1 },
+          "checked_against_source_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "verdict": { "type": "string", "enum": ["current", "changed", "unknown"] },
+          "action": { "type": "string", "minLength": 1 },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "stack_fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "report_ref": { "type": "string", "minLength": 1 },
+        "drift_ts": { "type": "string", "minLength": 1 },
+        "acknowledged_drift": { "type": "boolean" },
+        "acknowledgement": { "type": "string" }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

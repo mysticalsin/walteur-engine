@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "contract_id": "example-production-layers",
+  "date": "2026-06-22",
+  "production_layers": [
+    {
+      "id": 1,
+      "name": "client_experience",
+      "status": "planned",
+      "owner": "Product owner",
+      "rationale": "User-facing experience must expose the promised outcome with accessible states.",
+      "folder_or_artifact": "src/app",
+      "evidence_ref": "DESIGN.md",
+      "verification": "Run UI tests and capture a screenshot or accessibility snapshot."
+    },
+    {
+      "id": 2,
+      "name": "application_core",
+      "status": "planned",
+      "owner": "Engineering owner",
+      "rationale": "Core domain logic must be isolated from presentation and infrastructure.",
+      "folder_or_artifact": "src/core",
+      "evidence_ref": "PLAN.md",
+      "verification": "Run unit and integration tests for core workflows."
+    },
+    {
+      "id": 3,
+      "name": "data_model",
+      "status": "planned",
+      "owner": "Data owner",
+      "rationale": "Data shape, tenancy, migrations, and invariants must be explicit.",
+      "folder_or_artifact": "db/schema",
+      "evidence_ref": "PLAN.md",
+      "verification": "Run schema and migration checks."
+    },
+    {
+      "id": 4,
+      "name": "auth_permissions",
+      "status": "planned",
+      "owner": "Security owner",
+      "rationale": "Identity and permission boundaries must fail closed.",
+      "folder_or_artifact": "src/auth",
+      "evidence_ref": "PLAN.md",
+      "verification": "Run authz and negative permission tests."
+    },
+    {
+      "id": 5,
+      "name": "external_integrations",
+      "status": "planned",
+      "owner": "Integration owner",
+      "rationale": "External contracts need typed boundaries, retries, and failure handling.",
+      "folder_or_artifact": "src/integrations",
+      "evidence_ref": "PLAN.md",
+      "verification": "Run contract or mocked integration tests."
+    },
+    {
+      "id": 6,
+      "name": "hosting_runtime",
+      "status": "planned",
+      "owner": "Platform owner",
+      "rationale": "Runtime environment must be reproducible and configurable.",
+      "folder_or_artifact": "deploy",
+      "evidence_ref": "README.md",
+      "verification": "Run quickstart and environment validation gates."
+    },
+    {
+      "id": 7,
+      "name": "ci_cd",
+      "status": "planned",
+      "owner": "Release owner",
+      "rationale": "Build, test, and release path must be repeatable.",
+      "folder_or_artifact": ".github/workflows",
+      "evidence_ref": "PLAN.md",
+      "verification": "Run documented CI-equivalent commands locally."
+    },
+    {
+      "id": 8,
+      "name": "security_supply_chain",
+      "status": "planned",
+      "owner": "Security owner",
+      "rationale": "Secrets, dependency, and supply-chain exposure must be checked before ship.",
+      "folder_or_artifact": "walteur-kit/security-report.json",
+      "evidence_ref": "walteur-kit/security-report.json",
+      "verification": "Run security, OSV, and guarddog gates where applicable."
+    },
+    {
+      "id": 9,
+      "name": "rate_limiting",
+      "status": "planned",
+      "owner": "Platform owner",
+      "rationale": "HTTP and external action surfaces need abuse protection or a signed deferral.",
+      "folder_or_artifact": "src/server",
+      "evidence_ref": "walteur-kit/edge-report.json",
+      "verification": "Run edge-protection gate."
+    },
+    {
+      "id": 10,
+      "name": "caching_cdn",
+      "status": "planned",
+      "owner": "Platform owner",
+      "rationale": "Repeated reads and static assets need explicit cache behavior or a signed deferral.",
+      "folder_or_artifact": "src/server",
+      "evidence_ref": "walteur-kit/edge-report.json",
+      "verification": "Run edge-protection gate."
+    },
+    {
+      "id": 11,
+      "name": "scaling_capacity",
+      "status": "planned",
+      "owner": "Platform owner",
+      "rationale": "Capacity limit and scale trigger must be named before traffic arrives.",
+      "folder_or_artifact": "walteur-kit/perf-budget.json",
+      "evidence_ref": "walteur-kit/perf-report.json",
+      "verification": "Run performance gate and read capacity assumptions."
+    },
+    {
+      "id": 12,
+      "name": "observability_support",
+      "status": "planned",
+      "owner": "Operations owner",
+      "rationale": "Operators need logs, metrics, traces, support path, and alert ownership.",
+      "folder_or_artifact": "src/observability",
+      "evidence_ref": "walteur-kit/observe-report.json",
+      "verification": "Run observability and quickstart gates."
+    },
+    {
+      "id": 13,
+      "name": "backup_restore_dr",
+      "status": "planned",
+      "owner": "Operations owner",
+      "rationale": "Recovery path, RTO/RPO, and restore proof must be explicit for live systems.",
+      "folder_or_artifact": "walteur-kit/release-report.json",
+      "evidence_ref": "walteur-kit/release-report.json",
+      "verification": "Run release and restore-proof gates where applicable."
+    }
+  ],
+  "layers": {
+    "client": ["src/app"],
+    "core": ["src/core"],
+    "infra": ["deploy"]
+  },
+  "edges": [
+    ["client", "core"],
+    ["infra", "core"]
+  ],
+  "forbidden": [
+    ["core", "infra"]
+  ]
+}

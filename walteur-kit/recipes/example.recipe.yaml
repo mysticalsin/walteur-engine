@@ -1,0 +1,122 @@
+# WALTEUR recipe — scaffold-and-test a CLI.
+# Validates against walteur-kit/schemas/recipe.schema.json. Interpreted by walteur.js (NO goose).
+# Run:   node .claude/workflows/walteur.js run walteur-kit/recipes/example.recipe.yaml \
+#          --param cli_name=widget --param language=typescript
+version: "1.0.0"
+title: Scaffold and test a CLI
+description: >-
+  Scaffold a small command-line tool in the chosen language, wire one happy-path
+  test, run it, and report PASS/FAIL with the build artifact path. A reusable
+  WALTEUR build flow pinned as data so it survives across sessions and operators.
+
+author:
+  contact: you@example.com
+  metadata: WALTEUR example recipe
+
+parameters:
+  - key: cli_name
+    type: string
+    requirement: required
+    description: binary/package name for the CLI (lowercase, no spaces), e.g. 'widget'
+
+  - key: language
+    type: select
+    requirement: required
+    description: implementation language for the scaffold
+    options:
+      - typescript
+      - python
+      - go
+
+  - key: with_tests
+    type: boolean
+    requirement: optional
+    default: true
+    description: whether to scaffold and run a happy-path test
+
+  - key: spec_file
+    type: file
+    requirement: optional
+    default: ""
+    description: optional path to a spec/PRD whose CONTENT is inlined to steer the scaffold
+
+  - key: target_dir
+    type: string
+    requirement: user_prompt
+    description: directory to scaffold into; the operator is asked at run time
+
+instructions: >-
+  You are a WALTEUR build agent. Honor the discipline: simplest thing that works,
+  minimal blast radius, no swallowed errors, no fixed-delay no-jitter retries.
+  Never claim done without proof — the test must actually run. Label HARD vs PROTOCOL
+  in your report. Absence of a result is NOT-FOUND, never proven-absent.
+
+prompt: >-
+  Scaffold a CLI named "{{ cli_name }}" in {{ language }} under "{{ target_dir }}".
+  If {{ with_tests }} is true, add exactly one happy-path test and run it.
+  If a spec was provided, follow it:
+  {{ spec_file }}
+  Build it, run the test (or a smoke invocation if tests are off), and return the
+  structured result. Do not gold-plate beyond a runnable skeleton.
+
+response:
+  json_schema:
+    type: object
+    additionalProperties: false
+    required:
+      - cli_name
+      - language
+      - scaffolded
+      - test_status
+      - artifact_path
+    properties:
+      cli_name:
+        type: string
+      language:
+        type: string
+        enum:
+          - typescript
+          - python
+          - go
+      scaffolded:
+        type: boolean
+      test_status:
+        type: string
+        enum:
+          - pass
+          - fail
+          - skipped
+      artifact_path:
+        type: string
+        description: repo-relative path to the built/entrypoint file
+      notes:
+        type: string
+
+extensions:
+  # OPT-IN only. graphify is the ONE retrieval brain — if the recipe needs to read
+  # the surrounding codebase, it asks graphify, it does NOT build a second index.
+  - name: graphify
+    type: stdio
+    cmd: npx
+    args:
+      - "-y"
+      - "@graphify/mcp"
+    timeout: 30
+    required: false   # absent ⇒ LOUD SKIP, the scaffold still runs without code-retrieval
+
+settings:
+  model: claude-sonnet-4-6
+  temperature: 0.2
+  max_turns: 20
+  retry:
+    max_attempts: 2
+    on_failure: abort
+    checkpoint: test -e "$WALTEUR_ARTIFACT"   # self-validating, not a sleep
+
+sub_recipes:
+  - name: run-tests
+    path: walteur-kit/recipes/run-tests.recipe.yaml
+    values:
+      target_dir: "{{ target_dir }}"
+      language: "{{ language }}"
+    sequential_when_repeated: true

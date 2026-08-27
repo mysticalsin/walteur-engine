@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: tdd — TDD: core.test.mjs authored alongside core.mjs; the cross-tenant + secret-handling invariants are asserted by running tests, not self-claimed.

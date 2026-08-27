@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/audit.schema.json",
+  "title": "WALTEUR Terminal Audit",
+  "description": "Typed terminal certification artifact for a WALTEUR run.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "certified",
+    "model",
+    "scored_dims",
+    "layer_walk",
+    "adr_recheck",
+    "intent_vs_impl",
+    "launch_blockers",
+    "shortfalls",
+    "known_gaps",
+    "evidence_reproduced",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "certified": { "type": "boolean" },
+    "model": { "type": "string", "enum": ["opus"] },
+    "scored_dims": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "design",
+        "infrastructure",
+        "security",
+        "ux_ui",
+        "performance",
+        "features",
+        "data_architecture",
+        "devex"
+      ],
+      "properties": {
+        "design": { "$ref": "#/definitions/scored_dim" },
+        "infrastructure": { "$ref": "#/definitions/scored_dim" },
+        "security": { "$ref": "#/definitions/scored_dim" },
+        "ux_ui": { "$ref": "#/definitions/scored_dim" },
+        "performance": { "$ref": "#/definitions/scored_dim" },
+        "features": { "$ref": "#/definitions/scored_dim" },
+        "data_architecture": { "$ref": "#/definitions/scored_dim" },
+        "devex": { "$ref": "#/definitions/scored_dim" }
+      }
+    },
+    "layer_walk": {
+      "oneOf": [
+        {
+          "type": "object",
+          "minProperties": 13
+        },
+        {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "items": { "$ref": "#/definitions/layer_verdict" }
+        }
+      ]
+    },
+    "adr_recheck": {
+      "oneOf": [
+        { "type": "array" },
+        { "type": "object" }
+      ]
+    },
+    "intent_vs_impl": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/intent_trace" }
+    },
+    "launch_blockers": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    },
+    "shortfalls": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/known_gap" }
+    },
+    "evidence_reproduced": { "type": "boolean" },
+    "ts": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "intent_trace_ts": { "type": "string" },
+    "risk_register": { "type": "array" },
+    "blind_review_reconciliation": { "type": "array" },
+    "qa_recheck": { "type": "array" },
+    "test_replay": { "type": "array" }
+  },
+  "definitions": {
+    "scored_dim": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["score", "rationale", "evidence_ref"],
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "evidence_ref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "layer_verdict": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1, "maximum": 13 },
+        "status": { "type": "string", "minLength": 1 },
+        "verdict": { "type": "string", "minLength": 1 },
+        "evidence_ref": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string", "minLength": 1 }
+      }
+    },
+    "intent_trace": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "intent_quote": { "type": "string" },
+        "intent": { "type": "string" },
+        "intent_source": { "type": "string" },
+        "story": { "type": "string" },
+        "ac": { "type": "string" },
+        "code_evidence": { "type": "string" },
+        "attacker": { "type": "string" },
+        "victim": { "type": "string" },
+        "fix": { "type": "string" },
+        "severity": { "type": "string" },
+        "verdict": { "type": "string" },
+        "launch_blocker": { "type": "boolean" },
+        "ast_proof": { "type": "object" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["dimension", "gap", "fix", "severity"],
+      "properties": {
+        "dimension": { "type": "string", "minLength": 1 },
+        "gap": { "type": "string", "minLength": 1 },
+        "fix": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "minLength": 1 }
+      }
+    },
+    "known_gap": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["gap", "severity", "owner"],
+      "properties": {
+        "gap": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "next_action": { "type": "string", "minLength": 1 },
+        "accepted_reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

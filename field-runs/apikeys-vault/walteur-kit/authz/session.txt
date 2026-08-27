@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: session — session policy — stateless bearer auth; no server-side session. Each request re-presents X-Tenant + Authorization: Bearer and is re-authenticated; tokens compared in constant time.

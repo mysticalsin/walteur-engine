@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: performance — performance: in-memory per-tenant Map; structured logs show sub-ms request handling (ms field). Read p99 target 150ms, write 300ms (ops/slo.json).

@@ -1,0 +1,42 @@
+id: walteur-empty-catch-py
+snapshots:
+  ? |
+    try:
+        do_work()
+    except Exception:
+        pass
+  : labels:
+    - source: |-
+        except Exception:
+            pass
+      style: primary
+      start: 19
+      end: 45
+    - source: pass
+      style: secondary
+      start: 41
+      end: 45
+    - source: pass
+      style: secondary
+      start: 41
+      end: 45
+  ? |
+    try:
+        do_work()
+    except:
+        pass
+  : labels:
+    - source: |-
+        except:
+            pass
+      style: primary
+      start: 19
+      end: 35
+    - source: pass
+      style: secondary
+      start: 31
+      end: 35
+    - source: pass
+      style: secondary
+      start: 31
+      end: 35

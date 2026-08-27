@@ -1,0 +1,1 @@
+documents-api privacy evidence: risks — residual risks — plaintext local data.json in the field run (mitigated by platform encryption at rest in real deploy); accepted for the field-run scope.

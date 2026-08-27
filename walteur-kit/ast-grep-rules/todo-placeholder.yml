@@ -1,0 +1,39 @@
+# R-AST-4  TODO / PLACEHOLDER BODY — a function whose entire body is a stub: only a TODO/FIXME comment,
+# only `pass`/`...`, or only `raise NotImplementedError`. Distinct from R1: this is incomplete WORK,
+# not a swallowed error. Net-new vs the current hooks (neither resilience-lint nor anti-slop-ui has this).
+#
+# APPROX: 'only a TODO comment' is matched by a body that contains a comment whose text is TODO/FIXME/XXX
+# and no executable statement. A function that legitimately raises NotImplementedError as an ABC contract
+# is a FALSE POSITIVE — scope this rule to non-abstract code via files/ignores or downgrade to warning if noisy.
+id: walteur-todo-placeholder-py
+language: python
+severity: warning   # PROVEN advisory (twin: todo-placeholder-test.yml). NOT promoted to HARD: `...` and `raise NotImplementedError` are legit ABC/Protocol stubs => HARD would false-positive. Warning => surfaces, never blocks.
+message: "Function '$NAME' has a placeholder body (TODO/pass/NotImplementedError only) — unfinished implementation."
+note: "WALTEUR R4 (AST). Ship real behavior or remove the stub. Abstract-method stubs should live in an explicit ABC and be ignored via files-globs."
+rule:
+  kind: function_definition
+  all:
+    - has:
+        field: name
+        pattern: $NAME
+    - has:
+        field: body
+        stopBy: end
+        any:
+          - kind: pass_statement
+          - pattern: "..."
+          - pattern: raise NotImplementedError
+          - pattern: raise NotImplementedError($$$)
+          - kind: comment
+            regex: "(?i)\\b(todo|fixme|xxx|placeholder|implement me)\\b"
+    - not:
+        has:
+          field: body
+          stopBy: end
+          any:
+            - kind: return_statement
+            - kind: call
+            - kind: assignment
+            - kind: if_statement
+            - kind: for_statement
+            - kind: while_statement

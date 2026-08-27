@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "manifest_id": "walteur-mcp-manifest",
+  "updated_at": "2026-07-01",
+  "policy": "Machine-readable connectivity layer for the governed data-tools.json catalog plus the two harness-native pull surfaces (WebSearch/WebFetch). Every id here MUST resolve to a walteur-kit/data-tools.json tools[].id, except the harness-native entries which have no catalog row by design (they are built into the session, not an installable package). No server.env_keys entry may ever carry a literal secret VALUE — names only. A build may only use a server whose allowed_build_classes includes its own build_class; data-pull-required-gate and data-acquisition-gate consume this allowlist at ship time.",
+  "servers": [
+    {
+      "id": "firecrawl",
+      "kind": "mcp",
+      "server": {
+        "transport": "stdio",
+        "command": "npx",
+        "args": ["-y", "firecrawl-mcp"],
+        "env_keys": ["FIRECRAWL_API_KEY"]
+      },
+      "tools": ["scrape", "map", "search", "crawl", "extract", "agent"],
+      "allowed_build_classes": ["research-report", "data-pipeline", "market-analysis", "data-ai", "mixed"],
+      "data_domains": ["web-page", "site-map", "structured-extract", "competitor-docs", "api-specs"],
+      "liveness_probe": {
+        "method": "exec-version",
+        "command": "npx -y firecrawl-mcp --version",
+        "timeout_s": 15,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "low",
+        "usage_risk": "medium",
+        "signoff_required": false,
+        "notes": "MCP client + hosted API are MIT; core engine is AGPL-3.0 (do not self-host/vendor the core into WALTEUR code). Respects robots.txt by default. Hosted API sends target URLs+content to a third party — PII/DPA consideration for regulated data. Mirrors data-tools.json:14-29."
+      },
+      "pinned_version": "unpinned-latest (npx -y resolves at call time; pin via package-lock if vendored)"
+    },
+    {
+      "id": "crawl4ai",
+      "kind": "mcp",
+      "server": {
+        "transport": "sse",
+        "url": "http://localhost:11235/mcp/sse",
+        "env_keys": []
+      },
+      "tools": ["md", "html", "screenshot", "pdf", "execute_js", "crawl", "ask"],
+      "allowed_build_classes": ["research-report", "data-pipeline", "market-analysis", "data-ai", "mixed"],
+      "data_domains": ["web-page", "fit-markdown", "batch-crawl", "self-hosted-docs"],
+      "liveness_probe": {
+        "method": "http-head",
+        "command": "http://localhost:11235/health",
+        "timeout_s": 5,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "medium",
+        "signoff_required": false,
+        "notes": "Apache-2.0, commercial-safe. Does NOT enforce robots.txt by default — must run robots-respecting, stealth OFF, per-domain allowlist + rate-limit. Stealth/undetected-Chrome mode is high-risk if enabled — treat as signoff-gated separately. Mirrors data-tools.json:31-46."
+      },
+      "pinned_version": "self-hosted Docker image; pin the image tag at deploy time"
+    },
+    {
+      "id": "markitdown",
+      "kind": "mcp",
+      "server": {
+        "transport": "stdio",
+        "command": "markitdown-mcp",
+        "args": [],
+        "env_keys": []
+      },
+      "tools": ["convert_to_markdown"],
+      "allowed_build_classes": ["research-report", "data-pipeline", "market-analysis", "data-ai", "document", "mixed"],
+      "data_domains": ["pdf", "office-doc", "html", "image-ocr", "audio-transcript"],
+      "liveness_probe": {
+        "method": "exec-help",
+        "command": "markitdown-mcp --help",
+        "timeout_s": 10,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "low",
+        "signoff_required": false,
+        "notes": "MIT, commercial-safe, normalizer only (no crawling — robots/ToS risk is on the supplied URL, not here). OCR/transcription can surface PII in output — apply redaction downstream. Optional Azure backend is OFF by default (would transmit content to Azure; DPA/residency review if enabled). Mirrors data-tools.json:48-63."
+      },
+      "pinned_version": "unpinned (pip install markitdown-mcp; pin exact version in lockfile if vendored)"
+    },
+    {
+      "id": "scrapy",
+      "kind": "cli",
+      "server": {
+        "transport": "n-a",
+        "command": "scrapy",
+        "args": ["version"],
+        "env_keys": []
+      },
+      "tools": ["crawl", "shell", "parse"],
+      "allowed_build_classes": ["data-pipeline"],
+      "data_domains": ["static-html-bulk", "scheduled-scrape"],
+      "liveness_probe": {
+        "method": "exec-version",
+        "command": "scrapy version",
+        "timeout_s": 10,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "low",
+        "signoff_required": false,
+        "notes": "BSD-3-Clause, commercial-safe. No first-party MCP server (community wrappers are unvetted — do not use). Must set ROBOTSTXT_OBEY=True (library default is False) and an identifying User-Agent. Mirrors data-tools.json:65-80."
+      },
+      "pinned_version": "unpinned (pip install scrapy)"
+    },
+    {
+      "id": "browser-use",
+      "kind": "mcp",
+      "server": {
+        "transport": "stdio",
+        "command": "uvx",
+        "args": ["--from", "browser-use[cli]", "browser-use", "--mcp"],
+        "env_keys": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"]
+      },
+      "tools": ["browser_navigate", "browser_click", "browser_type", "extract_content", "get_state"],
+      "allowed_build_classes": ["research-report"],
+      "data_domains": ["login-gated-page", "js-heavy-page", "dom-state"],
+      "liveness_probe": {
+        "method": "exec-help",
+        "command": "uvx --from browser-use[cli] browser-use --help",
+        "timeout_s": 20,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "high",
+        "signoff_required": true,
+        "notes": "MIT license clean; USAGE is the exposure. Impersonates a human, can bypass login walls, robots NOT honored by default. Owned/authorized targets only; stealth/proxy/CAPTCHA OFF without legal sign-off. Mirrors data-tools.json:82-96 (risk=high)."
+      },
+      "pinned_version": "unpinned (uvx resolves at call time)"
+    },
+    {
+      "id": "crawlee",
+      "kind": "cli",
+      "server": {
+        "transport": "n-a",
+        "command": "npx",
+        "args": ["crawlee", "--version"],
+        "env_keys": ["APIFY_TOKEN"]
+      },
+      "tools": ["run"],
+      "allowed_build_classes": ["data-pipeline"],
+      "data_domains": ["large-scale-crawl", "proxy-rotated-fetch"],
+      "liveness_probe": {
+        "method": "exec-version",
+        "command": "npx crawlee --version",
+        "timeout_s": 15,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "high",
+        "signoff_required": true,
+        "notes": "Apache-2.0 license clean. No first-party MCP server (Apify platform MCP exposes Crawlee-based Actors separately — treat as a distinct id if adopted). Fingerprint spoofing + residential-proxy rotation defeat bot defenses — disable by policy; Apify proxy adds a third-party data-processor (DPA/GDPR review). Mirrors data-tools.json:99-113 (risk=high)."
+      },
+      "pinned_version": "unpinned (npx resolves at call time)"
+    },
+    {
+      "id": "curl_cffi",
+      "kind": "cli",
+      "server": {
+        "transport": "n-a",
+        "command": "python3",
+        "args": ["-c", "import curl_cffi; print(curl_cffi.__version__)"],
+        "env_keys": []
+      },
+      "tools": ["get", "post", "session"],
+      "allowed_build_classes": ["data-pipeline"],
+      "data_domains": ["anti-bot-http-fetch"],
+      "liveness_probe": {
+        "method": "exec-version",
+        "command": "python3 -c \"import curl_cffi; print(curl_cffi.__version__)\"",
+        "timeout_s": 10,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "high",
+        "signoff_required": true,
+        "notes": "MIT license clean; entire value is misrepresenting client identity to defeat bot detection — frequently violates ToS, may implicate anti-circumvention/CFAA. Mandatory domain allowlist + robots/ToS pre-check + rate-limit + PII redaction + per-source legal sign-off. No MCP server. Mirrors data-tools.json:116-130 (risk=high)."
+      },
+      "pinned_version": "unpinned (pip install curl_cffi)"
+    },
+    {
+      "id": "autoscraper",
+      "kind": "cli",
+      "server": {
+        "transport": "n-a",
+        "command": "python3",
+        "args": ["-c", "import autoscraper; print(autoscraper.__version__)"],
+        "env_keys": []
+      },
+      "tools": ["build", "get_result_similar"],
+      "allowed_build_classes": ["data-pipeline"],
+      "data_domains": ["pattern-extract"],
+      "liveness_probe": {
+        "method": "exec-version",
+        "command": "python3 -c \"import autoscraper; print(autoscraper.__version__)\"",
+        "timeout_s": 10,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "low",
+        "signoff_required": false,
+        "notes": "MIT, commercial-safe. Parser only (BeautifulSoup wrapper, not a fetcher) — robots/ToS risk is on the paired fetcher, not here. No MCP server; pair with curl_cffi or firecrawl as transport. Mirrors data-tools.json:133-147."
+      },
+      "pinned_version": "unpinned (pip install autoscraper)"
+    },
+    {
+      "id": "web-search",
+      "kind": "harness-native",
+      "server": {
+        "transport": "n-a",
+        "env_keys": []
+      },
+      "tools": ["WebSearch"],
+      "allowed_build_classes": ["research-report", "data-pipeline", "market-analysis", "software", "workflow", "document", "data-ai", "cloud-iac", "mixed"],
+      "data_domains": ["search-result-snippet"],
+      "liveness_probe": {
+        "method": "n-a",
+        "command": "n-a",
+        "timeout_s": 1,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "low",
+        "signoff_required": false,
+        "notes": "Built into the Claude Code session; not an installable package and has no data-tools.json row by design (harness-native exemption). No liveness probe applies — session-availability is the only precondition and it cannot be exec/HTTP probed from outside the session."
+      }
+    },
+    {
+      "id": "web-fetch",
+      "kind": "harness-native",
+      "server": {
+        "transport": "n-a",
+        "env_keys": []
+      },
+      "tools": ["WebFetch"],
+      "allowed_build_classes": ["research-report", "data-pipeline", "market-analysis", "software", "workflow", "document", "data-ai", "cloud-iac", "mixed"],
+      "data_domains": ["single-url-fetch"],
+      "liveness_probe": {
+        "method": "n-a",
+        "command": "n-a",
+        "timeout_s": 1,
+        "side_effect_free": true
+      },
+      "governance": {
+        "license_risk": "none",
+        "usage_risk": "low",
+        "signoff_required": false,
+        "notes": "Built into the Claude Code session; not an installable package and has no data-tools.json row by design (harness-native exemption). Same session-availability caveat as web-search."
+      }
+    }
+  ]
+}

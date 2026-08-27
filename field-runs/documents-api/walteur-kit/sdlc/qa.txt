@@ -1,0 +1,1 @@
+QA — manual + automated: full CRUD, cross-tenant denial, DSAR erase exercised over HTTP.

@@ -1,0 +1,1 @@
+{"tenants":{"tenantA":[{"tenantId":"tenantA","key":"k1","value":true,"kind":"boolean"}]},"auditLog":[{"ts":1,"tenantId":"tenantA","action":"set","key":"k1"}],"clock":1}

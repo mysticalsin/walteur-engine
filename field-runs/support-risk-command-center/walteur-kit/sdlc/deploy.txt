@@ -1,0 +1,1 @@
+Deploy: open index.html (client-side, no server). Artifact = static files in this dir.

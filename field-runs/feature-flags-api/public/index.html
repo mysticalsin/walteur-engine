@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Feature Flags — console</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 2rem 1rem; }
+    main { max-width: 740px; margin-inline: auto; }
+    h1 { font-size: 1.3rem; margin: 0 0 .25rem; }
+    h2 { font-size: 1rem; margin: 0; }
+    .intro { margin: 0 0 1.5rem; }
+    fieldset { border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 10px; margin: 0 0 1.25rem; padding: 1rem; }
+    legend { font-weight: 600; padding: 0 .4rem; }
+    label { display: block; font-size: .82rem; opacity: .85; margin: .5rem 0 .15rem; }
+    input[type=text], input[type=password], select { width: 100%; padding: .5rem .6rem; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+    input:focus-visible, button:focus-visible, select:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+    .row { display: flex; gap: .6rem; align-items: flex-end; flex-wrap: wrap; }
+    .row > .field { flex: 1; min-width: 11rem; }
+    button { padding: .5rem .9rem; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    button.ghost { background: transparent; color: inherit; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); }
+    button:disabled { opacity: .5; cursor: default; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { display: flex; align-items: center; gap: .6rem; padding: .55rem .2rem; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+    li .key { flex: 1; font-weight: 600; }
+    li .val { font-variant-numeric: tabular-nums; opacity: .85; }
+    li .badge { font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; opacity: .6; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 999px; padding: .05rem .5rem; }
+    li.off .key { opacity: .55; }
+    li.empty { opacity: .65; font-size: .85rem; border-bottom: 0; }
+    .hint { font-size: .78rem; opacity: .7; margin: .35rem 0 0; }
+    #status { min-height: 1.4rem; font-size: .85rem; margin: .5rem 0 1rem; }
+    #status.err { color: #dc2626; font-weight: 600; }
+    #status.ok { color: #16a34a; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Feature Flags</h1>
+    <p class="intro">Deny-by-default: each tenant sees and edits only its own flags. Credentials are sent per request and never stored.</p>
+
+    <!-- Credentials form: real <form> so Enter submits and it is one keyboard tab-flow. -->
+    <form id="creds-form" novalidate>
+      <fieldset>
+        <legend>Tenant credentials</legend>
+        <div class="row">
+          <div class="field">
+            <label for="tenant">Tenant ID <span class="hint" id="tenant-hint">sent as the X-Tenant header</span></label>
+            <input id="tenant" name="tenant" type="text" autocomplete="off" autocapitalize="off"
+                   spellcheck="false" aria-describedby="tenant-hint" placeholder="tenantA" required />
+          </div>
+          <div class="field">
+            <label for="token">Bearer token <span class="hint" id="token-hint">sent as Authorization: Bearer; never saved</span></label>
+            <input id="token" name="token" type="password" autocomplete="off"
+                   aria-describedby="token-hint" placeholder="(from env)" required />
+          </div>
+          <button id="load" class="ghost" type="submit">Load flags</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <!-- Set-flag form: separate <form> so its own Enter sets a flag. -->
+    <form id="set-form" novalidate>
+      <fieldset>
+        <legend>Set flag</legend>
+        <div class="row">
+          <div class="field">
+            <label for="key">Key</label>
+            <input id="key" name="key" type="text" aria-describedby="key-hint"
+                   placeholder="new-checkout" required />
+            <p class="hint" id="key-hint">POST /flags with { "key": …, "value": … }</p>
+          </div>
+          <div class="field">
+            <label for="kind">Type</label>
+            <select id="kind" name="kind" aria-describedby="kind-hint">
+              <option value="boolean">boolean (on/off)</option>
+              <option value="variant">variant (string)</option>
+            </select>
+            <p class="hint" id="kind-hint">boolean toggles on/off; variant sends a string</p>
+          </div>
+          <div class="field" id="value-field">
+            <label for="value">Value</label>
+            <select id="value-bool" name="value-bool" aria-label="Boolean value">
+              <option value="true">on (true)</option>
+              <option value="false">off (false)</option>
+            </select>
+            <input id="value-variant" name="value-variant" type="text" placeholder="treatment" aria-label="Variant value" hidden />
+          </div>
+          <button id="set" type="submit">Set</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <!-- Live region: status messages are announced to assistive tech as they change. -->
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <section aria-labelledby="flags-heading">
+      <h2 id="flags-heading">Flags</h2>
+      <!-- aria-live so set/deleted rows are announced; aria-busy toggled during fetch. -->
+      <ul id="list" aria-labelledby="flags-heading" aria-live="polite" aria-busy="false"></ul>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

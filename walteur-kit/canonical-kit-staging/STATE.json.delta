@@ -1,0 +1,10 @@
+// PATCH to walteur-starter/walteur-kit/autopilot/STATE.json — add the 3rd autonomy value. OFF BY DEFAULT.
+// Only the two listed keys change; everything else (goal, phase, _phases, budgets, ...) is untouched.
+{
+  "_autonomy_options": ["full_autopilot", "pause_at_plan_and_audit", "pause_per_task"],
+  // pause_per_task: like pause_at_plan_and_audit, PLUS a halt after EACH BUILD sub-task.
+  // Reuses the SAME APPROVAL-REQUEST.json / APPROVED / crash-recovery machinery (no new files, no new phase).
+  // 'BUILD' stays a single phase in _phases; per-task pausing is a sub-loop INSIDE BUILD (see orchestrator seam).
+  "_autonomy_comment": "full_autopilot = no human stop (default). pause_at_plan_and_audit = halt after PLAN and before SHIP. pause_per_task = also halt after each BUILD sub-task. All halts are halt-and-resume: write APPROVAL-REQUEST.json, exit; human writes APPROVED (newer than the request, consumed on read); re-run /goal to resume."
+  // autonomy_policy and scope_answers.autonomy_policy keep their default "full_autopilot".
+}

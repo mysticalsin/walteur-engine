@@ -1,0 +1,885 @@
+{
+  "schema_version": 1,
+  "registry_id": "walteur-default-gate-registry",
+  "gates": [
+    {
+      "id": "build-contract-lint",
+      "stage": "intake",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "build-contract-lint.sh",
+      "report": "walteur-kit/build-contract-report.json",
+      "evidence": "Build contract is valid or explicitly not applicable."
+    },
+    {
+      "id": "gate-registry-lint",
+      "stage": "intake",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "gate-registry-lint.sh",
+      "report": "walteur-kit/gate-registry-report.json",
+      "evidence": "Gate registry is valid and required gates are declared."
+    },
+    {
+      "id": "estimate-gate",
+      "stage": "plan",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "estimate-gate.sh",
+      "report": "walteur-kit/estimate-report.json",
+      "evidence": "Pre-build estimate exists, validates, and matches runtime budgets."
+    },
+    {
+      "id": "current-stack-gate",
+      "stage": "plan",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "current-stack-gate.sh",
+      "report": "walteur-kit/current-stack-report.json",
+      "evidence": "Run-date stack choices are checked against current official/source material with evidence."
+    },
+    {
+      "id": "harness-state-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "harness-state-lint.sh",
+      "report": "walteur-kit/harness-state-report.json",
+      "evidence": "Runtime state is valid or explicitly not applicable."
+    },
+    {
+      "id": "phase-gate",
+      "stage": "verify",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "phase-gate.sh",
+      "report": "walteur-kit/phase-gate-report.json",
+      "evidence": "Phase order and prior-stage evidence are valid before advancement."
+    },
+    {
+      "id": "evidence-gate",
+      "stage": "verify",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "evidence-gate.sh",
+      "report": "walteur-kit/evidence-gate-report.json",
+      "evidence": "Referenced evidence exists and supports the gate or stage verdict it is used for."
+    },
+    {
+      "id": "risk-acceptance-gate",
+      "stage": "review",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "risk-acceptance-gate.sh",
+      "report": "walteur-kit/risk-acceptance-report.json",
+      "evidence": "Accepted risks and high-risk ship decisions have approved owner signoff with evidence."
+    },
+    {
+      "id": "adr-gate",
+      "stage": "review",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "adr-gate.sh",
+      "report": "walteur-kit/adr-report.json",
+      "evidence": "All real forks are closed in debate/OPEN.json and any ADR records include decision, rationale, rejected alternatives, dissent, owner, and index evidence."
+    },
+    {
+      "id": "prompt-refinement-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "prompt-refinement-gate.sh",
+      "report": "walteur-kit/prompt-refinement-report.json",
+      "evidence": "The raw user request is refined into an enterprise build brief with outcome, scope, acceptance criteria, routing, specialists, verification, and stop conditions."
+    },
+    {
+      "id": "enterprise-blueprint-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "enterprise-blueprint-gate.sh",
+      "report": "walteur-kit/enterprise-blueprint-report.json",
+      "evidence": "The raw goal is upgraded into a concrete enterprise blueprint with users, jobs, artifacts, surfaces, acceptance proof, trust, operations, cuts, and final delivery packet."
+    },
+    {
+      "id": "delivery-orchestration-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "delivery-orchestration-gate.sh",
+      "report": "walteur-kit/delivery-orchestration-report.json",
+      "evidence": "Agent roster, SDLC stage gates, role independence, frontend/backend coverage, handoffs, worktree boundaries, and audit trail are planned and checkable."
+    },
+    {
+      "id": "ai-tool-governance-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "ai-tool-governance-gate.sh",
+      "report": "walteur-kit/ai-tool-governance-report.json",
+      "evidence": "AI tools, models, agents, MCP/plugin surfaces, data boundaries, approvals, output gates, cost controls, audit logs, and rollback controls are inventoried and approved before ship."
+    },
+    {
+      "id": "authz-tenant-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "authz-tenant-gate.sh",
+      "report": "walteur-kit/authz-tenant-report.json",
+      "evidence": "Authorization and tenant-isolation surfaces prove deny-by-default decisions, role/permission coverage, negative access tests, anonymous denial, privilege-escalation prevention, audit logging, and signed local evidence before ship."
+    },
+    {
+      "id": "privacy-data-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "privacy-data-gate.sh",
+      "report": "walteur-kit/privacy-data-report.json",
+      "evidence": "Personal, sensitive, regulated, or AI-context data surfaces prove inventory, purpose, minimization, lawful basis, retention, deletion/export paths, redacted logging, encryption, transfers, breach response, DPIA handling, tests, and signed local evidence before ship."
+    },
+    {
+      "id": "sdlc-run-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "sdlc-run-gate.sh",
+      "report": "walteur-kit/sdlc-run-report.json",
+      "evidence": "Code-producing and deployable work proves local build, shared dev, staging, beta, production, independent review, QA, adversarial checks, rollback, monitoring, signoff, and retro evidence actually ran before ship."
+    },
+    {
+      "id": "project-context-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "project-context-gate.sh",
+      "report": "walteur-kit/project-context-report.json",
+      "evidence": "Project-specific AGENTS/CLAUDE/rules context, context budget, baton, and subagent handoff refs are present and checkable."
+    },
+    {
+      "id": "source-use-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "source-use-gate.sh",
+      "report": "walteur-kit/source-use-report.json",
+      "evidence": "Upstream source-router receipts prove source id, immutable pinned ref, extracted pattern, rejected parts, safety checks, artifact refs, verification, and rollback where needed."
+    },
+    {
+      "id": "loop-workspace-gate",
+      "stage": "intake",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "loop-workspace-gate.sh",
+      "report": "walteur-kit/loop-workspace-report.json",
+      "evidence": "Loop workspace files, work-log grammar, signal/doc schemas, and domain-loop schema are present and checkable."
+    },
+    {
+      "id": "self-improvement-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "self-improvement-gate.sh",
+      "report": "walteur-kit/self-improvement-report.json",
+      "evidence": "The run mines traces, scouts current GitHub sources, proposes bounded improvements, validates regressions, and captures compounding lessons."
+    },
+    {
+      "id": "outcome-eval-gate",
+      "stage": "review",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "outcome-eval-gate.sh",
+      "report": "walteur-kit/outcome-eval-report.json",
+      "evidence": "An independent evaluator scores the delivered artifact against the requested outcome with rubric evidence, confidence, bias checks, and no blockers."
+    },
+    {
+      "id": "qa-contract-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "qa-contract-gate.sh",
+      "report": "walteur-kit/qa-contract-report.json",
+      "evidence": "QA report proves unit/integration, functional, logic, integration, data integrity, security, and UX/resilience checks with fresh evidence."
+    },
+    {
+      "id": "docrun",
+      "stage": "verify",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "docrun.sh",
+      "report": "walteur-kit/docrun-report.json",
+      "evidence": "Documented shell blocks parse cleanly or are intentionally skipped."
+    },
+    {
+      "id": "spec-lint",
+      "stage": "plan",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "spec-lint.sh",
+      "report": "walteur-kit/spec-lint-report.json",
+      "evidence": "Plan and specification shape pass lint."
+    },
+    {
+      "id": "spec-trace",
+      "stage": "plan",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "spec-trace.sh",
+      "report": "walteur-kit/spec-trace-report.json",
+      "evidence": "Stories, requirements, and tasks trace across plan artifacts."
+    },
+    {
+      "id": "prd-gate",
+      "stage": "discover",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "prd-gate.sh",
+      "report": "walteur-kit/prd-gate-report.json",
+      "evidence": "Product signal has a non-stub PRD or is explicitly not applicable."
+    },
+    {
+      "id": "benchmark-gate",
+      "stage": "discover",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "benchmark-gate.sh",
+      "report": "walteur-kit/benchmark-gate-report.json",
+      "evidence": "User-facing product signal has a dated best-in-class benchmark or is explicitly not applicable."
+    },
+    {
+      "id": "product-standard-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "product-standard-gate.sh",
+      "report": "walteur-kit/product-standard-report.json",
+      "evidence": "Product/company completeness is explicit across value loop, surface area, business model, trust, ops, and launch."
+    },
+    {
+      "id": "production-layers-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "production-layers-gate.sh",
+      "report": "walteur-kit/production-layers-report.json",
+      "evidence": "Every production layer is owned, evidenced, or consciously deferred with risk ownership."
+    },
+    {
+      "id": "fitness-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "fitness-gate.sh",
+      "report": "walteur-kit/fitness-report.json",
+      "evidence": "Architecture layers are acyclic, forbidden dependencies stay unreachable, and configured architecture fitness tools pass."
+    },
+    {
+      "id": "design-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "design-gate.sh",
+      "report": "walteur-kit/design-report.json",
+      "evidence": "UI work has a design contract or no UI surface applies."
+    },
+    {
+      "id": "frontend-budget",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "frontend-budget.sh",
+      "report": "walteur-kit/frontend-report.json",
+      "evidence": "Frontend builds declare browser payload and Core Web Vitals budgets, and built JS stays within budget when output exists."
+    },
+    {
+      "id": "browser-proof-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "browser-proof-gate.sh",
+      "report": "walteur-kit/browser-proof-report.json",
+      "evidence": "UI builds provide fresh replayable real-browser evidence: routes, browser, viewport, command output, screenshots, accessibility, and interactions."
+    },
+    {
+      "id": "a11y-content-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "a11y-content-lint.sh",
+      "report": "walteur-kit/a11y-content-report.json",
+      "evidence": "Frontend content accessibility checks pass: images have alt text, inputs have labels, links are descriptive, and buttons have accessible names."
+    },
+    {
+      "id": "i18n-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "i18n-lint.sh",
+      "report": "walteur-kit/i18n-report.json",
+      "evidence": "Internationalized frontends avoid hardcoded user-facing strings and locale catalogs keep required keys in sync."
+    },
+    {
+      "id": "migration-proof-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "migration-proof-gate.sh",
+      "report": "walteur-kit/migration-proof-report.json",
+      "evidence": "Database migration work provides fresh forward, rollback, verification, lock-risk, and backfill evidence."
+    },
+    {
+      "id": "migration-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "migration-lint.sh",
+      "report": "walteur-kit/migration-report.json",
+      "evidence": "Database migrations pass zero-dependency safety checks for rollback, expand-contract rollout, Postgres index locking, and unsafe NOT NULL changes."
+    },
+    {
+      "id": "migration-roundtrip",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "migration-roundtrip.sh",
+      "report": "walteur-kit/migration-roundtrip-report.json",
+      "evidence": "Database migrations declare the rollback direction required for up-down-up roundtrip proof, with live DB execution recorded when available."
+    },
+    {
+      "id": "resilience-lint",
+      "stage": "verify",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "resilience-lint.sh",
+      "report": "walteur-kit/resilience-report.json",
+      "evidence": "Error handling and async failure rules pass."
+    },
+    {
+      "id": "devenv-gate",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "devenv-gate.sh",
+      "report": "walteur-kit/devenv-report.json",
+      "evidence": "Code-producing work has a reproducible developer environment or no code stack applies."
+    },
+    {
+      "id": "config-validation",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "config-validation.sh",
+      "report": "walteur-kit/config-report.json",
+      "evidence": "Configuration access is validated and committed env secrets are absent."
+    },
+    {
+      "id": "nfr-lint",
+      "stage": "plan",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "nfr-lint.sh",
+      "report": "walteur-kit/nfr-report.json",
+      "evidence": "Non-functional requirements are quantified when NFR discipline is present."
+    },
+    {
+      "id": "observe-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "observe-lint.sh",
+      "report": "walteur-kit/observe-report.json",
+      "evidence": "Observability anti-patterns are absent or no source files apply."
+    },
+    {
+      "id": "perf-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "perf-gate.sh",
+      "report": "walteur-kit/perf-report.json",
+      "evidence": "Performance context has tail-latency budgets and no detected regression."
+    },
+    {
+      "id": "security-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "security-gate.sh",
+      "report": "walteur-kit/security-report.json",
+      "evidence": "Security checks pass or tool/context absence is recorded."
+    },
+    {
+      "id": "osv-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "osv-gate.sh",
+      "report": "walteur-kit/osv-report.json",
+      "evidence": "Known malicious dependency advisories are absent or lookup skipped loudly."
+    },
+    {
+      "id": "sbom-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "sbom-gate.sh",
+      "report": "walteur-kit/sbom-report.json",
+      "evidence": "Dependency inventory/SBOM is valid and non-empty, generated by syft, or missing proof tooling is recorded loudly."
+    },
+    {
+      "id": "contract-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "contract-gate.sh",
+      "report": "walteur-kit/contract-report.json",
+      "evidence": "Declared API surfaces have machine-readable contracts."
+    },
+    {
+      "id": "schema-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "schema-lint.sh",
+      "report": "walteur-kit/schema-report.json",
+      "evidence": "Schema and migration rules pass or do not apply."
+    },
+    {
+      "id": "confidentiality-gate",
+      "stage": "review",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "confidentiality-gate.sh",
+      "report": "walteur-kit/confidentiality-report.json",
+      "evidence": "External or sensitive outputs have confidentiality evidence."
+    },
+    {
+      "id": "ontology-lint",
+      "stage": "review",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "ontology-lint.sh",
+      "report": "walteur-kit/ontology-lint-report.json",
+      "evidence": "Domain terms align to the ontology or findings are recorded."
+    },
+    {
+      "id": "tool-readiness",
+      "stage": "plan",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "tool-readiness.sh",
+      "report": "walteur-kit/tool-readiness-report.json",
+      "evidence": "Declared required tools are installed."
+    },
+    {
+      "id": "skill-readiness",
+      "stage": "review",
+      "hardness": "hard",
+      "availability": "spec",
+      "hook": "skill-readiness.sh",
+      "report": "walteur-kit/skill-readiness-report.json",
+      "evidence": "Declared required skills have machine-readable breadcrumbs or no skill floor applies."
+    },
+    {
+      "id": "operate-readiness-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "operate-readiness-gate.sh",
+      "report": "walteur-kit/operate-readiness-report.json",
+      "evidence": "Runtime systems prove SLOs, DORA targets, incident response, on-call, observability, rollback rehearsal, support handoff, and post-incident learning before ship."
+    },
+    {
+      "id": "release-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "release-gate.sh",
+      "report": "walteur-kit/release-report.json",
+      "evidence": "Release notes, handoff, and ship artifacts are present where applicable."
+    },
+    {
+      "id": "quickstart-check",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "quickstart-check.sh",
+      "report": "walteur-kit/quickstart-report.json",
+      "evidence": "README quickstart is present and runnable, or the project has no README yet."
+    },
+    {
+      "id": "run-trace",
+      "stage": "reflect",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "run-trace.sh",
+      "report": "walteur-kit/run-trace-report.json",
+      "evidence": "Run spans are recorded or explicitly not applicable."
+    },
+    {
+      "id": "trace-mine",
+      "stage": "reflect",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "trace-mine.sh",
+      "report": "walteur-kit/trace-mine-report.json",
+      "evidence": "Run traces, refine logs, summary ledgers, or receipts are mined for recurring systemic patterns and proposal-only lessons."
+    },
+    {
+      "id": "release-ledger-lint",
+      "stage": "reflect",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "release-ledger-lint.sh",
+      "report": "walteur-kit/release-ledger-report.json",
+      "evidence": "WALTEUR release version, proof counts, registry count, mirrored docs, and component manifest IDs are machine-readable and checked."
+    },
+    {
+      "id": "ai-safety-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "ai-safety-gate.sh",
+      "report": "walteur-kit/ai-safety-report.json",
+      "evidence": "AI safety checks pass or do not apply."
+    },
+    {
+      "id": "cost-budget",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "cost-budget.sh",
+      "report": "walteur-kit/cost-report.json",
+      "evidence": "Cost budget is checked where a cost surface exists."
+    },
+    {
+      "id": "tool-contract-lint",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "tool-contract-lint.sh",
+      "report": "walteur-kit/tool-contract-report.json",
+      "evidence": "Tool-call contracts and recipes are checked."
+    },
+    {
+      "id": "tool-guardrail-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "tool-guardrail-gate.sh",
+      "report": "walteur-kit/tool-guardrail-report.json",
+      "evidence": "Every agent-callable tool has pre-call, post-call, and error-path guardrails; dangerous tools require non-empty pre-call checks and an explicit halting fatal action; every declared tool-contract is covered."
+    },
+    {
+      "id": "iac-scan",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "iac-scan.sh",
+      "report": "walteur-kit/iac-report.json",
+      "evidence": "Infrastructure configuration is scanned where IaC exists."
+    },
+    {
+      "id": "restore-proof",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "restore-proof.sh",
+      "report": "walteur-kit/restore-proof-report.json",
+      "evidence": "Rollback or restore proof is present where risk requires it."
+    },
+    {
+      "id": "scoreboard-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "scoreboard-gate.sh",
+      "report": "walteur-kit/scoreboard-report.json",
+      "evidence": "Eight-dimension scoreboard meets target, per-dimension floors, security floor, locked targets, evidence refs, and freshness."
+    },
+    {
+      "id": "definition-of-done-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "definition-of-done-gate.sh",
+      "report": "walteur-kit/definition-of-done-report.json",
+      "evidence": "Definition of Done is closed at ship/reflect: no unchecked items, checked items carry typed proof references or existing local evidence files, N/A items carry reasons, placeholders are absent, and the checklist is fresh."
+    },
+    {
+      "id": "compliance-gate",
+      "stage": "review",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "compliance-gate.sh",
+      "report": "walteur-kit/compliance-report.json",
+      "evidence": "Compliance checks pass for regulated work."
+    },
+    {
+      "id": "audit-contract-gate",
+      "stage": "ship",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "audit-contract-gate.sh",
+      "report": "walteur-kit/audit-contract-report.json",
+      "evidence": "Terminal audit certificate has scores, 13-layer walk, intended-vs-implemented evidence, no blockers, no shortfalls, and fresh reproduced evidence."
+    },
+    {
+      "id": "audit-gate",
+      "stage": "ship",
+      "hardness": "hard",
+      "availability": "canonical",
+      "hook": "ship-gate.sh",
+      "report": "walteur-kit/audit.json",
+      "evidence": "Canonical ship gate verifies terminal audit before ship."
+    },
+    {
+      "id": "doc-quality-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "doc-quality-gate.sh",
+      "report": "walteur-kit/doc-quality-report.json",
+      "evidence": "Document deliverables prove structure, full source-citation, readability, and a humanizer pass for external docs."
+    },
+    {
+      "id": "workflow-quality-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "spec",
+      "hook": "workflow-quality-gate.sh",
+      "report": "walteur-kit/workflow-quality-report.json",
+      "evidence": "Workflow deliverables prove a single accountable owner (RACI), a dry-run, an exception path, and a recovery path."
+    },
+    {
+      "id": "container-scan",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "optional",
+      "hook": "container-scan.sh",
+      "report": "walteur-kit/container-report.json",
+      "evidence": "Opt-in: container images scanned for OS/package vulnerabilities."
+    },
+    {
+      "id": "maintainability-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "optional",
+      "hook": "maintainability-gate.sh",
+      "report": "walteur-kit/debt-ledger.json",
+      "evidence": "Opt-in: code maintainability metrics (complexity, duplication, debt) checked."
+    },
+    {
+      "id": "mutation-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "optional",
+      "hook": "mutation-gate.sh",
+      "report": "walteur-kit/qa/mutation.json",
+      "evidence": "Opt-in: mutation testing proves the suite kills injected faults."
+    },
+    {
+      "id": "craft-gate",
+      "stage": "verify",
+      "hardness": "detect_or_skip",
+      "availability": "optional",
+      "hook": "craft-gate.sh",
+      "report": "walteur-kit/craft-report.json",
+      "evidence": "Opt-in: code-craft checks beyond lint (naming, structure, idiom)."
+    }
+  ],
+  "requirements": {
+    "all": [
+      "build-contract-lint",
+      "gate-registry-lint",
+      "estimate-gate",
+      "current-stack-gate",
+      "harness-state-lint",
+      "phase-gate",
+      "evidence-gate",
+      "risk-acceptance-gate",
+      "adr-gate",
+      "prompt-refinement-gate",
+      "enterprise-blueprint-gate",
+      "delivery-orchestration-gate",
+      "ai-tool-governance-gate",
+      "authz-tenant-gate",
+      "privacy-data-gate",
+      "project-context-gate",
+      "source-use-gate",
+      "loop-workspace-gate",
+      "self-improvement-gate",
+      "outcome-eval-gate",
+      "qa-contract-gate",
+      "skill-readiness",
+      "docrun",
+      "scoreboard-gate",
+      "definition-of-done-gate",
+      "audit-contract-gate",
+      "trace-mine",
+      "release-ledger-lint"
+    ],
+    "by_build_class": {
+      "software": [
+        "spec-lint",
+        "spec-trace",
+        "prd-gate",
+        "benchmark-gate",
+        "product-standard-gate",
+        "production-layers-gate",
+        "fitness-gate",
+        "design-gate",
+        "frontend-budget",
+        "browser-proof-gate",
+        "a11y-content-lint",
+        "i18n-lint",
+        "resilience-lint",
+        "devenv-gate",
+        "config-validation",
+        "nfr-lint",
+        "observe-lint",
+        "perf-gate",
+        "security-gate",
+        "osv-gate",
+        "sbom-gate",
+        "contract-gate",
+        "schema-lint",
+        "migration-proof-gate",
+        "migration-lint",
+        "migration-roundtrip",
+        "quickstart-check",
+        "ai-tool-governance-gate",
+        "authz-tenant-gate",
+        "privacy-data-gate",
+        "sdlc-run-gate",
+        "operate-readiness-gate",
+        "release-gate"
+      ],
+      "workflow": [
+        "spec-lint",
+        "docrun",
+        "run-trace",
+        "tool-readiness",
+        "benchmark-gate",
+        "product-standard-gate",
+        "devenv-gate",
+        "config-validation",
+        "nfr-lint",
+        "observe-lint",
+        "perf-gate",
+        "sbom-gate",
+        "quickstart-check",
+        "ai-tool-governance-gate",
+        "authz-tenant-gate",
+        "privacy-data-gate",
+        "sdlc-run-gate",
+        "operate-readiness-gate",
+        "release-gate",
+        "workflow-quality-gate"
+      ],
+      "document": [
+        "docrun",
+        "confidentiality-gate",
+        "ontology-lint",
+        "doc-quality-gate"
+      ],
+      "data-ai": [
+        "benchmark-gate",
+        "product-standard-gate",
+        "production-layers-gate",
+        "devenv-gate",
+        "config-validation",
+        "nfr-lint",
+        "observe-lint",
+        "perf-gate",
+        "quickstart-check",
+        "ai-safety-gate",
+        "cost-budget",
+        "run-trace",
+        "tool-contract-lint",
+        "tool-guardrail-gate",
+        "confidentiality-gate",
+        "sbom-gate",
+        "ai-tool-governance-gate",
+        "authz-tenant-gate",
+        "privacy-data-gate",
+        "sdlc-run-gate",
+        "operate-readiness-gate",
+        "release-gate"
+      ],
+      "cloud-iac": [
+        "production-layers-gate",
+        "devenv-gate",
+        "config-validation",
+        "nfr-lint",
+        "observe-lint",
+        "perf-gate",
+        "quickstart-check",
+        "iac-scan",
+        "cost-budget",
+        "security-gate",
+        "restore-proof",
+        "sbom-gate",
+        "ai-tool-governance-gate",
+        "authz-tenant-gate",
+        "privacy-data-gate",
+        "sdlc-run-gate",
+        "operate-readiness-gate",
+        "release-gate"
+      ],
+      "mixed": [
+        "spec-lint",
+        "spec-trace",
+        "prd-gate",
+        "benchmark-gate",
+        "product-standard-gate",
+        "production-layers-gate",
+        "fitness-gate",
+        "design-gate",
+        "frontend-budget",
+        "browser-proof-gate",
+        "a11y-content-lint",
+        "i18n-lint",
+        "resilience-lint",
+        "devenv-gate",
+        "config-validation",
+        "nfr-lint",
+        "observe-lint",
+        "perf-gate",
+        "security-gate",
+        "osv-gate",
+        "sbom-gate",
+        "contract-gate",
+        "schema-lint",
+        "migration-proof-gate",
+        "migration-lint",
+        "migration-roundtrip",
+        "quickstart-check",
+        "confidentiality-gate",
+        "ai-tool-governance-gate",
+        "authz-tenant-gate",
+        "privacy-data-gate",
+        "sdlc-run-gate",
+        "operate-readiness-gate",
+        "release-gate"
+      ]
+    },
+    "by_risk_tier": {
+      "low": [],
+      "medium": [
+        "tool-readiness"
+      ],
+      "high": [
+        "tool-readiness",
+        "confidentiality-gate",
+        "restore-proof"
+      ],
+      "regulated": [
+        "tool-readiness",
+        "confidentiality-gate",
+        "compliance-gate",
+        "restore-proof",
+        "audit-gate"
+      ]
+    }
+  }
+}

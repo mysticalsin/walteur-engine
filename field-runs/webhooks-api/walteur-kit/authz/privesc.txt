@@ -1,0 +1,1 @@
+webhooks-api authz evidence: privesc — a fully-authenticated tenantB cannot escalate to tenantA data by id; rotate of A's secret by B is 403 and does not change A's fingerprint. Proven by test/cross-tenant.test.mjs DENY SECRET ROTATION.

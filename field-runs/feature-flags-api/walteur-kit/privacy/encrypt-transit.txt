@@ -1,0 +1,1 @@
+feature-flags privacy evidence: encryption-in-transit — TLS terminated at the platform ingress in front of the Node http server (field run binds 127.0.0.1).

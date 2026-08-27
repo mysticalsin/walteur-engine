@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "note": "Cadence real text/bg pairs as NATIVE hsl() tokens copied verbatim from src/styles.css (light :root + dark @media) - the gate parses hsl() directly (B65), so this stays in sync with the stylesheet without hand hex-conversion. Checked vs WCAG AA (4.5 normal / 3.0 large).",
+  "pairs": [
+    {
+      "name": "light body",
+      "fg": "hsl(240 28% 13%)",
+      "bg": "hsl(240 24% 98%)",
+      "large": false
+    },
+    {
+      "name": "light muted",
+      "fg": "hsl(240 10% 40%)",
+      "bg": "hsl(0 0% 100%)",
+      "large": false
+    },
+    {
+      "name": "light subtle",
+      "fg": "hsl(240 8% 49%)",
+      "bg": "hsl(0 0% 100%)",
+      "large": false
+    },
+    {
+      "name": "light link",
+      "fg": "hsl(212 92% 48%)",
+      "bg": "hsl(0 0% 100%)",
+      "large": false
+    },
+    {
+      "name": "light button",
+      "fg": "hsl(0 0% 100%)",
+      "bg": "hsl(212 92% 48%)",
+      "large": false
+    },
+    {
+      "name": "light success",
+      "fg": "hsl(158 68% 31%)",
+      "bg": "hsl(0 0% 100%)",
+      "large": false
+    },
+    {
+      "name": "light timer (large)",
+      "fg": "hsl(240 28% 13%)",
+      "bg": "hsl(0 0% 100%)",
+      "large": true
+    },
+    {
+      "name": "dark body",
+      "fg": "hsl(240 24% 96%)",
+      "bg": "hsl(240 18% 8%)",
+      "large": false
+    },
+    {
+      "name": "dark muted",
+      "fg": "hsl(240 12% 66%)",
+      "bg": "hsl(240 16% 11%)",
+      "large": false
+    },
+    {
+      "name": "dark subtle",
+      "fg": "hsl(240 10% 55%)",
+      "bg": "hsl(240 16% 11%)",
+      "large": false
+    },
+    {
+      "name": "dark link",
+      "fg": "hsl(212 96% 62%)",
+      "bg": "hsl(240 16% 11%)",
+      "large": false
+    },
+    {
+      "name": "dark button",
+      "fg": "hsl(240 30% 10%)",
+      "bg": "hsl(212 96% 62%)",
+      "large": false
+    },
+    {
+      "name": "dark success",
+      "fg": "hsl(158 62% 50%)",
+      "bg": "hsl(240 16% 11%)",
+      "large": false
+    }
+  ]
+}

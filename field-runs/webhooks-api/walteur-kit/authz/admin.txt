@@ -1,0 +1,1 @@
+webhooks-api authz evidence: admin — POST /admin/erase is tenant-scoped (DSAR for the CALLER only); it can never erase another tenant. Proven by test/cross-tenant.test.mjs DENY ERASE SCOPE + test/erasure.test.mjs.

@@ -1,0 +1,376 @@
+{
+  "weighted_score_100": 65.8,
+  "dimensions": [
+    {
+      "key": "oneshot",
+      "weight": 15,
+      "score": 6.3,
+      "confidence": "medium — read README.md/QUICKSTART.md/SHIPPED.md fully and sampled walteur-discover/SKILL.md and one field-run's core.mjs/audit.json/ops dir per instructions, but did not execute the orchestrator myself or read walteur-design/enterprise-blueprint files in depth",
+      "evidence": [
+        "QUICKSTART.md:32-40 explicitly warns doctor/gate-suite full run 'did not finish inside 4 minutes' — the fast onboarding path is a curated subset, not the real machine, signaling friction before any app gets built",
+        "walteur-discover/SKILL.md:36-50 defines a real 5-question DISCOVER pre-flight (outcome, JTBD, riskiest assumption, wedge, kill-criterion) with a schema-checked PRD.md and prd-gate.sh enforcement — this is genuine, structured vagueness-intake, not a token gesture",
+        "field-runs/SHIPPED.md FR-7 (jsonlint-cli) is explicitly labeled 'FIRST ORCHESTRATOR-BUILT app (end-to-end, not hand-built)' dated 2026-06-30 — i.e. only ONE app in the whole ledger was produced by the autonomous walteur.js pipeline from a raw ask; FR-1..FR-6 (apikeys-vault, feature-flags-api, documents-api, webhooks-api, etc.) were explicitly 'hand-built' / 'hand-driven-with-harness', meaning a human walked the lifecycle by hand rather than one prompt producing the app",
+        "field-runs/SHIPPED.md FR-7 notes the orchestrator's own audit caught a real bug (BOM-stripping in --fix) and marked SHIPABLE:false on the first pass — good honesty, but it also shows the one true one-shot run did NOT reach ship-ready without a follow-up human-driven fix pass",
+        "field-runs/apikeys-vault/core.mjs:1-60 and ops/ (chaos.sh, rollback.sh, secrets-policy.json, slo.json, dashboards.md) show genuinely enterprise-flavored default output (tenant isolation, audit trail, hash-only secrets, chaos/rollback runbooks) when the harness IS driven — the defaults quality is real, just not yet proven to fire unattended on an 'enterprise-grade' (not CLI-scale) target",
+        "README.md:104 + field-runs/SHIPPED.md 'Remaining gap' line: the v10 stamp still frames full autonomous orchestrator end-to-end runs as a recent, singular, small-scope proof point (a JSON linter CLI), not yet demonstrated on a multi-service/enterprise-scope app"
+      ],
+      "gaps": [
+        {
+          "title": "No evidence of a one-shot autonomous run producing an actual enterprise-grade app (multi-surface, deployed, real infra) — the only fully-orchestrator-built artifact (FR-7) is a small zero-dependency CLI linter, explicitly flagged as needing a human-driven bugfix pass before shippable",
+          "severity": "high",
+          "concrete_fix": "Run walteur.js end-to-end (Workflow orchestrator, no hand-driving) on a genuinely enterprise-scoped ask (multi-tenant SaaS with auth+DB+deploy, similar scope to apikeys-vault/feature-flags-api) and add it as FR-8 in field-runs/SHIPPED.md with the same evidence rigor (run-trace.jsonl, audit.json, independently-reproduced test counts) used for FR-7."
+        },
+        {
+          "title": "QUICKSTART.md and doctor.sh onboarding path is decoupled from actually building an app — a new user following QUICKSTART never reaches an example of a vague-prompt-to-app run; there's no 'try /goal on a vague idea and watch it ship' walkthrough in QUICKSTART.md itself",
+          "severity": "med",
+          "concrete_fix": "Add a QUICKSTART.md §6 that runs `/goal \"<deliberately vague one-liner>\"` against the harness in-repo (or points at the FR-7 run-trace.jsonl as a replayable transcript) so a skeptic can see the vague-prompt intake happen, not just read about DISCOVER in the skill doc."
+        },
+        {
+          "title": "walteur-discover's 5-question pre-flight (SKILL.md:36-50) is well-designed on paper but has no field-run evidence of actually catching or reshaping a genuinely vague/underspecified user prompt in practice — none of the 7 field-run entries show the DISCOVER pre-flight Q&A transcript or a PRD.md that visibly changed scope from the raw ask",
+          "severity": "med",
+          "concrete_fix": "For the next field run, commit the raw one-line prompt AND the resulting PRD.md side by side in field-runs/<name>/PRD.md plus a short DISCOVER-transcript.md showing the 5 pre-flight answers, so the gap-closing is independently checkable rather than asserted."
+        }
+      ],
+      "quick_win": "Add one FR-8 row to field-runs/SHIPPED.md (or upgrade FR-7's note) that links the raw one-line prompt actually given to walteur.js for jsonlint-cli, side-by-side with the resulting PRD.md/enterprise-blueprint.json it derived — currently the vagueness-intake step is asserted in the changelog prose but not shown as before/after evidence in the one field run that was truly one-shot."
+    },
+    {
+      "key": "code",
+      "weight": 12,
+      "score": 6.8,
+      "confidence": "medium-high — read ship-gate.sh, gate-suite.sh, loop-readiness-gate.sh in full, diffed all 15 .claude/hooks vs walteur-kit/hooks name-collisions, traced live settings.json wiring, ran a live selftest, and grep-audited the known jq -e trap across both hook trees.",
+      "evidence": [
+        "ship-gate.sh:38-39,137-140 — KIT=$ROOT/walteur-kit; run_gate() dispatches via \"$KIT/hooks/$name\", so craft-gates always resolve to walteur-kit/hooks, never .claude/hooks",
+        "comm -12 on basenames: 15/18 .claude/hooks/*.sh collide with walteur-kit/hooks/*.sh; only gate-suite.sh is an actual delegating shim (its own header documents this exact anti-pattern and why it converted)",
+        "tool-liveness-probe.sh: .claude copy 113 lines vs walteur-kit canonical 239 lines — canonical header documents a fixed regression (a prior version exploded object-shaped manifest entries into 294 junk tool names and FAILed closed); the dead .claude copy predates and lacks that fix",
+        "grep across the repo for any reference to the 11 non-shim .claude/hooks duplicates (loop-readiness-gate.sh, tool-liveness-probe.sh, apple-grade-design-gate.sh, persona-coverage-gate.sh, test-claim-verifier-gate.sh, hollow-artifact-gate.sh, context-compaction-gate.sh, data-correctness-gate.sh, harness-self-audit-gate.sh, skill-frontmatter-gate.sh, skill-quality-gate.sh, anti-slop-prose-gate.sh) returned zero hits outside themselves — confirmed dead code",
+        "live run: bash .claude/hooks/loop-readiness-gate.sh --selftest degraded to 5/13 passed because unchecked `t=\"$(mktemp -d)\"` leaves t empty on mktemp failure, then `mkdir -p \"$t/walteur-kit\"` silently targets filesystem root '/'; identical unguarded idiom exists in the canonical walteur-kit/hooks/loop-readiness-gate.sh (lines 201-227), not just the dead copy",
+        "jq -e last-value-trap sweep: all stream-generator jq -e uses found (ai-safety-gate.sh:169-202, baseline-capture-gate.sh:89, build-contract-lint.sh:395/441, self-improvement-gate.sh:568) use select() or all(.[];...) — safe idioms; the specific trap pattern from project memory (bare .[] == X without select) was not found in either hook tree"
+      ],
+      "gaps": [
+        {
+          "title": "11 orphaned .claude/hooks/*.sh gate duplicates are dead code that silently diverges from the canonical they were forked from",
+          "severity": "high",
+          "concrete_fix": "Convert loop-readiness-gate.sh, tool-liveness-probe.sh, apple-grade-design-gate.sh, persona-coverage-gate.sh, test-claim-verifier-gate.sh, hollow-artifact-gate.sh, context-compaction-gate.sh, data-correctness-gate.sh, harness-self-audit-gate.sh, skill-frontmatter-gate.sh, skill-quality-gate.sh, anti-slop-prose-gate.sh in .claude/hooks/ into thin delegating shims exactly like the existing .claude/hooks/gate-suite.sh (resolve CANON=$ROOT/walteur-kit/hooks/<name>, exec with args, fail-closed exit 2 if missing) — collapses to one implementation per gate, matching the precedent already set and documented in gate-suite.sh's own header."
+        },
+        {
+          "title": "Unchecked mktemp -d in selftest fixtures across both hook trees can target filesystem root on failure",
+          "severity": "med",
+          "concrete_fix": "In walteur-kit/hooks/loop-readiness-gate.sh (and any other selftest using the same idiom) replace bare `t=\"$(mktemp -d)\"` with `t=\"$(mktemp -d \"${TMPDIR:-/tmp}/loop-ready.XXXXXX\")\" || { echo FAIL - mktemp; continue; }` before any mkdir/printf into $t, matching the pattern already used correctly in gate-suite.sh:64."
+        },
+        {
+          "title": "tool-liveness-probe.sh MCP-manifest probing and canonical-manifest-shape fix exist only in walteur-kit; if the dead .claude copy is ever the one someone edits or re-wires, the fixed regression silently reappears",
+          "severity": "low",
+          "concrete_fix": "Same fix as gap 1 (shim conversion) makes this moot — once .claude/hooks/tool-liveness-probe.sh delegates to walteur-kit's, there is only one source of truth to patch."
+        }
+      ],
+      "quick_win": "Convert the 11 orphaned .claude/hooks/*.sh gate duplicates into thin shims delegating to walteur-kit/hooks/, using .claude/hooks/gate-suite.sh's own existing shim pattern as the template — closes the single-source-of-truth violation that file's own header already calls out as a defect class, in under 30 minutes for all 11 given the copy-paste template already exists in the repo."
+    },
+    {
+      "key": "security",
+      "weight": 12,
+      "score": 6.8,
+      "confidence": "medium-high — read kill-switch.sh, gate-guard.sh, ship-gate.sh in full, LOOP.md denylist section, .gitleaks.toml, .pre-commit-config.yaml, ci.github-actions.yml, and the injection guards in ship-gate.sh/test-claim-verifier-gate.sh in full; did not exhaustively read all 20 walteur-kit/hooks/*.sh or full security-playbooks content",
+      "evidence": [
+        ".claude/settings.json:9-15 — kill-switch.sh is wired to PreToolUse only for matcher \"Write|Edit|MultiEdit\"; the Bash matcher (line 13-14) only runs ship-gate.sh, which is a no-op unless the command matches git+commit/tag (ship-gate.sh:24-31) — so a Bash-tool file write (heredoc/sed -i/cat>) during PAUSED is never intercepted",
+        "LOOP.md:38-42 — the hard-coded path denylist (.env, secrets/**, credentials/**, *_key*, *_secret*, .terraform/**, k8s/production/**, migrations/**, auth/**, payments/**, billing/**) is prose only; grep across gate-guard.sh and ship-gate.sh finds zero references to any of those literal globs — the only path-matching enforcement present is gate-guard.sh's opt-in <boundaries> block sourced from PLAN.md (WARN-only by default, HARD only with WALTEUR_BOUNDARIES=hard)",
+        "ship-gate.sh:90-112 and test-claim-verifier-gate.sh:72-88 — both eval() call sites are guarded by an allowlisted-runner check + a dangerous-token regex (curl|wget|/dev/tcp|base64|netcat|rm -rf|sudo|$(|`|/etc/passwd) + a probe_proves_something non-triviality check before eval'ing an agent-influenced string — genuine defense-in-depth, correctly fail-closed on missing guard file (ship-gate.sh:107-110)",
+        ".gitleaks.toml + .pre-commit-config.yaml + ci.github-actions.yml:190-193 — three-surface gitleaks coverage (pre-commit, CI, runtime security-gate.sh) sharing one config, useDefault=true inherits the full upstream ruleset, allowlist scoped only to fixture paths — solid supply-chain secret-scanning design",
+        "ci.github-actions.yml:23-24,32,119,123,127,193 — top-level permissions: contents:read is correct least-privilege, first-party actions (checkout, setup-node) are pinned to real 40-char SHAs, but rhysd/actionlint and zizmorcore/zizmor-action are pinned to literal all-zero placeholder SHAs (0000...0000) with '# REPLACE' comments, and gitleaks/gitleaks-action@v2 (line 193) is an unpinned moving tag — three violations of the file's own stated 'every uses: pinned to a full 40-char SHA' policy, and the placeholder SHAs would hard-fail any real run of the harden job",
+        "kill-switch.sh has no real --selftest branch (only -h/--help), so its 13-line body has never been exercised against a formal fixture suite the way other gates are (e.g. loop-readiness-gate.sh has a documented --selftest fixture harness)"
+      ],
+      "gaps": [
+        {
+          "title": "Kill switch does not cover Bash-tool file writes",
+          "severity": "high",
+          "concrete_fix": "In .claude/settings.json, add a kill-switch.sh invocation to the existing 'Bash' matcher's hooks array, unconditional (not gated behind ship-gate's git-commit-only trigger), so PAUSED blocks Bash-driven writes (heredocs, sed -i, cat>, python -c 'open().write()') the same way it blocks Write/Edit/MultiEdit."
+        },
+        {
+          "title": "LOOP.md path denylist is documentation, not code",
+          "severity": "high",
+          "concrete_fix": "Add a hard-coded denylist array to .claude/hooks/gate-guard.sh (mirroring LOOP.md:39-42: .env*, **/secrets/**, **/credentials/**, **/*_key*, **/*_secret*, .terraform/**, k8s/production/**, **/migrations/**, auth/**, payments/**, billing/**) that HARD-blocks (exit 2) regardless of whether PLAN.md declares a <boundaries> block — today the PLAN-sourced boundaries mechanism is opt-in per-project and WARN-only by default, so nothing stops an autonomous edit to .env or payments/** on a project whose PLAN.md omits a <boundaries> section."
+        },
+        {
+          "title": "CI harden job ships broken placeholder SHAs, contradicting its own stated supply-chain policy",
+          "severity": "med",
+          "concrete_fix": "In ci.github-actions.yml:123 and :127, replace the all-zero SHAs with real pinned commit SHAs for rhysd/actionlint and zizmorcore/zizmor-action; also pin gitleaks/gitleaks-action@v2 (line 193) to a 40-char SHA to match the file's own documented 'every uses: pinned' rule — as written the harden job cannot run at all."
+        },
+        {
+          "title": "kill-switch.sh has no --selftest coverage unlike sibling gates",
+          "severity": "low",
+          "concrete_fix": "Add a --selftest branch to .claude/hooks/kill-switch.sh (mirroring the fixture pattern in loop-readiness-gate.sh) that creates/removes a temp walteur-kit/PAUSED and asserts exit 2/0, so the kill switch's own correctness is proven the same way every other gate proves itself."
+        }
+      ],
+      "quick_win": "Add kill-switch.sh to the Bash PreToolUse matcher in .claude/settings.json (currently only Write|Edit|MultiEdit are covered) — closes the biggest fail-open gap: PAUSED currently does not stop Bash-driven file writes."
+    },
+    {
+      "key": "design",
+      "weight": 10,
+      "score": 4.2,
+      "confidence": "high — read the full gate source, ran its real selftest (9/9 passing outside sandbox), and visually inspected 2 of the harness's own shipped screenshots",
+      "evidence": [
+        ".claude/hooks/apple-grade-design-gate.sh:63-101 — the five 'Apple-grade' checks are all syntactic proxies: distinct font-size count (<=8), padding/margin/gap px%4==0, raw-hex count (<=6), presence of the string 'transition|animation|@keyframes' anywhere in any file, and existence of a DESIGN.md file. None measure visual hierarchy, contrast, alignment, whitespace rhythm, motion quality, or composition.",
+        "apple-grade-design-gate.sh:87-88 — the 'motion' check is satisfied by a single grep hit for the word 'transition' anywhere in the codebase; a lone `transition: all 2s linear` on one div passes the same as a full micro-interaction system.",
+        "walteur-kit/hooks/anti-slop-ui.sh:5-6,146-147 — the sibling anti-slop gate is a regex denylist for specific known AI-slop signatures (purple/indigo gradients, bg-clip-text) — a blocklist, not a generalized taste detector; unlisted slop patterns pass silently.",
+        "walteur-kit/hooks/design-depth-gate.sh:204-213 — 'design depth' is architecture-layer keyword coverage (auth/db/payments/async/api present in the design doc text), unrelated to visual craft.",
+        "/Users/tony/.../Pro Coding/walteur-hero-crop.png — the harness's OWN shipped marketing screenshot has visible mojibake ('RUN 2026Â·06Â·20 â€\" 14 AGENTS', 'LAGS â€\" 4 AREAS') — a defect any human eye would reject on sight; none of the 3 design gates inspect rendered pixels so none would ever catch it.",
+        "01-start.png — the flagship field-run screenshot (Tetris clone) is plain functional UI with no evidence of a branded type system or intentional depth/motion, consistent with a gate that checks numeric proxies rather than achieved craft."
+      ],
+      "gaps": [
+        {
+          "title": "No perceptual/visual check anywhere in the pipeline — gates only read source text, never rendered pixels",
+          "severity": "high",
+          "concrete_fix": "Add a Playwright screenshot step to apple-grade-design-gate.sh (or a companion gate) that renders the built UI, feeds the PNG to a vision-capable model against a fixed craft rubric (contrast, alignment-to-grid, whitespace ratio, hierarchy), and fails on a low score — this is what walteur-design/SKILL.md's 'screenshot-verified share-worthy loop' promises but no HARD gate mechanically enforces."
+        },
+        {
+          "title": "Motion check passes on a single literal string match anywhere in the codebase",
+          "severity": "med",
+          "concrete_fix": "apple-grade-design-gate.sh:87-88 — require the transition/animation hit to appear on an interactive selector (:hover, :focus, [disabled], button/[role=button]) with duration 80-200ms via a tighter regex, not bare keyword presence."
+        },
+        {
+          "title": "Own shipped artifact (walteur-hero-crop.png) ships with an unmediated encoding bug in a marketing image",
+          "severity": "med",
+          "concrete_fix": "Fix the mojibake at the source (UTF-8 em-dash/middle-dot written through a non-UTF8 stream) and add a pre-publish grep gate for the mojibake byte sequences 'Â·' / 'â€\"' across any HTML/MD destined for screenshot export."
+        },
+        {
+          "title": "No computed contrast-ratio check despite claiming a semantic-token floor",
+          "severity": "low",
+          "concrete_fix": "Add a WCAG contrast check (resolve fg/bg token pairs, compute ratio via a small perl/node script) to apple-grade-design-gate.sh's token check instead of just counting raw hex literals (<=6)."
+        }
+      ],
+      "quick_win": "Fix the mojibake in the shipped walteur-hero-crop.png source markup ('Â·' / 'â€\\\" ' encoding artifacts) — it's currently the harness's own top marketing asset failing the bar its own gate claims to enforce, and it's a one-line UTF-8 encoding fix."
+    },
+    {
+      "key": "uxdx",
+      "weight": 10,
+      "score": 7.9,
+      "confidence": "medium-high — read QUICKSTART.md, LOOP.md, gate-guard.sh, kill-switch.sh, data-correctness-gate.sh fully; ran gate-guard/kill-switch live; sampled ISSUES.md tail",
+      "evidence": [
+        "QUICKSTART.md:14-19,31,47-51,57-59 gives box-verified numbers (not guessed) for every claimed timing/count (14/14 selftest, 137 gates, 18/18 doctor) — trustworthy onboarding copy",
+        "QUICKSTART.md:106-113 'Where things live' table answers the 4 questions a new operator actually asks (score/fix/health/how-to-run) in one lookup, no digging",
+        "gate-guard.sh:14-21 every gate implements --help BEFORE side effects (S033 contract) — usage, report path, bypass var, all in one line, consistent across the fleet",
+        "kill-switch.sh:12 single-file pause/resume model with the exact resume command printed inline on block ('rm walteur-kit/PAUSED') — near-zero cognitive load to unstick a run",
+        "gate-guard.sh:87-90 the HARD/WARN boundaries message is a single >200-char wall-of-text line mixing verdict, matched path, matched glob, and two different remediation paths — harder to parse mid-terminal-scroll than the rest of the fleet's crisp one-liners",
+        "_relay/ISSUES.md:1-63 (6 entries, all tail-checked) contains ONLY upstream source-drift proposals ('PROTOCOL: proposal, NOT auto-applied') — no operator-facing open-issue/escalation log exists at this path despite LOOP.md:44-47 promising an escalation destination for security tradeoffs / 3rd-failed-attempt caps",
+        "QUICKSTART.md:83-96 step 6 ('run WALTEUR itself') is a single slash-command line with no sample transcript, no expected runtime, and no in-flow pointer to the PAUSED/resume mechanic that's buried instead in the Troubleshooting section 10 lines later"
+      ],
+      "gaps": [
+        {
+          "title": "No real operator escalation log exists at the path LOOP.md promises",
+          "severity": "high",
+          "concrete_fix": "In _relay/ISSUES.md, add a top '## Operator Escalations (open)' section separate from the existing '## self-heal drift' entries, and wire the 3rd-failed-attempt/security-tradeoff triggers named in LOOP.md:44-47 to append there — otherwise the documented human-gate has no visible destination for Tony to check.",
+          "effort_minutes": 20
+        },
+        {
+          "title": "Dense multi-clause error message in gate-guard.sh boundaries check",
+          "severity": "med",
+          "concrete_fix": "gate-guard.sh:87-90 — break the single echo into 3 lines (verdict, matched-glob detail, bypass command) using printf with \\n, matching the terse one-liner style used everywhere else in the same file (e.g. line 30).",
+          "effort_minutes": 10
+        },
+        {
+          "title": "No worked example of a real WALTEUR run in QUICKSTART step 6",
+          "severity": "med",
+          "concrete_fix": "QUICKSTART.md:83-96 — add a 5-10 line sample transcript excerpt (or link to one) showing what the scope->think->plan->build phases actually print, plus expected first-run wall-clock time, so a new operator isn't flying blind on their first /goal invocation.",
+          "effort_minutes": 25
+        },
+        {
+          "title": "Resume-from-pause mechanic is siloed in Troubleshooting instead of inline in the main flow",
+          "severity": "low",
+          "concrete_fix": "QUICKSTART.md — add a one-line callout right after step 6 ('If a run halts mid-loop, check for walteur-kit/PAUSED — see Troubleshooting') so the stop/resume path is discoverable without reading to the bottom of the doc.",
+          "effort_minutes": 5
+        }
+      ],
+      "quick_win": "Split gate-guard.sh's boundaries WARN/HARD message (lines 87-90) into 2-3 short stderr lines (verdict / matched path+glob / one bypass command) so a blocked operator reads it in one terminal glance instead of parsing a 200+ char run-on sentence."
+    },
+    {
+      "key": "memory",
+      "weight": 12,
+      "score": 4.8,
+      "confidence": "high — all findings are from direct file reads, `find`/`ls`/`grep` on the actual repo and starter mirror, not inference from doc claims alone",
+      "evidence": [
+        "`.claude/rules/memory-discipline.md:3` self-admits recall-before-act is a 'PROTOCOL rule (judgment, not a hook)... The agent obeys it; nothing mechanically enforces it' — no gate blocks action without a graphify query",
+        "`graphify-out/` is ABSENT at repo root (confirmed via `ls -la graphify-out` returning nothing) despite CLAUDE.md and memory-discipline.md mandating graphify-query-first as the canonical recall surface everywhere",
+        "`walteur-kit/canonical-kit-staging/SCHEMA.lessons.md:9-10` cites 'lesson-gate.sh:56' and 'lesson-feedback.sh:35' as the existing lessons-writer/reader — neither file exists anywhere in the repo, the walteur-starter mirror, or field-runs (find returned zero hits); `~/.walteur/memory/` (the documented default store) contains only a 1.1K `self-optimization-report.md`, no `lessons.jsonl` with any entries",
+        "`_relay/BATON.md` (live cross-model handoff file) is currently stale: `phase: UNKNOWN, completed_tasks: none, next_action: Phase unknown` — directly violates its own protocol's golden rule in `_relay/README.md`: 'A stale baton is worse than none: it lies to the next shift'",
+        "`.claude/hooks/harness-self-audit-gate.sh:87-91` scores the 'memory' dimension (10/100 pts) purely by file EXISTENCE — `loop-state.json` present? `LOOP.md` present? `loop-engineering/` dir present? — never checks lessons.jsonl entry count, MEMORY.md freshness, or graphify-out presence; a shallow, gameable self-certification",
+        "`/Users/tony/.claude/projects/.../memory/MEMORY.md` (Claude Code's own generic session memory, not a WALTEUR-built mechanism) IS genuinely populated with 11 concrete, dated, ≤25-word learnings — real capture-on-correction happening, but at the CC-platform layer, not inside WALTEUR's bespoke lessons pipeline",
+        "`_relay/README.md:34` claims Hermes is one of four wired cross-model entry points via `_relay/HERMES.md`, but that file is empty/absent in the starter mirror (`cat .../HERMES.md` returned nothing) — a documented contract that doesn't exist"
+      ],
+      "gaps": [
+        {
+          "title": "lessons.jsonl capture pipeline is entirely unimplemented (docs-only)",
+          "severity": "high",
+          "concrete_fix": "Implement `walteur-kit/hooks/lesson-gate.sh` and `lesson-feedback.sh` per the stub at `walteur-kit/canonical-kit-staging/lesson-gate.sh.patch`, writing to `$WALTEUR_MEM/lessons.jsonl` (default `~/.walteur/memory/lessons.jsonl`) with the schema `SCHEMA.lessons.md` already defines. Currently that file doesn't exist so the bi-temporal design in the schema doc has zero real rows.",
+          "effort_minutes": 90
+        },
+        {
+          "title": "graphify-out/ absent despite being the mandated single recall brain",
+          "severity": "high",
+          "concrete_fix": "Run the graphify skill to build `graphify-out/wiki/index.md` for this repo, or if graphify genuinely isn't wired for WALTEUR yet, strip the graphify-first claim from `.claude/rules/memory-discipline.md` and `LOOP.md` so the docs stop overclaiming an integration that doesn't exist on disk.",
+          "effort_minutes": 30
+        },
+        {
+          "title": "recall-before-act has zero mechanical enforcement",
+          "severity": "med",
+          "concrete_fix": "Add a lightweight check to an existing PreToolUse hook (pattern-match `.claude/hooks/*.sh`) that logs (soft-warn, not fail) when the first Edit/Write of a session has no preceding graphify/lessons query in the transcript — start observational, escalate to a HARD gate once signal is trusted.",
+          "effort_minutes": 45
+        },
+        {
+          "title": "_relay/BATON.md is stale in production right now",
+          "severity": "med",
+          "concrete_fix": "Update `_relay/BATON.md` with real current state (or archive it to `_relay/archive/` and reset to template) before this panel review runs further — it's actively violating its own golden rule.",
+          "effort_minutes": 5
+        },
+        {
+          "title": "self-audit memory dimension only checks file existence, not content freshness",
+          "severity": "med",
+          "concrete_fix": "In `.claude/hooks/harness-self-audit-gate.sh` around line 87-91, add `[ -s \"$MEM/lessons.jsonl\" ]` and an mtime-recency check plus `[ -d \"$ROOT/graphify-out\" ]` to the d_mem scoring so a harness can't self-certify memory via presence of empty/stale scaffolding.",
+          "effort_minutes": 20
+        },
+        {
+          "title": "HERMES.md contract referenced but missing",
+          "severity": "low",
+          "concrete_fix": "Create `walteur-starter/_relay/HERMES.md` with the minimal system-prompt contract the README describes, or remove the Hermes row from the entry-points table in `_relay/README.md:34` until it exists.",
+          "effort_minutes": 15
+        }
+      ],
+      "quick_win": "Update the currently-stale `_relay/BATON.md` (phase: UNKNOWN) with real current state right now — it's actively violating the protocol's own golden rule ('a stale baton is worse than none') and takes 5 minutes to fix."
+    },
+    {
+      "key": "qa",
+      "weight": 10,
+      "score": 7.8,
+      "confidence": "high -- ran 3 gate selftests live (34/34 pass, non-sandboxed), plus a real-file (non-fixture) execution of harness-self-audit-gate.sh and test-claim-verifier-gate.sh against this actual repo, which is what surfaced the 142-vs-132 drift finding directly rather than by inference.",
+      "evidence": [
+        "test-claim-verifier-gate.sh:87-96 re-executes the actual claimed test command and blocks (exit 2) if it fails -- genuine maker/checker separation, not trust-the-claim; selftest hermetic run verified live at 11/11 (non-sandboxed) covers false-green, unverifiable-claim, off-allowlist-runner, dangerous-token, and dry-run paths (test-claim-verifier-gate.sh:110-131).",
+        "harness-self-audit-gate.sh:105-120 implements real regression locking against a committed baseline (gate-count drop, vanished gate id, score drop all fail-closed) -- genuine drift detection, not a static score. Verified 9/9 selftest live (non-sandboxed).",
+        "Live real-file run (not the hermetic fixture) of harness-self-audit-gate.sh against this repo's own walteur-kit currently FAILS: 'parity: ledger expected_gate_count (132) != registry gates (142)' -- the gate correctly caught real drift between gate-registry.json (142 gates) and release-ledger.json (expected 132), proving the selftest-green-vs-real-file-green gap the harness's own memory file names is still live in production state right now, not just historical.",
+        "gate-suite.sh:53-119 is a thin delegating shim with its own 4-part hermetic selftest (positive, negative-A absent-canonical, negative-B propagate-failure, and a poison-check at gate-suite.sh:106-116 that mutates the shim itself to prove the negative-A assertion is a real observer, not a fixture that always passes) -- an unusually rigorous test-the-test pattern.",
+        "155/157 walteur-kit/hooks/*.sh contain --selftest, and CI (.github/workflows/ci.yml:36-81, twin-invariant.yml:27-34) wires selftest.sh + gate-suite --selftest + twin-invariant --selftest -- but all of these are hermetic-fixture selftests run in mktemp sandboxes; CI does not additionally run any gate against the live repo's own real files, so the 142-vs-132 real drift found above would NOT be caught by CI as currently configured.",
+        "DEFINITION-OF-DONE.md:66-83 enumerates a genuinely rigorous verification section (unit/integration/E2E/lint/security/perf/a11y, qa-report+scoreboard gates, no-silent-mocks, measured-not-claimed UI quality, security-baseline 11-point checklist, revenue/audit-trail integrity) -- checklist rigor is high, but DoD is a template with typed Evidence: fields, not itself a gate that runs and blocks; nothing observed enforces that every checkbox in this file was actually re-verified per run versus copy-pasted from a prior pass."
+      ],
+      "gaps": [
+        {
+          "title": "harness-self-audit-gate FAILs right now against this repo's real walteur-kit (142 registry gates vs 132 expected in release-ledger.json) -- the drift the gate exists to catch is currently uncaught in the shipped state",
+          "severity": "high",
+          "concrete_fix": "Run `bash walteur-kit/hooks/gate-registry-lint.sh` (or manually) and update walteur-kit/release-ledger.json's registry.expected_gate_count from 132 to 142 (or WALTEUR_SELFAUDIT=rebaseline if the 10 new gates are intentional), then re-run `bash .claude/hooks/harness-self-audit-gate.sh` to confirm PASS before any further ship claim.",
+          "effort_minutes": 10
+        },
+        {
+          "title": "CI never runs any gate against the repo's own real files, only against hermetic mktemp fixtures -- so real-file drift (like the parity failure just found) is structurally invisible to CI",
+          "severity": "high",
+          "concrete_fix": "Add a step to .github/workflows/ci.yml after the existing selftest steps: `run: bash walteur-kit/hooks/harness-self-audit-gate.sh` (no --selftest) executed against the checked-out repo itself, so CI fails loudly on exactly the parity drift found in this review instead of only exercising fixtures.",
+          "effort_minutes": 15
+        },
+        {
+          "title": "test-claim-verifier-gate has no real claim artifact in the shipped repo (walteur-kit/qa-report.json is a 0-byte stub, walteur-kit/test-claim.json absent) so the gate is permanently NOT_APPLICABLE on this repo itself -- the maker/checker loop is proven only in hermetic fixtures, never demonstrated end-to-end on WALTEUR's own build claims",
+          "severity": "med",
+          "concrete_fix": "After the next real build/test run in this repo, write walteur-kit/test-claim.json with {tests_pass:true, command:\"<actual test command>\"} so `bash .claude/hooks/test-claim-verifier-gate.sh` runs for real at least once and its report (walteur-kit/test-claim-report.json) is non-synthetic evidence.",
+          "effort_minutes": 10
+        },
+        {
+          "title": "2 of 157 hooks in walteur-kit/hooks lack --selftest entirely, an unexplained coverage gap in an otherwise near-universal discipline",
+          "severity": "low",
+          "concrete_fix": "Run `grep -L -- '--selftest' walteur-kit/hooks/*.sh` to identify the 2 hooks, then either add a --selftest case matching the house pattern (see test-claim-verifier-gate.sh:136-138 for the minimal dispatch idiom) or document in REMEDIATION.md why they're exempt.",
+          "effort_minutes": 20
+        }
+      ],
+      "quick_win": "Fix the live real-file failure: update walteur-kit/release-ledger.json's registry.expected_gate_count from 132 to 142 (or run with WALTEUR_SELFAUDIT=rebaseline), then re-run `bash .claude/hooks/harness-self-audit-gate.sh` to confirm PASS -- this closes the exact selftest-green/real-file-red gap this review surfaced, in under 10 minutes."
+    },
+    {
+      "key": "orchestration",
+      "weight": 7,
+      "score": 7.9,
+      "evidence": [
+        "walteur.js:1123-1181 — real dependency-DAG wave scheduling (toWaves) + in-code file-disjointness enforcement (disjointBatches/A4) so parallel writers can never race on a file; verified live via walteur-run.mjs which drove the real emitSpan/flushSpans/routingConformance path end-to-end (14 trace rows, exactly 1 routing_mismatch on the deliberate negative control).",
+        "walteur-kit/model-routing.json:8-42 + walteur.js:261-267 — genuine 3-tier model routing (opus=judgment/sonnet=bulk/haiku=mechanical, e.g. maybeCompact uses haiku at walteur.js:1120) with a self-checking routingConformance() that folds a mismatch into gate_verdict and is proven by an inline negative-control span, not just documented policy.",
+        "walteur.js:123-152 — overBudget()/budgetStop() checked at real gate boundaries (Think fan-out, every Build wave, Review, etc.) using budget.spent() deltas via tokensSincePhase() (walteur.js:96-107) — real per-run token accounting when the harness supplies `budget`, honestly falls back to 0 (never fabricated) when it doesn't.",
+        "walteur.js:84 estUsd() uses a single blended $30/M rate for both Sonnet and Opus output tokens — the ceiling math cannot distinguish an Opus-heavy vs Sonnet-heavy run, so the $ ceiling is a coarse proxy, not a real per-model cost model.",
+        "LOOP.md:49-52 'One workflow at a time — serialize... never run two gauntlet/fix fleets at once' is pure documentation/PROTOCOL discipline — grep of walteur.js and .claude/hooks/*.sh found no MAX_CONCURRENT constant, lockfile, or pidfile check enforcing it; nothing in code stops two /goal runs firing simultaneously.",
+        "walteur.js:1164 `await parallel(todoAfterClaim.map(...))` — a dependency wave's disjoint batch fans out via unthrottled Promise.all with no size/concurrency cap; only file-collision safety (disjointBatches) exists, not a wave-size limit, so a wide wave (e.g. 15+ disjoint tasks) spawns all agents at once."
+      ],
+      "gaps": [
+        {
+          "title": "No mechanical enforcement of 'one workflow at a time' / concurrent-agent ceiling",
+          "severity": "med",
+          "concrete_fix": "Add a lockfile check in walteur.js's entry (before phase('Self-Heal')): write walteur-kit/.workflow.lock with pid+ts on start, exit early with a clear 'another WALTEUR run is active' message if a fresh (<N min) lock exists, remove on completion/budgetStop return paths. Encodes LOOP.md:49-52 as code instead of only PROTOCOL text."
+        },
+        {
+          "title": "Wave fan-out has no concurrency cap, only file-disjointness safety",
+          "severity": "med",
+          "concrete_fix": "In the Build loop (walteur.js:~1164), chunk todoAfterClaim into batches of e.g. 8 before calling parallel(), looping chunk-by-chunk, so a 20-task disjoint wave doesn't fire 20 agent() calls simultaneously. Mirrors disjointBatches' 'A4' pattern but caps by count, not just file collision."
+        },
+        {
+          "title": "Blended $/M rate conflates Opus and Sonnet cost in the budget ceiling",
+          "severity": "low",
+          "concrete_fix": "In estUsd() (walteur.js:84), track per-model token deltas (tokensSincePhase already has the model at each emitSpan call site) and apply distinct $/M rates for opus vs sonnet vs haiku from model-routing.json, instead of one flat 30."
+        }
+      ],
+      "quick_win": "Add a walteur-kit/.workflow.lock check at the top of walteur.js (before phase('Self-Heal')) that fails fast if a fresh lock exists — turns the documented 'serialize, never run two workflows at once' rule in LOOP.md:49-52 into an actual code-enforced invariant, closing the biggest orchestration-efficiency gap in under 30 minutes.</quick_win>\n<confidence>medium-high — read the actual orchestrator source (walteur.js Build/Plan/Think phases, wave/budget/routing logic) and independently executed walteur-run.mjs to verify the telemetry+routing-conformance path is real, not just commented as real; did not execute a full live /goal build end-to-end (out of scope/cost for this review) so real-world token/cost numbers under load are asserted by the harness's own comments, not independently measured by me.</confidence>\n</StructuredOutput>\n\n"
+    },
+    {
+      "key": "reliability",
+      "weight": 7,
+      "score": 7.8,
+      "confidence": "medium-high — read all 4 named hooks in full, ran real (non-sandboxed) selftests to ground-truth pass rates, and traced the failure-triage router + run-trace telemetry into actual walteur.js code rather than trusting the roadmap doc's claims.",
+      "evidence": [
+        ".claude/hooks/kill-switch.sh:12 — global PAUSE sentinel (walteur-kit/PAUSED) blocks all gated tool use, checked from 16 of 18 hooks (grep count) — consistent PAUSED semantics repo-wide.",
+        ".claude/hooks/loop-readiness-gate.sh:126-176 — L0-L3 loop-readiness scoring with a hard-earned-not-claimed check (claiming L3 without verifier/state/denylist/budget/runlog/killswitch fails closed); selftest 13/13 passed unsandboxed.",
+        ".claude/hooks/context-compaction-gate.sh:83-97 — absolute-token (not %-of-window) compaction ceilings (150k/200k), enforces automatic mode + no human_required; selftest 9/9 passed unsandboxed.",
+        ".claude/hooks/tool-liveness-probe.sh:36-49 — execs each required tool and classifies missing/BROKEN-shim(126/127)/timeout/ok, going beyond `command -v`; selftest 6/6 passed unsandboxed.",
+        ".claude/workflows/walteur.js:1311-1335 — failure-triage router is REAL, not just roadmap: on 2nd consecutive same-gate RED it spawns an Opus triage agent classifying Intent/Spec/Code and routes accordingly (walteur-kit/COMPETITIVE-UPGRADE-v9.2.md #1 has shipped since the 2026-06-20 doc).",
+        ".claude/workflows/walteur.js:1377-1382 — stagnation detection (blocking-issue count not shrinking for 2 iters) triggers a 'Confusion Protocol' root-cause replan + writes an assumption to assumptions.json — genuine 3-strike-style escalation, not a platitude."
+      ],
+      "gaps": [
+        {
+          "title": "No engine-level crash/stall detection (heartbeat/watchdog) for the orchestrator process itself",
+          "severity": "high",
+          "concrete_fix": "Add .claude/hooks/heartbeat-watchdog.sh: writes walteur-kit/heartbeat.json {ts,phase,pid} on every phase() transition in walteur.js; a companion --check mode (invoked by loop.sh cron) flags STALE if now-ts > 2x expected phase duration and appends to run-trace.jsonl with gate_verdict=STALL. Currently a hung/crashed walteur.js run has no detector — only manual PAUSED or timeout ends it."
+        },
+        {
+          "title": "run-trace.jsonl / STATE.json exist only as field-run artifacts in this snapshot, not at repo root — self-observability is unproven for the harness's own dogfood run",
+          "severity": "med",
+          "concrete_fix": "walteur-kit/autopilot/STATE.json and walteur-kit/run-trace.jsonl are absent at repo root (only present under field-runs/*/walteur-kit/); run `bash walteur-kit/hooks/run-trace.sh --read` and commit a root-level trace once, or document in walteur-kit/README.md why root-level telemetry is intentionally empty pre-first-build."
+        },
+        {
+          "title": "loop-readiness-gate.sh and context-compaction-gate.sh silently corrupt real filesystem state under sandbox mktemp failure (writes to '/walteur-kit', '/loop-run-log.md' at root) instead of failing loudly",
+          "severity": "low",
+          "concrete_fix": "In selftest(), guard `t=\"$(mktemp -d)\"` with `[ -n \"$t\" ] && [ -d \"$t\" ] || { echo 'selftest ABORT: mktemp failed'; return 1; }` before any `$t`-relative write, so a mktemp failure fails the selftest instead of silently falling through to root-relative paths (`$t/walteur-kit` becomes `/walteur-kit` when $t is empty)."
+        }
+      ],
+      "quick_win": "Add a heartbeat.json write at every phase() call in .claude/workflows/walteur.js (one-line addition next to existing emitSpan() calls) plus a 15-line heartbeat-watchdog.sh --check hook that flags STALE — closes the one real reliability gap (no crash/stall detector for the orchestrator itself) in well under 30 minutes given emitSpan() plumbing already exists."
+    },
+    {
+      "key": "docs",
+      "weight": 5,
+      "score": 6.7,
+      "confidence": "medium-high — verified selftest counts, doctor.sh, gate-suite.sh live; sampled README/QUICKSTART/CHANGELOG/STAMP/PUBLISH-RUNBOOK/AGENTS.md/GEMINI.md directly.",
+      "evidence": [
+        "README.md:20,34 claims 'selftest.sh -> 161 passed, 0 failed' — VERIFIED true: walteur-kit/selftest-report.json shows passed:161, failed:0, skipped:0 (2026-07-02 timestamp)",
+        "walteur-kit/hooks/gate-suite.sh --selftest -> 14/14 passed, matches QUICKSTART.md:31 claim exactly, but ONLY outside the command sandbox — inside it, mktemp/mkdir fail with 'Operation not permitted' and the whole suite errors out (gs-out.txt), and QUICKSTART.md never warns a stranger running in a restricted shell about this",
+        "CHANGELOG.md:1-3 top entry is 'v10.5 — privacy-data EXECUTES (2026-06-28)', 'stamped S003' — but STAMP.md:53 (the append-only ledger) is at S037/2026-07-02/score 66/gates 142; CHANGELOG.md is stale by ~34 stamp-history entries and a week of work, and uses a divergent v10.x numbering scheme vs README's own v9.0-v9.78 changelog block (README.md:40-145)",
+        "README.md:176 (v9.78 bullet) says 'gate count is 76' while QUICKSTART.md:37,47 says '137 declared gates' and doctor.sh live output + walteur-kit/gate-registry.json (jq length) both say 142 — three different gate counts across three docs with no single source of truth called out",
+        "QUICKSTART.md:1-113 is genuinely well-built for a stranger: verified toolchain versions, a 10-second health check, doctor.sh triage with REMEDIATION.md pointers, and an honest 'do not run the full non-selftest suite in your 10-minute budget' warning (QUICKSTART.md:35-38)",
+        "Cross-model portability is real and clean: /Users/tony/walteur/starter/AGENTS.md and GEMINI.md are near-identical 11-line stubs pointing at CLAUDE.md + the RELAY protocol (_relay/BATON.md) — genuinely portable to non-Claude agents, not just a Claude-only doc"
+      ],
+      "gaps": [
+        {
+          "title": "CHANGELOG.md stale by ~5 weeks / dozens of stamps vs STAMP.md",
+          "severity": "high",
+          "concrete_fix": "Append CHANGELOG.md entries for S004-S037 (or at minimum a rollup entry summarizing v9.0-v10 through the current 2026-07-02/S037 state), and either merge the v10.x CHANGELOG.md scheme with README.md's v9.x scheme or explicitly document why two version tracks exist."
+        },
+        {
+          "title": "Gate count is inconsistent across README (76), QUICKSTART (137), and live registry/doctor.sh (142)",
+          "severity": "med",
+          "concrete_fix": "Have release-ledger-lint.sh (already checks stale prose per README.md:177) also scan QUICKSTART.md and README.md's historical version bullets, or add an explicit 'as of <date>, current is 142; earlier bullets are historical snapshots, not live counts' disclaimer near README.md:104."
+        },
+        {
+          "title": "gate-suite.sh / selftest.sh fail hard inside a sandboxed/restricted shell (mktemp/mkdir permission errors) with no doc warning",
+          "severity": "med",
+          "concrete_fix": "Add a QUICKSTART.md troubleshooting line: 'If mktemp/mkdir report Operation not permitted, your shell is sandboxed against /tmp — set TMPDIR to a writable path or run outside the sandbox,' next to the existing Troubleshooting section (QUICKSTART.md:97-104)."
+        }
+      ],
+      "quick_win": "Add one CHANGELOG.md entry summarizing S004-S037 (or a link 'see STAMP.md for the live append-only ledger; CHANGELOG.md covers feature-level narrative through v10.5, STAMP.md covers score history through S037') so a stranger reading CHANGELOG.md isn't misled into thinking the project stopped 5 weeks ago — 15 minutes, no code changes."
+    }
+  ],
+  "missing_dimensions": []
+}

@@ -1,0 +1,1 @@
+multitenant-tasks authz evidence: rls — deny-by-default tenant scoping in core.mjs (owned()); proven by core.test.mjs.

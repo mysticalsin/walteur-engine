@@ -1,0 +1,1 @@
+Parity: single client-side runtime (browser/node ESM); no separate staging environment to diverge.

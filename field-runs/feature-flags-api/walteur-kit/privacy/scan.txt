@@ -1,0 +1,1 @@
+feature-flags privacy evidence: pii-scan — store schema carries no PII fields; static secret scan found zero committed credentials (ops/secrets-policy.json).

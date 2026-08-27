@@ -1,0 +1,1 @@
+documents-api authz evidence: session — session policy — stateless bearer tokens presented per request as Authorization: Bearer; compared in constant time (crypto.timingSafeEqual); no server-side session store to fixate.

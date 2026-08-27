@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: encrypt-transit — encryption in transit: delivery URLs are https-only (rejected otherwise); the management API itself is fronted by TLS at the platform edge in a real deploy.

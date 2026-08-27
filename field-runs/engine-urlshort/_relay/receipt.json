@@ -1,0 +1,1 @@
+{"est_usd":24.09,"ceiling_usd":40,"shippable":false,"issues":5,"note":"estimate from turn-wide output tokens; conservative, not an invoice","token_reconciliation":{"actual_tokens":0,"estimated_tokens_range":{"min":1620000,"expected":1935000,"max":2250000},"source":"no budget object in this harness — 0 (never fabricated)"}}

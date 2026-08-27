@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/mcp-manifest.schema.json",
+  "title": "WALTEUR MCP Connectivity Manifest",
+  "description": "Machine-readable MCP/CLI/API connectivity layer derived from walteur-kit/data-tools.json plus the session-visible harness-native web-search/web-fetch families. Turns the prose 'mcp' field in data-tools.json into a resolvable server spec: an agent or preflight probe can mechanically start/probe a listed tool, and a gate can vet a build's declared tool ids against allowed_build_classes and governance risk. Values only — env_keys and args carry NAMES, never secret VALUES.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "manifest_id", "updated_at", "policy", "servers"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "policy": { "type": "string", "minLength": 20 },
+    "servers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "server",
+          "tools",
+          "allowed_build_classes",
+          "data_domains",
+          "liveness_probe",
+          "governance"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*$",
+            "description": "MUST resolve to a data-tools.json tools[].id, or be one of the harness-native ids (web-search, web-fetch) that carry no data-tools.json entry by design."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["mcp", "cli", "api", "harness-native"]
+          },
+          "server": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["transport"],
+            "properties": {
+              "transport": {
+                "type": "string",
+                "enum": ["stdio", "sse", "http", "n-a"]
+              },
+              "command": { "type": "string", "minLength": 1 },
+              "args": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "url": {
+                "type": "string",
+                "pattern": "^https?://"
+              },
+              "env_keys": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9_]*$",
+                  "description": "Environment variable NAME only — never a value, never a literal secret."
+                }
+              }
+            }
+          },
+          "tools": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "allowed_build_classes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["research-report", "data-pipeline", "market-analysis", "software", "workflow", "document", "data-ai", "cloud-iac", "mixed", "ui-only", "none"]
+            }
+          },
+          "data_domains": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "liveness_probe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["method", "command", "timeout_s", "side_effect_free"],
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": ["exec-version", "exec-help", "stdio-initialize", "http-head", "http-get", "n-a"]
+              },
+              "command": {
+                "type": "string",
+                "minLength": 1,
+                "description": "A cheap no-side-effect command/URL string. For n-a method use the literal 'n-a'."
+              },
+              "timeout_s": { "type": "integer", "minimum": 1, "maximum": 60 },
+              "side_effect_free": { "type": "boolean", "const": true }
+            }
+          },
+          "governance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["license_risk", "usage_risk", "notes"],
+            "properties": {
+              "license_risk": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high"]
+              },
+              "usage_risk": {
+                "type": "string",
+                "enum": ["none", "low", "medium", "high"]
+              },
+              "signoff_required": { "type": "boolean" },
+              "notes": { "type": "string", "minLength": 10 }
+            }
+          },
+          "pinned_version": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

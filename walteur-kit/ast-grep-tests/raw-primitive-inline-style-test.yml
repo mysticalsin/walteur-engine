@@ -1,0 +1,11 @@
+id: walteur-raw-primitive-inline-style
+valid:
+  - |
+    export const Ok = () => <Button onClick={go}>Save</Button>;
+  - |
+    export const Plain = () => <button className="btn-primary">Save</button>;
+invalid:
+  - |
+    export const Bad = () => <button style={{ width: 200, padding: 8 }}>Save</button>;
+  - |
+    export const Bad2 = () => <input style={{ color: "red" }} />;

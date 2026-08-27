@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: admin — admin boundary — the only admin action is POST /admin/erase, which is tenant-scoped (DSAR self-erase). There is no global admin that can read or mutate across tenants.

@@ -1,0 +1,1 @@
+webhooks-api authz evidence: signoff — authz signoff: Tony — cross-tenant denial OBSERVED by execution (node --test test/cross-tenant.test.mjs exit 0) and by live curl on port 8209.

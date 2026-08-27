@@ -1,0 +1,1 @@
+documents-api privacy evidence: processing — processing records — documents are stored, listed, read, updated, deleted, and audited strictly within the owning tenant; no profiling, no automated decisions, no third-party processing.

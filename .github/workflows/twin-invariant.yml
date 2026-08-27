@@ -1,0 +1,79 @@
+# WALTEUR CI — twin-invariant guard (roadmap v9.2 #7).
+# A deterministic regression-catcher (NOT an LLM judge) that asserts the load-bearing twin invariants
+# WALTEUR's two-distribution + twinned-doc posture depends on:
+#   A. walteur/SKILL.md  ≡  WALTEUR-builder-CLAUDE.md   (byte-identical where the identity is CLAIMED)
+#   B. the declared [both] twin set is byte-identical across the two canonical distributions
+#   C. every rubrics/*.md carries its cite-or-VETO + file:line house-contract
+#
+# This job runs the hook's HERMETIC --selftest (good twin PASSES, poisoned twin is CAUGHT exit 2) so the
+# guard itself is proven in CI. The hermetic selftest is self-contained — it builds throwaway twin trees in
+# mktemp and never touches the two real canonical distributions (which do not exist on a CI runner), so it is
+# safe and deterministic in a clean checkout.
+#
+# House CI conventions (match ci.github-actions.yml): least-privilege top-level `permissions: contents:read`,
+# every `uses:` pinned to a full 40-char commit SHA with a `# vX.Y.Z` comment — never a moving `@vN` tag.
+name: walteur-twin-invariant
+
+on:
+  push:
+  pull_request:
+
+# Least privilege: read-only GITHUB_TOKEN for the whole workflow.
+permissions:
+  contents: read
+
+jobs:
+  # Prove the twin-invariant guard fires: good twin passes, every poison (doc-twin break, cross-distribution
+  # drift, missing twin member, rubric stripped of its cite-or-VETO contract) is caught exit 2.
+  twin-invariant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Syntax-check the guard
+        run: bash -n walteur-kit/eval/twin-invariant.sh
+      - name: Run twin-invariant hermetic self-test (good passes, poison caught)
+        run: bash walteur-kit/eval/twin-invariant.sh --selftest
+
+  aggregate-selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Syntax-check aggregate selftest
+        run: bash -n walteur-kit/selftest.sh
+      - name: Syntax-check acquisition proof runner
+        run: bash -n walteur-kit/hooks/tool-acquisition-proof.sh
+      - name: Validate aggregate proof contracts
+        run: |
+          jq empty \
+            walteur-kit/tool-acquisition.json \
+            walteur-kit/schemas/tool-acquisition.schema.json \
+            walteur-kit/tool-acquisition/ast-grep/package.json \
+            walteur-kit/tool-acquisition/ast-grep/package-lock.json \
+            walteur-kit/selftest-skip-budget.json \
+            walteur-kit/schemas/selftest-skip-budget.schema.json \
+            walteur-kit/schemas/selftest-report.schema.json
+      - name: Check acquisition manifest without install
+        run: bash walteur-kit/hooks/tool-acquisition-proof.sh --check-only .
+      - name: Run acquisition runner self-test
+        run: bash walteur-kit/hooks/tool-acquisition-proof.sh --selftest .
+      - name: Install locked acquisition workspaces
+        run: bash walteur-kit/hooks/tool-acquisition-proof.sh --install-workspaces .
+      - name: Prove locked acquisition workspaces
+        run: bash walteur-kit/hooks/tool-acquisition-proof.sh --prove-in-place .
+      - name: Run aggregate selftest
+        run: bash walteur-kit/selftest.sh
+      - name: Enforce zero-skip aggregate report
+        run: |
+          jq -e '
+            .verdict == "PASS"
+            and .summary == "ALL_GREEN"
+            and .counts.failed == 0
+            and .counts.skipped == 0
+            and (.skip_reasons | length == 0)
+          ' walteur-kit/selftest-report.json

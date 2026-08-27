@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: breach — breach response — because at-rest is hash-only, a data.json disclosure exposes no usable key. Response runbook: rotate affected tenants' keys (POST /keys/:id/rotate) and rotate control-plane bearer tokens.

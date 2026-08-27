@@ -1,0 +1,1 @@
+signoff — release-owner approved the SDLC run against OBSERVED pipeline execution (node --test test/api.test.mjs exit 0).

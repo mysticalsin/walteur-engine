@@ -1,0 +1,1 @@
+Unit: risk.test.mjs covers riskLabel, sortByRisk, summarizeTickets (4 cases) — all pass.

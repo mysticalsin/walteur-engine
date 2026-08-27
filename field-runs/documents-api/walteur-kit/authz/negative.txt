@@ -1,0 +1,1 @@
+documents-api authz evidence: negative — negative authz — cross-tenant read 404 (no leak), cross-tenant update/delete 403 (test/cross-tenant.test.mjs); proven by execution.

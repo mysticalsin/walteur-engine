@@ -1,0 +1,1 @@
+feature-flags SDLC gate: local_build — unit + integration tests must pass before proceeding. Gate = node --test (29/29).

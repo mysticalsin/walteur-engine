@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: docs — walteur-kit/PRD.md + ops/dashboards.md + inline module headers document the surface and controls.

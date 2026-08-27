@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/nfr.schema.json",
+  "title": "WALTEUR Non-Functional Requirements",
+  "description": "Planguage-quantified non-functional requirements. One entry per NFR. CONSTRAINT: every NFR MUST be measurable — a quality attribute, a unit, a numeric target, and the load_condition the target holds under. A weasel NFR ('the system should be fast', 'highly available') has no unit, no number, and no condition; it is unverifiable and therefore forbidden. Each requirement names the scale (unit), the target (number), and the qualifier (load_condition) — Gilb's Planguage discipline.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "attribute",
+      "unit",
+      "target",
+      "load_condition"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Stable identifier for the NFR (e.g. 'NFR-PERF-01', 'avail.checkout').",
+        "minLength": 1
+      },
+      "attribute": {
+        "type": "string",
+        "description": "The quality attribute being quantified.",
+        "enum": [
+          "performance",
+          "availability",
+          "security",
+          "usability",
+          "scalability",
+          "reliability",
+          "maintainability",
+          "portability",
+          "compatibility",
+          "observability",
+          "recoverability",
+          "compliance"
+        ]
+      },
+      "unit": {
+        "type": "string",
+        "description": "The scale of measure the target is expressed in (e.g. 'ms', '%', 'rps', 'concurrent_users', 'errors_per_million', 'seconds', 'MB'). Planguage SCALE: an NFR with no unit cannot be measured.",
+        "minLength": 1
+      },
+      "target": {
+        "type": "number",
+        "description": "The numeric target value on the named unit's scale. Planguage GOAL/MUST level. REQUIRED and numeric — a target you cannot put a number on is an aspiration, not a requirement."
+      },
+      "load_condition": {
+        "type": "string",
+        "description": "The condition the target must hold under (e.g. 'at 1000 concurrent users', 'p99 under peak Black-Friday load', 'sustained 500 rps for 1h'). Planguage QUALIFIER: a target with no stated condition is meaningless — fast for whom, under what load?",
+        "minLength": 1
+      },
+      "rationale": {
+        "type": "string",
+        "description": "Optional. Why this target was chosen (SLA, benchmark, regulatory floor, competitor parity).",
+        "minLength": 1
+      },
+      "measurement_method": {
+        "type": "string",
+        "description": "Optional. How the target is verified (e.g. 'k6 load test', 'Prometheus histogram p99', 'uptime monitor over 30d'). Planguage METER.",
+        "minLength": 1
+      }
+    }
+  }
+}

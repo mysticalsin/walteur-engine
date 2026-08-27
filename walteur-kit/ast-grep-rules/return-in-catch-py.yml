@@ -1,0 +1,38 @@
+# R-AST-4 (python arm)  INDISTINGUISHABLE FALLBACK — an except clause whose body just `return`s an
+# empty value (None / 0 / [] / {}) AND does NOT log (a call) or re-raise. The caller cannot tell a real
+# empty result from a swallowed failure. NET-NEW vs resilience-lint R1 (bare-pass except) and the
+# swallowed-error rule (named-binding-unused): this fires even when the except binds no name, when the
+# ONLY thing the handler does is hand back a benign-looking empty fallback.
+# VERIFIED against ast-grep 0.43.x: except_clause > block > return_statement whose value is
+# none|integer "0"|empty list|empty dictionary; AND the block has NO call (a log/notify call makes the
+# failure observable) and NO raise_statement (a re-raise is honest).
+# Proven by ../ast-grep-tests/return-in-catch-py-test.yml (ast-grep test).
+# APPROX honesty: scoped to the handler's own subtree (not interprocedural). Tuned for low false-POSITIVES
+# (any call OR a non-empty literal OR a named-variable return is treated as a legitimate fallback).
+id: walteur-return-in-catch-py
+language: python
+severity: warning   # WARNING-FIRST (v9.2 #13). Promote to error per-project once the twin proof is wired and the team has triaged the initial findings — do NOT ship as universal-HARD.
+message: "except returns an empty fallback with no log or re-raise — a real empty result is indistinguishable from a swallowed error."
+note: "WALTEUR R6 (AST, NEW vs grep floor / empty-catch / swallowed-error). Log the error (so the failure is observable), re-raise, or return a value that signals failure to the caller (raise, sentinel, Result)."
+files:
+  - "**/*.py"
+ignores:
+  - "**/tests/**"
+  - "**/*_test.py"
+  - "**/conftest.py"
+rule:
+  kind: except_clause
+  has:
+    kind: block
+    all:
+      - has:
+          kind: return_statement
+          stopBy: end
+          has:
+            any:
+              - { kind: none }
+              - { kind: integer, regex: "^0$" }
+              - { kind: list, not: { has: { pattern: $X } } }
+              - { kind: dictionary, not: { has: { pattern: $Y } } }
+      - not: { has: { stopBy: end, kind: raise_statement } }
+      - not: { has: { stopBy: end, kind: call } }

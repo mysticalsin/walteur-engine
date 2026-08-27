@@ -1,0 +1,1 @@
+Docs: LOG.md + index.html document the dashboard; README-level intent in build-contract.json.

@@ -1,0 +1,16 @@
+{
+  "policy_id": "walteur-absolute-compaction",
+  "mode": "automatic",
+  "rationale": "Model quality degrades with ABSOLUTE context size, not with percent of the window. On a 1M window, a percent-based ladder (compact at 70% = 700k) keeps agents reasoning in a degraded zone far too long. Pin compaction to absolute tokens so every agent stays in its sharpest zone, hands-free.",
+  "window_tokens": 1000000,
+  "compact_at_tokens": 150000,
+  "handoff_at_tokens": 200000,
+  "human_required": false,
+  "vehicle": "_relay/BATON.md Pi-format checkpoint (Goal/Constraints/Progress/Key-Decisions/Next-Steps/Critical-Context; preserve exact file paths, function names, error messages)",
+  "enforced_by": ["walteur-kit/hooks/context-compaction-gate.sh", "walteur.js maybeCompact() at wave/phase boundaries"],
+  "steps": [
+    "<=150k: work normally, full context.",
+    "150k (compact_at): summarize every COMPLETED wave/phase to durable files (STATE.json, briefs, reports); drop the resolved transcript; keep PLAN.md + open work + BATON.",
+    "200k (handoff_at): hard stop — write the Pi-format BATON checkpoint and continue fresh from it. Never carry a transcript past 200k."
+  ]
+}

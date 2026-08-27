@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: rls — row-level-security equivalent — owned() is the application-level RLS: every key op resolves through the caller's own bucket only; there is no query that can span tenants.

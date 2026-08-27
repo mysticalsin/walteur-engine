@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: least-privilege — least privilege — a tenant token grants access to that tenant's keys ONLY. No admin/superuser token; /admin/erase erases only the caller's data. core.mjs owned() is the single chokepoint.

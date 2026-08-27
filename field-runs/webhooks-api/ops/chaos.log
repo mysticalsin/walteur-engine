@@ -1,0 +1,17 @@
+2026-06-29T06:54:16Z  === CHAOS DRILL START (fault=process-kill, port=8209) ===
+2026-06-29T06:54:16Z  STEP 1  starting primary server.mjs
+{"ts":"2026-06-29T06:54:16.904Z","level":"info","event":"listening","port":8209,"pid":25452,"data_file":"data.chaos.json"}
+{"ts":"2026-06-29T06:54:16.921Z","level":"info","method":"GET","path":"/health","status":200,"tenant":"-","ms":0.77}
+2026-06-29T06:54:16Z  STEP 1  STEADY STATE confirmed: GET /health -> HTTP 200
+2026-06-29T06:54:16Z  STEP 2  INJECTING FAULT: hard-killing primary (pid=1061101)
+2026-06-29T06:54:19Z  STEP 2  post-kill probe: GET /health -> HTTP 000 (expect 000/refused = listener down)
+2026-06-29T06:54:19Z  STEP 3  RESTARTING fresh instance
+{"ts":"2026-06-29T06:54:19.252Z","level":"info","event":"listening","port":8209,"pid":24296,"data_file":"data.chaos.json"}
+{"ts":"2026-06-29T06:54:19.267Z","level":"info","method":"GET","path":"/health","status":200,"tenant":"-","ms":0.733}
+2026-06-29T06:54:19Z  STEP 3  RECOVERY confirmed: GET /health -> HTTP 200
+2026-06-29T06:54:19Z  STEP 3  recovery_seconds=2.3 (kill -> first healthy green probe)
+2026-06-29T06:54:19Z  STEP 4  draining: stopping green instance (pid=1061128)
+2026-06-29T06:54:21Z  STEP 4  post-teardown probe: GET /health -> HTTP 000 (expect 000 = clean stop)
+2026-06-29T06:54:21Z  STEP 4  wrote /c/Users/Tony/Downloads/Skills/Pro Coding/field-runs/webhooks-api/ops/chaos-report.json (and mirrored to walteur-kit/)
+2026-06-29T06:54:21Z  RESULT  fault_injected=process-kill steady_state_http=200 recovered=true recovered_http=200 recovery_seconds=2.3
+2026-06-29T06:54:21Z  === CHAOS DRILL END (recovered) ===

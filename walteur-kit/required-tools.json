@@ -1,0 +1,69 @@
+{
+  "$comment": "WALTEUR required-tools manifest. Parser: walteur-kit/hooks/tool-readiness.sh:63-83. Schema: {tools:[{tool,required(bool),discipline,install}]}. required:true => HARD fail-closed floor (exit 2 if absent). required:false => recorded, never blocks. ast-grep is OPT-IN-REQUIRED: required:false so its absence is a LOUD SKIP inside resilience-lint/anti-slop-ui (grep floor underneath), never a hard dependency — keeping the 'machinery is optional, the discipline is not' law intact.",
+  "tools": [
+    {
+      "tool": "ast-grep",
+      "required": false,
+      "discipline": "resilience+anti-slop (AST backend)",
+      "install": "brew install ast-grep | cargo install ast-grep | npm i -g @ast-grep/cli",
+      "role": "authoritative-when-present",
+      "backs_gates": [
+        "resilience-lint",
+        "anti-slop-ui"
+      ],
+      "fallback": "zero-dep grep/awk path in each gate (LOUD SKIP when ast-grep absent)",
+      "acquisition_contract": "walteur-kit/tool-acquisition.json#ast-grep",
+      "lockfile_workspace": "walteur-kit/tool-acquisition/ast-grep",
+      "on_demand_fallback": "npx --yes -p @ast-grep/cli@0.44.0 ast-grep",
+      "note": "Opt-in-required: present => AUTHORITATIVE AST pass (gate exits 2 on a finding). Absent => LOUD SKIP to the grep floor, never silent-green and never a hard fail."
+    },
+    {
+      "tool": "curl",
+      "required": false,
+      "discipline": "supply-chain (P-OSV osv-gate)",
+      "install": "preinstalled on macOS/Linux; else brew/apt install curl",
+      "role": "queries OSV.dev for MAL-* malicious-package advisories on new deps / candidate MCP servers",
+      "backs_gates": [
+        "osv-gate"
+      ],
+      "fallback": "LOUD SKIP (recorded) when curl absent OR api.osv.dev unreachable; WALTEUR_OSV=strict => fail-closed (exit 2)",
+      "note": "P-OSV opt-in: present+online => HARD fail-closed on a MAL-* advisory. Offline => recorded SKIP (never PROVEN-SAFE). Selftest is hermetic/offline via OSV_FIXTURE."
+    },
+    {
+      "tool": "knip",
+      "required": false,
+      "discipline": "maintainability (dead-code-gate)",
+      "install": "npm i -g knip | npx knip",
+      "role": "authoritative-when-present: runs Knip, observes real exit (unused files/exports/deps)",
+      "backs_gates": [
+        "dead-code-gate"
+      ],
+      "fallback": "LOUD SKIP when absent; WALTEUR_DEADCODE_STRICT=1 => FAIL on a JS/TS surface",
+      "note": "ISC, offline, JS/TS only. From audit-tools.json intake (S008 skill fix)."
+    },
+    {
+      "tool": "orm-doctor",
+      "required": false,
+      "discipline": "data (db-health-gate)",
+      "install": "npx orm-doctor@<pinned> --json --no-ai",
+      "role": "authoritative-when-present: runs orm-doctor --json, observes score+exit (N+1/index/unsafe-SQL/table-wipe)",
+      "backs_gates": [
+        "db-health-gate"
+      ],
+      "fallback": "LOUD SKIP when absent; WALTEUR_DBHEALTH_STRICT=1 => FAIL on an ORM surface",
+      "note": "MIT. Pin exact version + vendor tarball (new/solo-maintainer). From audit-tools.json (S008)."
+    },
+    {
+      "tool": "medusa",
+      "required": false,
+      "discipline": "security (security-scan-gate)",
+      "install": "external CLI only (AGPL); pip/pipx install per repo",
+      "role": "authoritative-when-present: runs MEDUSA scan, observes findings/exit (CVE/secrets/injection/MCP-poison)",
+      "backs_gates": [
+        "security-scan-gate"
+      ],
+      "fallback": "LOUD SKIP when absent; WALTEUR_SECSCAN_STRICT=1 => FAIL on a source surface",
+      "note": "AGPL — run as external CLI, NEVER vendor source. From audit-tools.json (S008)."
+    }
+  ]
+}

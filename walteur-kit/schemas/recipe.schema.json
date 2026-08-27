@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "walteur-kit/schemas/recipe.schema.json",
+  "title": "WALTEUR recipe contract",
+  "description": "Portable, declarative, parameterized RUNNABLE workflow artifact. The interface lifted from goose's recipe system — NO goose runtime: walteur.js (the §5.7 orchestrator) is the sole interpreter. A recipe pins a reusable build/QA/ops flow as data (params + prompt + structured-output contract + opt-in MCP extensions + sub-recipe DAG) so it survives across sessions and operators. HONESTY: this schema is HARD on the recipe's SHAPE (a recipe.yaml that fails validation does not run); whether the recipe DOES THE RIGHT THING is PROTOCOL (judgment — the prompt + response contract are LLM-driven). graphify stays the ONE retrieval brain: any code/corpus lookup is a graphify EXTENSION, never a second index baked into a recipe.",
+  "type": "object",
+  "required": ["version", "title", "description"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "recipe contract version, semver (e.g. '1.0.0'). Bump major on a breaking param/response change."
+    },
+    "title": { "type": "string", "minLength": 1, "description": "human title, one line" },
+    "description": { "type": "string", "minLength": 1, "description": "what the recipe does + when to reach for it" },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "OPTIONAL provenance — who authored, free-text contact.",
+      "properties": {
+        "contact": { "type": "string", "minLength": 1 },
+        "metadata": { "type": "string" }
+      }
+    },
+
+    "parameters": {
+      "type": "array",
+      "description": "declared inputs. Each binds into prompt/instructions via {{ key }} at interpret time. required ⇒ must be supplied or the run aborts; user_prompt ⇒ walteur.js asks interactively; optional ⇒ default is used when absent.",
+      "items": {
+        "type": "object",
+        "required": ["key", "type", "requirement"],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "description": "binding name; referenced in the prompt as {{ key }}"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean", "date", "file", "select"],
+            "description": "value shape. file ⇒ a path whose CONTENT is inlined; select ⇒ one of options[]; date ⇒ a relative-or-ISO date string"
+          },
+          "requirement": {
+            "type": "string",
+            "enum": ["required", "optional", "user_prompt"],
+            "description": "required = abort if absent; optional = fall back to default; user_prompt = ask the operator at runtime"
+          },
+          "default": {
+            "type": ["string", "number", "boolean"],
+            "description": "fallback when requirement=optional and the value is unsupplied. SHOULD be set when requirement=optional (enforced below)."
+          },
+          "description": { "type": "string", "minLength": 1, "description": "what the param means + any constraint" },
+          "options": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "the allowed values; REQUIRED when type=select, ignored otherwise"
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "select" } } },
+            "then": { "required": ["options"] }
+          },
+          {
+            "if": { "properties": { "requirement": { "const": "optional" } } },
+            "then": { "required": ["default"] }
+          }
+        ]
+      }
+    },
+
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "the per-run task message handed to the model, after {{ key }} params bind. Either prompt or instructions (or both) MUST be present — enforced below."
+    },
+    "instructions": {
+      "type": "string",
+      "minLength": 1,
+      "description": "system-level standing directive for the run (persona, rules, the WALTEUR discipline to honor). Binds {{ key }} like prompt."
+    },
+
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "OPTIONAL structured-output contract. When present, the run MUST emit JSON validating against json_schema — turns a recipe into a typed function. Absence ⇒ free-form text output (PROTOCOL).",
+      "required": ["json_schema"],
+      "properties": {
+        "json_schema": {
+          "type": "object",
+          "description": "a JSON Schema the model's final answer must satisfy (the response is machine-checkable, not vibes)."
+        }
+      }
+    },
+
+    "extensions": {
+      "type": "array",
+      "description": "OPT-IN MCP wiring. The operator brings the infra ONLY if they opt in — standing-infra-in-the-repo is forbidden (anti-bloat). builtin = a tool walteur.js already ships; stdio = a local subprocess MCP server; remote = an HTTP/SSE MCP endpoint. graphify is the one retrieval brain — wire code/corpus retrieval as a graphify extension, never a second KG.",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "description": "extension id (unique within the recipe)" },
+          "type": {
+            "type": "string",
+            "enum": ["builtin", "stdio", "remote"],
+            "description": "builtin = bundled tool; stdio = local subprocess server (needs cmd); remote = network endpoint (needs url)"
+          },
+          "cmd": { "type": "string", "minLength": 1, "description": "executable for type=stdio (REQUIRED then); e.g. 'npx'" },
+          "args": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "argv for type=stdio cmd"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "endpoint for type=remote (REQUIRED then); e.g. 'https://mcp.example.com/sse'"
+          },
+          "timeout": { "type": "integer", "minimum": 1, "description": "seconds to wait for the extension to come up; absent ⇒ orchestrator default" },
+          "required": {
+            "type": "boolean",
+            "default": false,
+            "description": "false (default) ⇒ a missing/unreachable extension is a LOUD SKIP, not a hard block (detect-or-LOUD-SKIP). true ⇒ absence aborts the run (fail-closed; use only when the flow is meaningless without it)."
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "stdio" } } },
+            "then": { "required": ["cmd"] }
+          },
+          {
+            "if": { "properties": { "type": { "const": "remote" } } },
+            "then": { "required": ["url"] }
+          }
+        ]
+      }
+    },
+
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "OPTIONAL run knobs. Absent fields fall back to the walteur.js / model defaults — do NOT hardcode a model id unless the recipe truly needs one.",
+      "properties": {
+        "model": { "type": "string", "minLength": 1, "description": "model id override, e.g. 'claude-sonnet-4-6'. Omit to inherit the operator's default." },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2, "description": "sampling temperature; lower ⇒ more deterministic" },
+        "max_turns": { "type": "integer", "minimum": 1, "description": "hard cap on agent loop turns (runaway guard)" },
+        "retry": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "retry policy for the run. Jitter is implied by the orchestrator — fixed-delay no-jitter retries are a resilience-lint R3 anti-pattern.",
+          "properties": {
+            "max_attempts": { "type": "integer", "minimum": 1, "description": "total attempts incl. the first" },
+            "on_failure": {
+              "type": "string",
+              "enum": ["abort", "continue", "prompt"],
+              "description": "abort = stop the run; continue = proceed past the failed step; prompt = ask the operator"
+            },
+            "checkpoint": {
+              "type": "string",
+              "minLength": 1,
+              "description": "OPTIONAL shell predicate that must succeed for an attempt to count as healthy (e.g. 'test -f dist/cli.js'); a self-validating checkpoint, not a sleep."
+            }
+          }
+        }
+      }
+    },
+
+    "sub_recipes": {
+      "type": "array",
+      "description": "composition: other recipe files this one invokes, forming a DAG. Each sub-recipe is itself a recipe.yaml validating against THIS schema. values pre-bind params for the child; sequential_when_repeated forces serial execution when the same sub-recipe runs more than once (ordering/idempotency guard).",
+      "items": {
+        "type": "object",
+        "required": ["name", "path"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "description": "local handle for the sub-recipe" },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "repo-relative path to the child recipe.yaml (e.g. 'walteur-kit/recipes/run-tests.recipe.yaml')"
+          },
+          "values": {
+            "type": "object",
+            "description": "param key→value bindings passed down to the child (overrides the child's defaults)"
+          },
+          "sequential_when_repeated": {
+            "type": "boolean",
+            "default": false,
+            "description": "true ⇒ repeated invocations run strictly in sequence (no parallel fan-out); false ⇒ orchestrator may parallelize"
+          }
+        }
+      }
+    }
+  },
+
+  "anyOf": [
+    { "required": ["prompt"] },
+    { "required": ["instructions"] }
+  ]
+}

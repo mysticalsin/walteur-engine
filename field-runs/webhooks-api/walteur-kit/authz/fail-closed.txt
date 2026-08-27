@@ -1,0 +1,1 @@
+webhooks-api authz evidence: fail-closed — missing/blank/unknown-tenant/wrong-token => 401 empty body (deny-by-default); malformed WALTEUR_TENANT_TOKENS => empty map => all 401. Proven by test/api.test.mjs 401 case.

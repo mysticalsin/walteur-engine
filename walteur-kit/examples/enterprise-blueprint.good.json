@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "blueprint_id": "example-support-risk-dashboard",
+  "raw_goal": "Build a dashboard for support risk.",
+  "enterprise_goal": "Build an internal support-risk command center that lets support leads find aging, blocked, and overloaded queues before SLA breach.",
+  "primary_user": {
+    "role": "Support lead",
+    "pain": "Queue risk is discovered through manual spreadsheet checks after work is already late.",
+    "success_moment": "The lead opens the dashboard and sees the next three cases to unblock in under two minutes."
+  },
+  "owner_or_buyer": {
+    "role": "Support operations director",
+    "decision_metric": "Weekly aging-case count drops by 30 percent without adding coordinator headcount."
+  },
+  "job_map": [
+    {
+      "job": "Review operational queue risk each morning",
+      "current_workaround": "Export tickets to a spreadsheet and manually sort by age, owner, and blocker.",
+      "desired_outcome": "Start the daily review from a trusted view of aging, blocked, and overloaded work."
+    }
+  ],
+  "artifact_map": [
+    {
+      "artifact": "Risk dashboard",
+      "type": "ui",
+      "purpose": "Show aging, blocked, and overloaded queues in one decision view.",
+      "owner": "Support operations",
+      "done_when": "A lead can identify the top three unblock actions from seeded demo data.",
+      "evidence_ref": "PLAN.md#dashboard"
+    },
+    {
+      "artifact": "Verification suite",
+      "type": "test",
+      "purpose": "Prove queue risk calculations and empty, loading, and error states.",
+      "owner": "Engineering",
+      "done_when": "Automated checks cover risk logic plus browser proof for the main route.",
+      "evidence_ref": "PLAN.md#verification"
+    }
+  ],
+  "surface_map": {
+    "ui": ["Dashboard route", "Queue risk card", "Blocked case table", "Empty state", "Error state"],
+    "api": ["Read-only queue summary endpoint"],
+    "data": ["Ticket age", "Blocker flag", "Owner", "Priority", "SLA due date"],
+    "jobs": ["Optional scheduled freshness check"],
+    "docs": ["Operator handoff", "Support lead quickstart"],
+    "ops": ["Freshness metric", "Rollback note", "Support owner escalation path"]
+  },
+  "acceptance_suite": [
+    {
+      "id": "AC-001",
+      "statement": "Support leads can see aging and blocked queue segments from the main dashboard route.",
+      "verification": "Run browser proof against the dashboard route and inspect the screenshot artifact.",
+      "evidence_ref": "PLAN.md#ac-001"
+    },
+    {
+      "id": "AC-002",
+      "statement": "Risk scoring sorts blocked and SLA-near tickets above normal tickets.",
+      "verification": "Run the risk scoring unit test with seeded ticket fixtures.",
+      "evidence_ref": "PLAN.md#ac-002"
+    },
+    {
+      "id": "AC-003",
+      "statement": "The final handoff tells the operator how to run, verify, and roll back the dashboard.",
+      "verification": "Read the final delivery packet and match it to the definition of done.",
+      "evidence_ref": "PLAN.md#ac-003"
+    }
+  ],
+  "trust_model": {
+    "authn": "Use the host product identity provider or signed internal access for the first slice.",
+    "authz": "Default to read-only support lead and admin roles with no anonymous access.",
+    "data_policy": "Use internal ticket metadata only and exclude customer message bodies from logs and screenshots.",
+    "privacy": "Seeded demos redact names, emails, and free-text customer content.",
+    "security": "No secrets in client code, no write actions in the first release, and dependency checks before ship.",
+    "auditability": "Verification reports cite command output, screenshots, and accepted cuts."
+  },
+  "operating_model": {
+    "observability": "Track dashboard load, queue freshness, risk-calculation failures, and error-state rate.",
+    "support": "Support operations owns first-line usage questions with engineering escalation for defects.",
+    "rollback": "Disable the dashboard route or revert the deployment while keeping source ticketing intact.",
+    "incident_response": "Owner reviews failed freshness checks within one business day and records the action.",
+    "ownership": "Support operations owns business rules and engineering owns implementation health."
+  },
+  "quality_bar": {
+    "must_feel_like": "A calm operations command center built for fast morning decisions.",
+    "must_not_feel_like": "A generic chart dump, admin template, or demo with fake confidence.",
+    "reference_quality": "Decision-grade dashboards from mature support platforms, adapted to the narrow first slice.",
+    "concreteness_floor": "Every claim maps to a user, surface, acceptance criterion, and proof command."
+  },
+  "explicit_cuts": [
+    {
+      "item": "Ticket write-back actions",
+      "reason": "Read-only insight proves the operating value before changing source workflows.",
+      "risk": "Leads still update ticket ownership in the source system for this release.",
+      "review_trigger": "Revisit after two weekly reviews show dashboard-driven unblock actions."
+    }
+  ],
+  "final_delivery_packet": {
+    "must_include": [
+      "what changed",
+      "how to use it",
+      "files changed",
+      "commands run",
+      "proof read",
+      "known gaps",
+      "rollback or recovery",
+      "next action"
+    ]
+  },
+  "ts": "2026-06-24T00:00:00Z"
+}

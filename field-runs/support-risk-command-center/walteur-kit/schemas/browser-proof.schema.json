@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/browser-proof.schema.json",
+  "title": "WALTEUR Browser Proof",
+  "description": "Replayable real-browser proof for UI builds, including route coverage, screenshots, accessibility evidence, interactions, and command output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_date", "tool", "command", "command_output_ref", "routes"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "run_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command_output_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_url": {
+      "type": "string",
+      "minLength": 1
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "browser",
+          "viewport",
+          "status",
+          "screenshot_ref",
+          "accessibility_ref",
+          "interaction_ref"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "browser": {
+            "type": "string",
+            "minLength": 1
+          },
+          "viewport": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["width", "height"],
+            "properties": {
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "const": "PASS"
+          },
+          "screenshot_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "accessibility_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "interaction_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "console_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "network_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "apikeys-vault",
+  "version": "1.0.0",
+  "description": "Deny-by-default multi-tenant API-key vault with an HTTP API over core.mjs. Stores sha256 hashes only; raw keys shown once at issue. Node built-ins only, zero deps.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/**/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

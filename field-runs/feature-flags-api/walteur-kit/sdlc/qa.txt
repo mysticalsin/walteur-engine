@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: qa — manual + automated CRUD, deny, erase paths verified. node --test green.

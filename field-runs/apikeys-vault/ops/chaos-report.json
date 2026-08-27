@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "report_id": "apikeys-vault-process-kill",
+  "service": "apikeys-vault",
+  "chaos_probe": {
+    "command": "bash ops/chaos.sh"
+  },
+  "drills": [
+    {
+      "hypothesis": "If the apikeys-vault server process is hard-killed, a fresh instance restarts and GET /health returns 200 within the SLO budget.",
+      "fault_injected": "process-kill (taskkill //F //T or kill -9 on the running server.mjs)",
+      "steady_state_metric": "GET /health returns HTTP 200; post-kill returns 000 (refused); green instance returns 200",
+      "blast_radius_observed": "listener down during the kill window (GET /health -> 0); reads restored once the green instance is healthy",
+      "recovered": true,
+      "recovery_seconds": 2.3,
+      "ran_ts": "2026-06-29T07:43:48.830Z",
+      "evidence_ref": "ops/chaos.log",
+      "observed": {
+        "drill": "process-kill",
+        "steady_state_http": 200,
+        "down_http": 0,
+        "recovered_http": 200,
+        "health_endpoint": "/health"
+      }
+    }
+  ],
+  "notes": "Primary started + steady on GET /health, hard-killed (taskkill/kill -9), fresh instance restarted and re-probed healthy. recovery_seconds = kill -> first healthy green probe (observed). evidence_ref=ops/chaos.log is the per-run drill log."
+}

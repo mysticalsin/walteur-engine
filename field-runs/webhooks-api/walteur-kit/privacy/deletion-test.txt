@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: deletion-test — deletion test: node --test test/erasure.test.mjs — DSAR erase removes caller subs + audit, sibling untouched (2/2).

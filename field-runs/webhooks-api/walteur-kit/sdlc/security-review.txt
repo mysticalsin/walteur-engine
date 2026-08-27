@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: security-review — security review: constant-time token compare, env-injected auth secrets, https+SSRF URL guard, one-time secret reveal + sha256 fingerprint storage, token+secret log redaction.

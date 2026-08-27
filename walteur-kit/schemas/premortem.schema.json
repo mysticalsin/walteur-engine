@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/premortem.schema.json",
+  "title": "WALTEUR Premortem",
+  "description": "Premortem: at least five ways the project could fail, each rated for likelihood and impact, tied to a mitigation task, with residual risk recorded. CONSTRAINT: any High-likelihood AND High-impact scenario REQUIRES a mitigation_task_id (a downstream gate rejects an unmitigated High x High).",
+  "type": "array",
+  "minItems": 5,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "category",
+      "likelihood",
+      "impact",
+      "residual_risk"
+    ],
+    "properties": {
+      "category": {
+        "type": "string",
+        "description": "Failure category (e.g. security, data-loss, scaling, dependency, adoption, cost).",
+        "minLength": 1
+      },
+      "likelihood": {
+        "type": "string",
+        "description": "Estimated probability the scenario occurs.",
+        "enum": ["low", "med", "high"]
+      },
+      "impact": {
+        "type": "string",
+        "description": "Severity if the scenario occurs.",
+        "enum": ["low", "med", "high"]
+      },
+      "mitigation_task_id": {
+        "type": "integer",
+        "description": "ID of the task that mitigates this scenario. REQUIRED when likelihood=high AND impact=high.",
+        "minimum": 0
+      },
+      "residual_risk": {
+        "type": "string",
+        "description": "Risk that remains after the mitigation is applied.",
+        "minLength": 1
+      }
+    },
+    "allOf": [
+      {
+        "$comment": "A High-likelihood AND High-impact scenario REQUIRES mitigation_task_id.",
+        "if": {
+          "properties": {
+            "likelihood": { "const": "high" },
+            "impact": { "const": "high" }
+          },
+          "required": ["likelihood", "impact"]
+        },
+        "then": {
+          "required": ["mitigation_task_id"]
+        }
+      }
+    ]
+  }
+}

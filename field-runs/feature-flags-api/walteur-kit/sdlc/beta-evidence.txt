@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: beta-evidence — chaos drill recovered (recovery_seconds observed in ops/chaos-report.json); rollback --check exit 0.

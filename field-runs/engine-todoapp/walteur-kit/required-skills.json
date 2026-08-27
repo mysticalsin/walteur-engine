@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "generated_by": "skill-router",
+  "skills": [
+    {
+      "skill": "loopkit-design-system",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/loopkit-design-system.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-brainstorming",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-brainstorming.json",
+      "discipline": "process"
+    },
+    {
+      "skill": "org-brand-dna",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-brand-dna.json",
+      "discipline": "quality"
+    },
+    {
+      "skill": "org-prd-builder",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-prd-builder.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-premortem",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-premortem.json",
+      "discipline": "process"
+    },
+    {
+      "skill": "org-socratic-build",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-socratic-build.json",
+      "discipline": "quality"
+    },
+    {
+      "skill": "org-tdd-discipline",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-tdd-discipline.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-uiux-discipline",
+      "required": true,
+      "breadcrumb": "walteur-kit/skills/org-uiux-discipline.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "loopkit-a11y-pass",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/loopkit-a11y-pass.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "loopkit-contract-test",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/loopkit-contract-test.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "loopkit-loading-empty-error-states",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/loopkit-loading-empty-error-states.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-agent-evaluation",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-agent-evaluation.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-agent-memory-architecture",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-agent-memory-architecture.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-api-design",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-api-design.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-browser-automation",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-browser-automation.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-database-discipline",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-database-discipline.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-impeccable",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-impeccable.json",
+      "discipline": "quality"
+    },
+    {
+      "skill": "org-insight-memo-for-client",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-insight-memo-for-client.json",
+      "discipline": "operations-data"
+    },
+    {
+      "skill": "org-interaction-craft",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-interaction-craft.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-outcome-driven-execution",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-outcome-driven-execution.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-prompt-engineering",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-prompt-engineering.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-release-notes-builder",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-release-notes-builder.json",
+      "discipline": "engineering"
+    },
+    {
+      "skill": "org-reliability-discipline",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-reliability-discipline.json",
+      "discipline": "operations-data"
+    },
+    {
+      "skill": "org-video-pipeline",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-video-pipeline.json",
+      "discipline": "meta"
+    },
+    {
+      "skill": "org-writing-plans",
+      "required": false,
+      "breadcrumb": "walteur-kit/skills/org-writing-plans.json",
+      "discipline": "process"
+    }
+  ]
+}

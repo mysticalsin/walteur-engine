@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "blueprint_id": "vague-example",
+  "raw_goal": "Build a dashboard",
+  "enterprise_goal": "Build a dashboard",
+  "primary_user": { "role": "User", "pain": "Needs better UX", "success_moment": "It works" },
+  "owner_or_buyer": { "role": "Owner", "decision_metric": "Better" },
+  "job_map": [],
+  "artifact_map": [],
+  "surface_map": { "ui": [], "api": [], "data": [], "jobs": [], "docs": [], "ops": [] },
+  "acceptance_suite": [],
+  "trust_model": { "authn": "TBD", "authz": "TBD", "data_policy": "TBD", "privacy": "TBD", "security": "TBD", "auditability": "TBD" },
+  "operating_model": { "observability": "TBD", "support": "TBD", "rollback": "TBD", "incident_response": "TBD", "ownership": "TBD" },
+  "quality_bar": { "must_feel_like": "Good", "must_not_feel_like": "Bad", "reference_quality": "Best practice", "concreteness_floor": "Enterprise-grade" },
+  "explicit_cuts": [],
+  "final_delivery_packet": { "must_include": [] },
+  "ts": "2026-06-24T00:00:00Z"
+}

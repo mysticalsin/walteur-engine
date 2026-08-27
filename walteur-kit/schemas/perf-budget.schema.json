@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/perf-budget.schema.json",
+  "title": "WALTEUR Performance Budget",
+  "description": "Performance budget per critical path. Each critical path declares its latency percentiles, throughput, concurrency, error rate, and memory ceiling. CONSTRAINT: p99 and p999 are mandatory and non-null — tail latency is a first-class budget, not an afterthought.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["critical_paths"],
+  "properties": {
+    "critical_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "p50",
+          "p95",
+          "p99",
+          "p999",
+          "throughput_rps",
+          "max_concurrency",
+          "error_rate",
+          "rss_mb"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Identifier for the critical path (e.g. 'POST /checkout', 'auth.login').",
+            "minLength": 1
+          },
+          "p50": {
+            "type": ["number", "null"],
+            "description": "Median latency budget, milliseconds. May be null if not budgeted.",
+            "minimum": 0
+          },
+          "p95": {
+            "type": ["number", "null"],
+            "description": "95th-percentile latency budget, milliseconds. May be null if not budgeted.",
+            "minimum": 0
+          },
+          "p99": {
+            "type": "number",
+            "description": "99th-percentile latency budget, milliseconds. REQUIRED and non-null.",
+            "minimum": 0
+          },
+          "p999": {
+            "type": "number",
+            "description": "99.9th-percentile (tail) latency budget, milliseconds. REQUIRED and non-null.",
+            "minimum": 0
+          },
+          "throughput_rps": {
+            "type": ["number", "null"],
+            "description": "Sustained throughput target in requests per second.",
+            "minimum": 0
+          },
+          "max_concurrency": {
+            "type": ["integer", "null"],
+            "description": "Maximum concurrent in-flight requests the path is budgeted to handle.",
+            "minimum": 0
+          },
+          "error_rate": {
+            "type": ["number", "null"],
+            "description": "Maximum acceptable error rate as a fraction in [0,1].",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "rss_mb": {
+            "type": ["number", "null"],
+            "description": "Resident-set-size memory ceiling for the path, megabytes.",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

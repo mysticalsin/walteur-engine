@@ -1,0 +1,1 @@
+lint — node -c clean on core.mjs + server.mjs; zero external deps so no dependency lint surface; consistent module style.

@@ -1,0 +1,12 @@
+Cadence — real-browser proof (Playwright MCP, chromium), 2026-07-04 (re-generated; see note 7)
+1. npm run build  -> vite build OK, ✓ built in 476ms (dist/assets/index-BhipYluQ.js 152.31 kB, index-N9uMSOGP.css 9.35 kB)
+2. python3 -m http.server 8141  (serving dist/) -> HTTP 200, title "Cadence — Focus Sessions"
+3. playwright browser_navigate http://localhost:8141/  -> title "Cadence — Focus Sessions", DOM rendered
+4. playwright browser_resize 1440x900  -> viewport pinned to the declared render size
+5. playwright browser_snapshot  -> full accessibility tree captured (banner/main/region roles, labeled buttons, pressed states) -> a11y/home.txt
+6. playwright browser_take_screenshot fullPage  -> screenshots/home.png (PNG 1440x1160 at css scale, 61.7 kB; width now equals the declared 1440 viewport)
+7. playwright browser_click "Start"  -> timer 25:00->24:54, status "25-minute Focus · ready" -> "Focusing on Focus", presets disabled, Start->Pause[active] + Reset appeared -> interactions/home.txt
+NOTE: this bundle was re-generated after panel #5 flagged that the prior a11y/home.txt held a stale snapshot of a
+different artifact and that the screenshot width (1200) did not match the declared 1440 viewport. All three
+evidence files (a11y, screenshot, interaction) are now captured in one Cadence render and are mutually consistent.
+Non-fatal: 1 console error (favicon 404; UI rendered fully regardless).

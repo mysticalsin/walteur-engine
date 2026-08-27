@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: encrypt-transit — encryption in transit — the field run binds 127.0.0.1; in production the service is fronted by TLS at the load balancer. Bearer tokens and the one-time raw-key response travel only over that TLS leg.

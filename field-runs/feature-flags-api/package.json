@@ -1,0 +1,14 @@
+{
+  "name": "feature-flags-api",
+  "version": "1.0.0",
+  "description": "Deny-by-default multi-tenant feature-flag store with an HTTP API over core.mjs. Node built-ins only, zero deps.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/**/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

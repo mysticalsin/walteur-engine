@@ -1,0 +1,1 @@
+feature-flags SDLC gate: shared_dev — independent code + security review before staging.

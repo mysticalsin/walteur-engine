@@ -1,0 +1,33 @@
+# R-AST-1 (js/ts/tsx arm)  EMPTY CATCH block — the AST-exact upgrade of resilience-lint.sh R1.
+# VERIFIED against ast-grep 0.42.x: catch_clause > field:body (statement_block). A block is "empty"
+# when it has no child that is anything other than an empty_statement (`;`) — so both `catch(e){}` and
+# `catch(e){;}` match, while `catch(e){ console.error(e) }` does not. Proven by the twin fixture
+# ../ast-grep-tests/empty-catch-js-test.yml (ast-grep test).
+id: walteur-empty-catch-js
+language: js
+severity: error
+message: "Empty catch block — swallowed error. Handle, re-throw, or log with context."
+note: "WALTEUR R1 (AST-exact). catch(e){} silently discards the error and its stack."
+files:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.cjs"
+ignores:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "**/__tests__/**"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+rule:
+  kind: catch_clause
+  has:
+    field: body
+    kind: statement_block
+    not:
+      has:
+        pattern: $ANY
+        not: { kind: empty_statement }

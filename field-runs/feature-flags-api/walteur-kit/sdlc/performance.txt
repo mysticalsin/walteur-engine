@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: performance — in-memory Map store, sub-ms ms field in structured logs across the test run.

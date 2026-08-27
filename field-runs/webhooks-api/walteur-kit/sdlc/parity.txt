@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: parity — environment parity: same node:http server runs in tests (ephemeral port) and as the CLI entrypoint (PORT env, default 8209); no test-only code paths in the request handler.

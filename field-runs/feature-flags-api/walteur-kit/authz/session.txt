@@ -1,0 +1,1 @@
+feature-flags authz evidence: session — stateless bearer token per request; no server session; token never logged (redacted '***'). Proven by server.mjs logLine + test/api.test.mjs.

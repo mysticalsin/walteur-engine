@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "proof_id": "mt-tasks-authz",
+  "run_date": "2026-06-29",
+  "build_class": "software",
+  "risk_tier": "high",
+  "verdict": "PASS",
+  "applicability": {
+    "authn_surface": true,
+    "authz_surface": true,
+    "tenant_surface": true,
+    "external_users": true
+  },
+  "model": {
+    "authn_provider": "bearer-token",
+    "authz_model": "rbac",
+    "default_decision": "deny",
+    "tenant_key": "tenantId"
+  },
+  "controls": {
+    "role_permission_matrix_ref": "walteur-kit/authz/role-matrix.txt",
+    "fail_closed_ref": "walteur-kit/authz/fail-closed.txt",
+    "least_privilege_ref": "walteur-kit/authz/least-privilege.txt",
+    "session_policy_ref": "walteur-kit/authz/session.txt",
+    "token_policy_ref": "walteur-kit/authz/token.txt",
+    "admin_boundary_ref": "walteur-kit/authz/admin.txt",
+    "audit_log_ref": "walteur-kit/authz/audit.txt"
+  },
+  "tests": {
+    "positive_authz_ref": "walteur-kit/authz/positive.txt",
+    "negative_authz_ref": "walteur-kit/authz/negative.txt",
+    "anonymous_denial_ref": "walteur-kit/authz/anon.txt",
+    "privilege_escalation_ref": "walteur-kit/authz/privesc.txt",
+    "regression_command_ref": "walteur-kit/authz/regression.txt"
+  },
+  "tenant_isolation": {
+    "required": true,
+    "tenant_key_ref": "walteur-kit/authz/tenant-key.txt",
+    "rls_or_policy_ref": "walteur-kit/authz/rls.txt",
+    "cross_tenant_denial_ref": "walteur-kit/authz/cross-tenant.txt",
+    "isolation_evidence_ref": "walteur-kit/authz/isolation.txt",
+    "cross_tenant_probe": {
+      "command": "node --test test/cross-tenant.test.mjs",
+      "expect_exit": 0
+    }
+  },
+  "evidence_refs": [
+    "walteur-kit/authz/evidence.txt"
+  ],
+  "signoff": {
+    "required": true,
+    "owner": "Tony",
+    "signoff_ref": "walteur-kit/authz/signoff.txt"
+  }
+}

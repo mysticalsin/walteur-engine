@@ -1,0 +1,1 @@
+docs — PRD.md, ops/dashboards.md runbook, inline header comments on core.mjs/server.mjs documenting the hash-only + one-time-raw-key invariants.

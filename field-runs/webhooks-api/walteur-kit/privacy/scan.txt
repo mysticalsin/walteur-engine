@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: scan — PII scan: tracked tree scanned for committed secret literals — zero found; data.json verified to contain no whsec_ value (only sha256 fingerprints).

@@ -1,0 +1,52 @@
+id: walteur-return-in-catch-py
+valid:
+  - |
+    def f():
+        try:
+            return work()
+        except Exception as e:
+            log.error("failed", exc_info=e)
+            return None
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            raise
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return cached_value
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return {"ok": False}
+invalid:
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return None
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return []
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return 0
+  - |
+    def f():
+        try:
+            return work()
+        except Exception:
+            return {}

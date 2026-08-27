@@ -1,0 +1,1 @@
+shared-dev evidence — reviewers confirmed the owned() chokepoint, constant-time compare, hash-only storage, and log redaction against the running 38/38 suite.

@@ -1,0 +1,12 @@
+id: walteur-banned-api-call
+valid:
+  - |
+    import requests
+    requests.get("https://x")
+invalid:
+  - |
+    import os
+    os.system("ls")
+  - |
+    import requests
+    requests.fetch("https://x")

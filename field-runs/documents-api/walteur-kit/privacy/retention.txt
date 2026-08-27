@@ -1,0 +1,1 @@
+documents-api privacy evidence: retention — retention — documents persist until the tenant deletes them or invokes DSAR erase; there is no cross-tenant retention; data.json mirrors only live state.

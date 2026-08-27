@@ -1,0 +1,10 @@
+{
+  "probes": [
+    {
+      "name": "read-other-tenant-invoice",
+      "description": "Authenticate as tenant_a, request an invoice that belongs to tenant_b, expect the API to deny (403) the cross-tenant read.",
+      "probe_command": "node tests/tenant-isolation.probe.js  # expect 403 deny for cross-tenant invoice read",
+      "expect": "deny"
+    }
+  ]
+}

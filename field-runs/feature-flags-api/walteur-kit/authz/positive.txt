@@ -1,0 +1,1 @@
+feature-flags authz evidence: positive — same-tenant set/list/get/delete succeed (201/200/204). Proven by test/api.test.mjs (same-tenant case).

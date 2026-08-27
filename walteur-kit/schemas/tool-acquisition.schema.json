@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/tool-acquisition.schema.json",
+  "title": "WALTEUR Tool Acquisition Manifest",
+  "description": "Pinned, lockfile-backed on-demand CLI acquisition contracts used by WALTEUR aggregate proofs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "updated_at",
+    "policy",
+    "tools"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "policy": { "type": "string", "minLength": 20 },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "purpose",
+          "local_binaries",
+          "preferred_local_binary",
+          "on_demand",
+          "lockfile",
+          "fallback_policy",
+          "safety_policy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "purpose": { "type": "string", "minLength": 10 },
+          "local_binaries": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._@/+:-]+$"
+            }
+          },
+          "preferred_local_binary": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._@/+:-]+$"
+          },
+          "on_demand": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "runner",
+              "package",
+              "version",
+              "package_spec",
+              "binary",
+              "proof_args",
+              "proof"
+            ],
+            "properties": {
+              "runner": {
+                "type": "string",
+                "enum": ["npx"]
+              },
+              "package": { "type": "string", "minLength": 1 },
+              "version": {
+                "type": "string",
+                "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9._-]+)?$"
+              },
+              "package_spec": { "type": "string", "minLength": 1 },
+              "binary": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._@/+:-]+$"
+              },
+              "proof_args": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "proof": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "description",
+                  "config_path",
+                  "expected_tests",
+                  "expected_passed"
+                ],
+                "properties": {
+                  "description": { "type": "string", "minLength": 10 },
+                  "config_path": { "type": "string", "minLength": 1 },
+                  "expected_tests": { "type": "integer", "minimum": 1 },
+                  "expected_passed": { "type": "integer", "minimum": 1 }
+                }
+              }
+            }
+          },
+          "lockfile": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "manager",
+              "workspace",
+              "package_json_path",
+              "lockfile_path",
+              "lockfile_version",
+              "package_path",
+              "resolved",
+              "integrity",
+              "install_command",
+              "local_binary_path",
+              "prove_script",
+              "prove_command",
+              "proof_assets"
+            ],
+            "properties": {
+              "manager": {
+                "type": "string",
+                "enum": ["npm"]
+              },
+              "workspace": { "type": "string", "pattern": "^walteur-kit/tool-acquisition/[a-z0-9][a-z0-9._-]*$" },
+              "package_json_path": { "type": "string", "pattern": "^walteur-kit/tool-acquisition/[a-z0-9][a-z0-9._-]*/package\\.json$" },
+              "lockfile_path": { "type": "string", "pattern": "^walteur-kit/tool-acquisition/[a-z0-9][a-z0-9._-]*/package-lock\\.json$" },
+              "lockfile_version": { "type": "integer", "const": 3 },
+              "package_path": { "type": "string", "minLength": 1 },
+              "resolved": {
+                "type": "string",
+                "pattern": "^https://registry\\.npmjs\\.org/.+\\.tgz$"
+              },
+              "integrity": {
+                "type": "string",
+                "pattern": "^sha512-[A-Za-z0-9+/=]+$"
+              },
+              "install_command": { "type": "string", "const": "npm ci --prefer-offline --no-audit --fund=false" },
+              "local_binary_path": { "type": "string", "pattern": "^walteur-kit/tool-acquisition/[a-z0-9][a-z0-9._-]*/node_modules/\\.bin/[A-Za-z0-9._@/+:-]+$" },
+              "prove_script": { "type": "string", "minLength": 1 },
+              "prove_command": { "type": "string", "const": "npm run prove" },
+              "proof_assets": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^walteur-kit/[A-Za-z0-9._@/+:-]+$"
+                }
+              }
+            }
+          },
+          "fallback_policy": { "type": "string", "minLength": 20 },
+          "safety_policy": { "type": "string", "minLength": 20 }
+        }
+      }
+    }
+  }
+}

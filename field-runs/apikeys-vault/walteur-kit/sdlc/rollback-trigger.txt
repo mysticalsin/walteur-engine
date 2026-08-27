@@ -1,0 +1,1 @@
+rollback trigger — 5xx error rate > 0.1% for 5m (ops/slo.json api-availability) pages on-call; runbook step 3 executes rollback.

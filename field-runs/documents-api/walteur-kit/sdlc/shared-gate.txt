@@ -1,0 +1,1 @@
+shared-dev gate — code review + security review + HTTP integration green before merge.

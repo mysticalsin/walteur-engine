@@ -1,0 +1,17 @@
+{
+  "name": "engine-urlshort",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency Node.js HTTP JSON API for URL shortening (in-memory store, strict typed-error validation, collision-safe codes).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "bin/server.js",
+  "scripts": {
+    "start": "node bin/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

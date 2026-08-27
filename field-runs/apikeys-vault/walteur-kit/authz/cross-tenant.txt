@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: cross-tenant — cross-tenant — deny-by-default tenant scoping in core.mjs (owned() + per-tenant buckets); proven by core.test.mjs + test/cross-tenant.test.mjs (HTTP). B cannot list/get/rotate/revoke A's keys.

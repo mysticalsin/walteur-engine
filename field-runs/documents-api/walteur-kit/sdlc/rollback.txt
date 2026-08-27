@@ -1,0 +1,1 @@
+rollback — ops/rollback.sh --check verifies a healthy prior-version marker (ops/versions.json) and exits 0; --execute gated behind ROLLBACK_CONFIRM=1.

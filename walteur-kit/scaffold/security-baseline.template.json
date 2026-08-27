@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "_note": "The 11-point production-security baseline. For each check the build NEEDS (security-baseline-gate.sh decides from preflight-signals), set status to verified (+evidence), signed-deferred (+deferral owner/ticket/reason/review_trigger; not allowed at risk high/regulated), or not-applicable (+reason). 'unaddressed' fails closed on purpose. Run the `prompt` against your AI to do the work. 'Build fast, just don't ship naked.'",
+  "checks": [
+    { "id": "privacy_legal", "layer": "L8 governance", "status": "unaddressed",
+      "prompt": "You collect user data — GDPR/CCPA apply. Confirm a privacy policy exists and document exactly where user data lives (which DB/region/processor)." },
+    { "id": "rls", "layer": "L8 security & RLS", "status": "unaddressed",
+      "prompt": "Without Row-Level Security anyone can open DevTools and read the whole DB. Verify RLS policies exist on every table (Supabase → Auth → Policies); zero policies = naked." },
+    { "id": "auth_failure_tests", "layer": "L4 auth & permissions", "status": "unaddressed",
+      "prompt": "Test the FAILURE paths, not just the happy path: wrong password x5, reset for an email that doesn't exist, a verification link clicked twice, signup with an existing email. Catches ~80% of auth bugs." },
+    { "id": "security_headers", "layer": "L1/L5 frontend & hosting", "status": "unaddressed",
+      "prompt": "Review my app as a security specialist and make sure I have strong security headers and a solid baseline security posture." },
+    { "id": "owasp_review", "layer": "L8 security", "status": "unaddressed",
+      "prompt": "Review my app against OWASP standards and highlight vulnerabilities. This is where SQL injection, XSS, and auth bugs actually get caught. (For depth, run an OWASP pentest agent such as CyberStrike.)" },
+    { "id": "server_side_validation", "layer": "L2 APIs & backend", "status": "unaddressed",
+      "prompt": "Client-side validation is UX, not security — attackers disable JS and hit the API directly. Validate every input again on the server." },
+    { "id": "no_data_leaks", "layer": "L8 security", "status": "unaddressed",
+      "prompt": "Check my app for credential or sensitive data leaks in frontend or API routes (.env values in the frontend, API responses returning too much, secrets in logs)." },
+    { "id": "no_frontend_secrets", "layer": "L2/L4 APIs & auth", "status": "unaddressed",
+      "prompt": "An API key in the browser is already taken. Move every secret server-side or proxy it; nothing sensitive ships in client code." },
+    { "id": "rate_limits", "layer": "L9 rate limiting", "status": "unaddressed",
+      "prompt": "Cap every endpoint that hits a paid API before someone burns the bill (a Supabase bill can jump $20→$200 in a day). Add rate limits per endpoint." },
+    { "id": "captcha_cors", "layer": "L1/L8 frontend & security", "status": "unaddressed",
+      "prompt": "Add CAPTCHA to public forms (Cloudflare Turnstile is free) and lock CORS to your domain. ~10 min; kills bot floods." },
+    { "id": "safe_error_messages", "layer": "L12 error tracking & logs", "status": "unaddressed",
+      "prompt": "Error messages must not leak internals — show users 'User not found', never 'SELECT * FROM users failed'. Log full errors server-side, show generic messages to users." }
+  ]
+}

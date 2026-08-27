@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: dsar — DSAR access/modify/export/erase — GET /keys (access, metadata), POST /keys/:id/rotate (modify the credential), GET /keys serialization (export of metadata), POST /admin/erase (erasure). Erasure proven by test/erasure.test.mjs (2/2).

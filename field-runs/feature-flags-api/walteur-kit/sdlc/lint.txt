@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: lint — node -c on core.mjs and server.mjs parses clean; zero external deps to lint.

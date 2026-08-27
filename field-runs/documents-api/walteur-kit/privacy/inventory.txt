@@ -1,0 +1,1 @@
+documents-api privacy evidence: inventory — data inventory — per-tenant documents { id, title, body, createdAt, updatedAt } + a tenant-scoped audit trail { ts, tenantId, action, id }. No special-category data; tenant-supplied content only.

@@ -1,0 +1,1 @@
+rollback-trigger: any failing test re-run = revert. Trigger = node --test non-zero exit.

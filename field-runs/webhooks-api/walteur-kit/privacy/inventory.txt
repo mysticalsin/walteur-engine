@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: inventory — data inventory: subscriptions {tenantId,id,url,eventType,active,secretFingerprint,secretLast4,createdAt,updatedAt} + audit rows {ts,tenantId,action,id}. No raw signing secret is stored.

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "manifest_id": "walteur-selftest-exceptions-v1",
+  "updated_at": "2026-06-23",
+  "policy": "Every selected spec hook with --selftest support must run in aggregate selftest. A selected spec hook without --selftest needs an explicit exception here until a hook-local selftest exists.",
+  "exceptions": []
+}

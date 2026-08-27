@@ -1,0 +1,27 @@
+# 14-Layer Full-Stack Production Reality (SKILL §14) — walk every layer at SHIP
+- [ ] 1 Frontend (a11y AA, responsive, all states, browser-verified)
+- [ ] 2 APIs & Backend Logic (typed, validated, versioned, idempotent)
+- [ ] 3 Database & Storage (schema, migrations, indexes, backup/restore)
+- [ ] 4 Auth & Permissions (authn+authz, least privilege)
+- [ ] 5 Hosting & Deployment (reproducible, rollback, zero-downtime)
+- [ ] 6 Cloud & Compute (right-sized, autoscale, cost budget, IaC)
+- [ ] 7 CI/CD & Version Control (tests gate merge, no secrets in git)
+- [ ] 8 Security & RLS (OWASP, STRIDE, row-level security, deps pinned)
+- [ ] 9 Rate Limiting (per-user/IP, abuse protection, graceful 429)
+- [ ] 10 Caching & CDN (strategy + invalidation, static via CDN)
+- [ ] 11 Load Balancing & Scaling (stateless, horizontal, load-tested 100×)
+- [ ] 12 Error Tracking & Logs (structured logs, error tracking, traces, alerts)
+- [ ] 13 Availability & Recovery (health checks, failover, RTO/RPO, DR runbook)
+- [ ] 14 AI/Agent (tool contracts, injection defense, eval gating, abstention, oversight, loop termination, provenance)
+
+## Layer 14 — AI/Agent
+- [ ] Typed tool contracts (every tool has a validated I/O schema; reject off-contract calls)
+- [ ] Prompt-injection corpus tested (curated attack set run against every untrusted-input path)
+- [ ] Eval suite with pass^k (k-sample stability gate, not single-shot; merge-blocking)
+- [ ] Faithfulness/RAG grounding (answers cite retrieved sources; no ungrounded claims)
+- [ ] Abstention path ("I don't know"/escalate wired when confidence/grounding is low)
+- [ ] Oversight gate on money/irreversible actions (human-in-the-loop before commit)
+- [ ] No untrusted input in privileged tool calls (sanitize/quarantine before tool/exec)
+- [ ] Loop termination (max steps/budget/wall-clock; no unbounded agent loops)
+- [ ] Provenance on generated claims (model + prompt + context version logged per output)
+> Each = ✅ or a written "deferred because X, risk owned by Tony." Silent gap = vibe-coder ship = fails the bar.

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "skill": "org-tdd-discipline",
+  "fired_at": "2026-07-02T00:00:00Z",
+  "phase": "Build",
+  "task": "5 — node:test suite: pure logic + persistence edges + in-memory storage stub (test/state.test.js, test/storage.test.js, test/helpers/memory-storage.js)",
+  "artifacts": [
+    "test/state.test.js",
+    "test/storage.test.js",
+    "test/helpers/memory-storage.js"
+  ],
+  "summary": "Applied strict red-green TDD to Task 5, the FULL zero-dep node:test suite. Because src/state.js and src/storage.js were already built (T2/T3) and correct, a naive run would be vacuous-green — so I earned the RED with a three-mutation sanity sweep proving every load-bearing assertion actually fails when the code is wrong, restoring the pristine source (backed up to scratchpad) after each. Mutation 1: made state.js toggle() mutate its input in place -> group (7) immutability + (2) toggle-untouched went RED (2 fail, exit 1). Mutation 2: replaced storage.js save()'s e.name mapping with a hardcoded 'oops' -> group (d) QuotaExceededError-reason subtest went RED (exit 1). Mutation 3: added a top-level `const _probe = localStorage.getItem(...)` to storage.js -> the module's import threw ReferenceError and group (a) 'import(storage.js) RESOLVES' plus every downstream import-dependent case went RED (exit 1), proving the import-resolves guard is a REAL assertion, not a passive side effect. All three restored; grep confirms 0 'BUG (mutation-test)' markers remain in src/. Authored test/helpers/memory-storage.js as three project-OWNED ~5-line adapter classes (NO third-party mock): MemoryStorage (Map-backed getItem->null-on-absent/setItem), QuotaExceededStorage (setItem always throws an Error whose .name='QuotaExceededError', getItem returns a caller-supplied raw string), ThrowingStorage (getItem always throws to prove load() totality). test/state.test.js covers all TEN brief groups as top-level test() + t.test() subtests: (1) add trims/appends/empty-no-op/deterministic id via injected ()=>'id-'+(n++), (2) toggle flips+unknown-id-no-op, (3) edit rename/empty-removes/unknown-no-op, (4) remove, (5) filter all|active|done + unknown->all, (6) activeCount, (7) immutability proven by deep-copy-before vs deepStrictEqual-after across all seven mutators/serialize, (8) round-trip deepStrictEqual(deserialize(serialize(fixture)),fixture), (9) deserialize TOTAL one subtest each for null/'{not json'/'null'/'42'/'\"s\"'/'{}'/'[{}]'->[], (10) migrate v0-bare-array->v1-envelope + future-version->[]. test/storage.test.js covers all FIVE groups (a)-(e): (a) the import-resolves guard as a real assert.doesNotReject + typeof load/save===function, (b) load->[] for absent/malformed/wrong-shape/bare-number/throwing-adapter one subtest each, (c) load returns the array for a valid v1 envelope and a migrated v0 legacy blob, (d) save {ok:true} normally and {ok:false,reason:'QuotaExceededError'} via the throwing stub + no-input-mutation, (e) save->load round-trip through one shared in-memory stub deepStrictEqual-yields-the-original + empty-list case. Final: full `node --test` GREEN 124/124 exit 0 with NO node_modules (empty dep tree); grep proved every import across test/ is a node: builtin or the relative ./helpers path — zero third-party import anywhere; group-header grep confirmed 10 state groups + 5 storage groups present. Did NOT rely on --experimental-test-coverage as a gate.",
+  "verdict": "PASS",
+  "prior_firings": [
+    {
+      "fired_at": "2026-07-02T00:00:00Z",
+      "phase": "Build",
+      "task": "4 — DOM layer: index.html + src/app.js + src/styles.css (a11y-complete, all states)",
+      "artifacts": [
+        "test/dom-a11y-contract.test.js",
+        "index.html",
+        "src/app.js",
+        "src/styles.css"
+      ],
+      "summary": "Applied strict red-green TDD to the DOM layer under the zero-dep / no-jsdom constraint. Wrote test/dom-a11y-contract.test.js FIRST (11 static-source contract checks over the shipped files: semantic doctype/lang/h1/labelled-form + type=module wiring + relative-only asset URLs; EXACTLY ONE role=status region authored in HTML, empty at load, single text node, never JS-created; tabindex=-1 delete-focus anchor positioned ABOVE the <ul>; role=list defensive <ul>; three aria-pressed filter buttons with exactly one true; window.localStorage referenced in exactly one place of comment-stripped EXECUTABLE code; no innerHTML sink; isCancelling edit-guard + setSelectionRange present; unique Edit/Delete {title} aria-labels; :focus-visible + list-style:none + prefers-reduced-motion + :has() in CSS). Ran node --test test/dom-a11y-contract.test.js and confirmed RED (ENOENT, exit 1) because the three files did not exist. Then implemented index.html (semantic skeleton + one persistent visually-hidden role=status region), src/app.js (the ONLY DOM+localStorage layer: full state machine, every render state incl. empty/populated/all-filtered-out/save-failed, focus management, edit lifecycle with the isCancelling blur guard, debounced live region, window.localStorage injected in exactly one place), and src/styles.css (visible :focus-visible ring, AA contrast light+dark, no layout shift, native nesting + :has()). Reran to GREEN 11/11 exit 0; full node --test suite 52/52 exit 0. Two contract assertions caught real precision issues (comment/JSDoc mentions of window.localStorage and role=status, and HTML-comment mentions of <ul>/tabindex miscounting) which I fixed by measuring comment-stripped code/markup - tightening the invariant, not weakening it. A live browser pass over a zero-dep static server then PROVED zero console errors, no network beyond the four local assets, and all six actions: add (focus-retained, terse live announce 'Task added, N remaining.'), toggle (no focus move, :has() strike-through), edit (Enter commit, Escape cancel restoring text + refocus with NO spurious blur save via the guard, blur commit), delete (focus->tabindex=-1 heading, or add-input when list empties), filter (aria-pressed + mode-specific all-filtered-out message 'Nothing active/done'), plus persistence across reload and a QuotaExceededError non-blocking save-failed status. The browser pass also SURFACED a latent state.js bug the unit tests missed (add()'s default idFactory=crypto.randomUUID throws 'Illegal invocation' when detached from its receiver); fixed on my owned side by injecting a bound newId in app.js and flagged the root-cause fix to the state.js owner via a spawned task.",
+      "verdict": "PASS"
+    },
+    {
+      "fired_at": "2026-07-02T00:00:00Z",
+      "phase": "Build",
+      "task": "3 — Storage adapter (src/storage.js)",
+      "artifacts": [
+        "test/storage-import-safety.test.js",
+        "src/storage.js"
+      ],
+      "summary": "Applied strict red-green TDD to Task 3 (the storage adapter). Wrote test/storage-import-safety.test.js FIRST (10 assertions): the load-bearing guard that import('../src/storage.js') RESOLVES under plain Node with no DOM globals (proving zero top-level window/localStorage/document reference — the design doc's single-most-likely build mistake), load() total over a THROWING getItem -> [], load() null/malformed/wrong-shape -> [] one test per case (no catch-all), load() well-formed v1 envelope round-trip, save() {ok:true} on success, save() {ok:false,reason:'QuotaExceededError'} on the quota throw, save() {ok:false,reason:e.name} on any other throw (never throws), and save() no-input-mutation. Ran node --test test/storage-import-safety.test.js and confirmed RED (ERR_MODULE_NOT_FOUND, exit 1) because src/storage.js did not exist. Then implemented src/storage.js as a DOM-free ES module importing serialize/deserialize from ./state.js, adapter injected as a function parameter, load()/save() each wrapped in try/catch for totality, save() mapping any throw to {ok:false,reason:<error.name>} with a string fallback for a non-Error throw. Reran: GREEN 10/10 exit 0. Acceptance one-liner node -e import('./src/storage.js').then(()=>console.log('ok')) prints ok exit 0. grep-confirmed the only window/localStorage/document mentions in storage.js are JSDoc prose (zero executable refs). Buildable slice (storage+state+scaffold) 41/41 green; remaining full-suite failures are the not-yet-built frontend layer (dom-a11y-contract) owned by a sibling task, not this one.",
+      "verdict": "PASS"
+    },
+    {
+      "fired_at": "2026-07-02T00:00:00Z",
+      "phase": "Build",
+      "task": "2 — Pure state module (src/state.js)",
+      "artifacts": [
+        "test/state-deserialize-total.test.js",
+        "src/state.js"
+      ],
+      "summary": "Applied strict red-green TDD to Task 2. Wrote test/state-deserialize-total.test.js FIRST (24 assertions driving the module: deserialize total-function contract over null/undefined/'{not json'/'null'/'42'/'\"s\"'/'{}'/'[{}]'/future-version/one-bad-item, a 24-input fuzz sweep asserting doesNotThrow + Array.isArray, migrate v0->v1 and forward-unknown->[], SHAPE_GUARD all-or-nothing, every mutator returns-new-array-and-leaves-input-unmutated with same-reference no-ops on unknown id/empty text, and the deepStrictEqual round-trip on a fixture). Ran `node --test test/state-deserialize-total.test.js` and confirmed RED (ERR_MODULE_NOT_FOUND, exit 1) because src/state.js did not exist. Then implemented src/state.js as a DOM-free side-effect-free ES module (add/toggle/edit/remove/filter/activeCount/serialize/deserialize/migrate/SHAPE_GUARD, JSDoc-typed) and reran: GREEN 24/24 exit 0. Full `node --test` suite is 31/31 (7 scaffold + 24 driver). Verified `node -e import('./src/state.js')` imports with no DOM refs, grep-confirmed zero executable window/document/localStorage references (only JSDoc prose mentions them), and proved v0-bare-array migration, extra-key stripping (no data beyond the documented envelope), and filter('all') reference identity via a standalone edge harness.",
+      "verdict": "PASS"
+    }
+  ]
+}

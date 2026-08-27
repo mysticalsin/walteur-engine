@@ -1,0 +1,238 @@
+{
+  "rows": [
+    {
+      "id": "S001",
+      "sha256": "9ad09bad7163a8cdb2c9952cb089c28986a33874109031af4f1e817b6112dd7e",
+      "date": "2026-06-28",
+      "score": 47
+    },
+    {
+      "id": "S002",
+      "sha256": "bfb415bb727c8766bdc85e9b7021b491481e6d6c6dca637707c8ff09a44d9a91",
+      "date": "2026-06-28",
+      "score": 48
+    },
+    {
+      "id": "S003",
+      "sha256": "227e0e21da964577877eb03d39f5d1161b92afa3a1083ed2f49e8ab5fe663817",
+      "date": "2026-06-28",
+      "score": 49
+    },
+    {
+      "id": "S004",
+      "sha256": "da437f093eab30007d5d2d75b0c76d4ec77c3acb0b5598ca582df2621cbc144e",
+      "date": "2026-06-28",
+      "score": 50
+    },
+    {
+      "id": "S005",
+      "sha256": "eae5571fca1d7e865f0260f0b09de1c57a177aef9cea6681c73a05c3b9e82c17",
+      "date": "2026-06-28",
+      "score": 51
+    },
+    {
+      "id": "S006",
+      "sha256": "97910569db8a3ed02f2376250ae1e605f925f4beae660355b05ed72653cd638d",
+      "date": "2026-06-28",
+      "score": 53
+    },
+    {
+      "id": "S007",
+      "sha256": "2d7dcf8e6b5afbd5398641d66267e12e2be2b44def469e0e2bb683c09e1ec9c6",
+      "date": "2026-06-28",
+      "score": 54
+    },
+    {
+      "id": "S008",
+      "sha256": "190b4cc798e72d18d4b1f6ac17c73d499e83e35ba59218deca291e279e1f246a",
+      "date": "2026-06-28",
+      "score": 46
+    },
+    {
+      "id": "S009",
+      "sha256": "3391605bc30ea3b5b651a9024b0776db78700ea62802a89ae4d5a074d04bebba",
+      "date": "2026-06-28",
+      "score": 46
+    },
+    {
+      "id": "S010",
+      "sha256": "400be8232b58bfba5c69ca5376fba6c7e375ec00f6eeee6fa07e67ff98453ef4",
+      "date": "2026-06-28",
+      "score": 46
+    },
+    {
+      "id": "S011",
+      "sha256": "038e3099f8ad7aa78decf14788ddcbd1df9762c0ce0311d7ae73e2d4a8c2ea39",
+      "date": "2026-06-28",
+      "score": 46
+    },
+    {
+      "id": "S012",
+      "sha256": "26735f0f2664f99a4de0b9f834d65f2c3cc7b517e1c1394de4849e3f524253dc",
+      "date": "2026-06-28",
+      "score": 46
+    },
+    {
+      "id": "S013",
+      "sha256": "8ea583939fa20903997d2cb9f44b21b6322528c10a486db7cbd2ee90ca587160",
+      "date": "2026-06-28",
+      "score": 48
+    },
+    {
+      "id": "S014",
+      "sha256": "7f33eebd6ec2d664ab981a528a1038fb5a2b31e98bef06edf7d4a297bbf2f592",
+      "date": "2026-06-29",
+      "score": 44
+    },
+    {
+      "id": "S015",
+      "sha256": "eafd8735bec303f33e507f416201098dc4dde56b1050c8847464b913a3714e83",
+      "date": "2026-06-29",
+      "score": 49
+    },
+    {
+      "id": "S016",
+      "sha256": "e7a85f3f23b6b0d2f5141228cfb6402f64e6fd352b972a0d01a3e0bdecbcf8a0",
+      "date": "2026-06-29",
+      "score": 51
+    },
+    {
+      "id": "S017",
+      "sha256": "cf02884787668dfd045f9fef93776f4d74bd7668095c21b5e46f4278301a08c1",
+      "date": "2026-06-29",
+      "score": 53
+    },
+    {
+      "id": "S018",
+      "sha256": "38f71c974ee54d4ee0ed3c1e622df607df8fae617b492fb6b437b6e27dba9c69",
+      "date": "2026-06-29",
+      "score": 55
+    },
+    {
+      "id": "S019",
+      "sha256": "28180cce5663c1bab53f962f7fc7805491acd88d93c9c3aac864c05785ce1e20",
+      "date": "2026-06-29",
+      "score": 56
+    },
+    {
+      "id": "S020",
+      "sha256": "14a757329ef8fedd64beac1d1a31438361ebb63ff77e8948ab0a9787427e4dd4",
+      "date": "2026-06-29",
+      "score": 58
+    },
+    {
+      "id": "S021",
+      "sha256": "cf0de2fb465f8a0bb92fd50abc754897bd482c9a1d07ba8db70ad3a9a6bdb67c",
+      "date": "2026-06-29",
+      "score": 59
+    },
+    {
+      "id": "S022",
+      "sha256": "9040d08763509e7629a65e1fd06626d5329ef98804466edfd32aa9ab5f7e6999",
+      "date": "2026-06-30",
+      "score": 60
+    },
+    {
+      "id": "S023",
+      "sha256": "b5150b047b7f2fbb0b0464b30c861c3962543f9927ac557b88174a07869ad45a",
+      "date": "2026-06-30",
+      "score": 60
+    },
+    {
+      "id": "S024",
+      "sha256": "3ccef751e136cba87a2578636e4146be4997fb3fe370f48646bfdaf4b1125b9c",
+      "date": "2026-06-30",
+      "score": 46
+    },
+    {
+      "id": "S025",
+      "sha256": "3cc2195038eeb06019149d8c3be47fd60283af649f2313432e614ff3e5d8efe5",
+      "date": "2026-06-30",
+      "score": 46
+    },
+    {
+      "id": "S026",
+      "sha256": "531a52c24fac9e3f89b841a638f487e25e934ec2611eec490ba16a565a9365c0",
+      "date": "2026-06-30",
+      "score": 46
+    },
+    {
+      "id": "S027",
+      "sha256": "120fde3426a42505d1650d43acfe9f2e2fd58f3193f6607654aabca8c4503821",
+      "date": "2026-06-30",
+      "score": 51
+    },
+    {
+      "id": "S028",
+      "sha256": "b59cca889445f742765d74e6db558cb8c6b164cd3f166a7877c59de3beceb6cc",
+      "date": "2026-06-30",
+      "score": 54
+    },
+    {
+      "id": "S029",
+      "sha256": "1a1b8ce3ffdfd522e9e074061f5c66dee4ebfa2177779b25bebd90003f8a69a9",
+      "date": "2026-06-30",
+      "score": 55
+    },
+    {
+      "id": "S030",
+      "sha256": "f21da3f7ec82977c27d628aa2a42f191adee3c6d291e909f375ea9e18f820890",
+      "date": "2026-06-30",
+      "score": 58
+    },
+    {
+      "id": "S031",
+      "sha256": "7f2a3963d8bf87fbeea5d5effbb1b8b8572fc709c3f42a80187851567f3c2936",
+      "date": "2026-07-01",
+      "score": 58
+    },
+    {
+      "id": "S032",
+      "sha256": "04a864cb010212ca88848bccf8be6abc5b048ab99ad48570c1c37b45a2fc021f",
+      "date": "2026-07-01",
+      "score": 60
+    },
+    {
+      "id": "S033",
+      "sha256": "a280ba0266e38acb486ef884bb738e2371a0e69f5a5737833ddc8c26c3b0e7d0",
+      "date": "2026-07-02",
+      "score": 64,
+      "forced": false
+    },
+    {
+      "id": "S034",
+      "sha256": "f5a9098a0b1287f45ff5992277d7461256fb002bfe4fb32e77f952bb2a292613",
+      "date": "2026-07-02",
+      "score": 64,
+      "forced": false
+    },
+    {
+      "id": "S035",
+      "sha256": "150aad57be8e85968c7a3bf11317c517abee70396a1d3caa15221778361d49f3",
+      "date": "2026-07-02",
+      "score": 65,
+      "forced": false
+    },
+    {
+      "id": "S036",
+      "sha256": "c96d45ff27b4005baea4750de19732e77522f9b0e459bd0a254926ecb5e208d8",
+      "date": "2026-07-02",
+      "score": 65,
+      "forced": false
+    },
+    {
+      "id": "S037",
+      "sha256": "84bc58656272ffbace1ca807c8e23fe55b5f71b5ab1990eb107362bf3eb90396",
+      "date": "2026-07-02",
+      "score": 66,
+      "forced": false
+    },
+    {
+      "id": "S038",
+      "sha256": "a2546fe4463966ef7bfcdb1c64e8dfd48d7cae345fb6236323fc254d88bffe0e",
+      "date": "2026-07-25",
+      "score": 65,
+      "forced": false
+    }
+  ]
+}

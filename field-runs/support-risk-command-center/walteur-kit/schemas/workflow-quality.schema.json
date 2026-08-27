@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/workflow-quality.schema.json",
+  "title": "WALTEUR Workflow Quality",
+  "description": "Class-specific quality proof for the `workflow` build class (SOP, automation, operating cadence, handoff). Covers the workflow extra-proof HARNESS-LOOP requires: a single accountable owner (RACI), a dry-run, an exception path, and a recovery path. Validated by workflow-quality-gate.sh.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ts", "verdict", "deliverables", "ownership", "dry_run", "exception_path", "recovery_path"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "ts": { "type": "string", "minLength": 1 },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "deliverables": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The SOP / runbook / automation files this build produced.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "type"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "description": "Project-relative path to the workflow artifact; must exist." },
+          "type": { "type": "string", "description": "sop | runbook | automation | cadence | handoff | other" }
+        }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "raci"],
+      "properties": {
+        "owner": { "type": "string", "minLength": 1, "description": "Named owner of the workflow." },
+        "raci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["responsible", "accountable"],
+          "properties": {
+            "responsible": { "type": "string" },
+            "accountable": { "type": "string", "minLength": 1, "description": "Exactly one accountable party — the gate requires this." },
+            "consulted": { "type": "string" },
+            "informed": { "type": "string" }
+          }
+        }
+      }
+    },
+    "dry_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["performed"],
+      "properties": {
+        "performed": { "type": "boolean", "description": "The workflow was dry-run end-to-end. Gate requires true." },
+        "evidence_ref": { "type": "string", "description": "Path/ref to the dry-run evidence." }
+      }
+    },
+    "exception_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defined"],
+      "properties": {
+        "defined": { "type": "boolean", "description": "What to do when a step fails / an input is bad. Gate requires true." },
+        "ref": { "type": "string" }
+      }
+    },
+    "recovery_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defined"],
+      "properties": {
+        "defined": { "type": "boolean", "description": "How to recover / roll back a partial run. Gate requires true." },
+        "ref": { "type": "string" }
+      }
+    },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

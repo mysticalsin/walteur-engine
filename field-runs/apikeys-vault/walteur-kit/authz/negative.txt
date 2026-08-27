@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: negative — negative authz — an authenticated tenantB CANNOT read (404), rotate (403), or revoke (403) tenantA's keys. Proven by test/cross-tenant.test.mjs.

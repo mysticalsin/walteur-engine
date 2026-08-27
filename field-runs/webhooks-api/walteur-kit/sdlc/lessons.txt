@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: lessons — lessons: storing a one-way fingerprint instead of the raw secret keeps the "zero secrets in data.json" story intact even while offering signing-secret rotation.

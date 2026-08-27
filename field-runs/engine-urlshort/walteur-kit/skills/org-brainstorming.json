@@ -1,0 +1,168 @@
+[
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T19:05:00Z",
+    "phase": "Review",
+    "artifacts": [
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Senior-PM review brainstorm: enumerated the Definition of Done from AGENTS.md §1/§4/§7 and PLAN.md and cross-walked each item against the built code before ruling. Divergent angles considered and resolved: (1) is 201 (not 200) on POST an in-scope contract deviation? — no, task said only '-> {code, shortUrl}', 201 Created is RESTful and README documents it, consistent everywhere. (2) Is the CODE_GEN_EXHAUSTED/500 path only unit-tested (store.test.js) and never over HTTP a DoD miss? — AGENTS.md §4 wording is 'drives store.save to CODE_GEN_EXHAUSTED', satisfied by the unit test; helpers.startServer already forwards an injectable store so an HTTP-level 500 test is cheap — logged as a strong non-blocking recommendation, not a veto, because the DoD is literally met. (3) Location-header CRLF injection via stored URL — ruled out: redirect target is new URL().href which percent-encodes control chars. (4) Empty-string url — correctly split across the two validators (shape passes '', validateUrl throws INVALID_URL). Conclusion: scope is coherent, wedge is the zero-dep node:http contract, measurable win is 69/69 green plus a per-code coverage proof artifact; no scope creep into the stated non-goals (SSRF/auth/rate-limit/persistence)."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:05:00Z",
+    "phase": "Review",
+    "artifacts": [
+      "field-runs/engine-urlshort/README.md",
+      "field-runs/engine-urlshort/bin/server.js",
+      "field-runs/engine-urlshort/test/http.test.js"
+    ],
+    "summary": "Senior Growth (usable + adoptable, README/onboarding) independent second-pass brainstorm — I enumerated every adoption failure mode a fresh adopter could hit, then checked each against LIVE evidence rather than the prior reviewer's notes. (1) Does the README quick-start run verbatim on a clean checkout? — booted `PORT=39117 node bin/server.js` and ran the exact documented curls: 201 with a request-derived shortUrl and 302 with an exact Location header, byte-for-byte as the README shows. (2) Is the 'works identically in PowerShell/cmd/POSIX' claim safe? — yes; npm start/npm test carry zero shell-specific syntax. (3) Is the X-Forwarded-Proto / BASE_URL shortUrl story true, not aspirational? — confirmed live that `X-Forwarded-Proto: https` flips the shortUrl scheme to https, matching README §2. (4) Could an adopter be misled that 'validated' means 'safe to fetch'? — README §4 pre-empts exactly that with an explicit SSRF/private-IP/metadata non-goal callout naming 127.0.0.1 / 169.254.169.254 / ::1. (5) Is the error table a drift trap? — bounded by the README's own 'src/errors.js is source of truth' clause plus errors.test.js asserting exactly the 12 documented codes. Conclusion: every brainstormed adoption risk is handled or honestly disclosed; per CITE-OR-VETO I found no citable blocking gap in my discipline, so I raise none and PASS."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T22:59:35Z",
+    "phase": "Review",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/walteur-kit/skills/org-tdd-discipline.json"
+    ],
+    "summary": "Senior Full-Stack (owns tests + production-reality layers) independent third-pass brainstorm, focused on the ONE seam the two prior reviewers flagged but waved through: the CODE_GEN_EXHAUSTED/500 path. I enumerated where the spec pins this and what the suite actually contains. AGENTS.md §4 'Minimum required coverage' lists '...a forced-collision test that drives store.save to CODE_GEN_EXHAUSTED' UNDER the HTTP integration suite; PLAN.md §7 Correctness SLO lists 'forced-collision -> CODE_GEN_EXHAUSTED' among the `node --test` green criteria. Grep of test/http.test.js for CODE_GEN_EXHAUSTED / 500 / startServer({ store }) / INTERNAL_ERROR returns ONLY a comment (line 195) — there is no HTTP-level 500/CODE_GEN_EXHAUSTED case, and no INTERNAL_ERROR case either. It IS unit-covered (store.test.js:74-118). The prior brainstorm called this 'DoD literally met' by the unit test, but the DoD text places the forced-collision case in the HTTP suite, and the tdd-discipline receipt (org-tdd-discipline.json) OVERCLAIMS by asserting the HTTP suite contains 'an injected-store CODE_GEN_EXHAUSTED -> 500 asserting no stack leaks to the wire' — false for the shipped http.test.js. To decide veto-vs-nit I forced the branch over real HTTP (ephemeral _force500.mjs, deleted after): 500 + Content-Type application/json + {error:{code:CODE_GEN_EXHAUSTED}} + no stack leak — production code is correct. Verdict: the code path works, but a REQUIRED HTTP-suite assertion is absent AND a skill receipt makes a false claim about it — that is a citable blocking gap in my discipline (tests), so I VETO with the concrete fix below rather than pass to reduce friction."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T22:59:04Z",
+    "phase": "Review",
+    "artifacts": [
+      "field-runs/engine-urlshort/AGENTS.md",
+      "field-runs/engine-urlshort/bin/server.js",
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Senior DevOps/SRE review brainstorm over the cloud-heavy layers I own (§14 L5 hosting, L6 cloud/compute, L7 CI/CD, L12 observability, L13 availability/DR). Before ruling I enumerated the failure surface for a single-process in-memory service so I would not pattern-match an out-of-scope cloud veto onto a deliberately minimal build, then answered each angle with executed evidence: (1) does the L12 readiness signal fire with the REAL bound port or a fixed 3000 string? booted PORT=0 node bin/server.js, log carried url http://127.0.0.1:56381, the true OS-assigned port, PASS. (2) does a forced 500 leak a stack to the wire? injected a throwing store, wire body was {error:{code:INTERNAL_ERROR}} with the internal message ONLY on stderr, LEAK clean. (3) are L5/L6/L7/L13 falsely marked OUT-OF-SCOPE while a broken Dockerfile/CI/IaC actually ships? find for Dockerfile/*.yml/.github/*.tf/Procfile/fly.toml/vercel.json returned nothing, so the OUT-OF-SCOPE claims in AGENTS.md section 7 are honestly held, not a silent half-build. (4) is the bind config-driven or a hardcoded port that breaks any host target? PORT env with nullish-coalescing not logical-or, and server.on(error) exits non-zero so a supervisor sees a bind failure rather than a silent hang. Convergence: my one IN-SCOPE layer (observability) is genuinely implemented and proven end-to-end; every OUT-OF-SCOPE layer in my lane is a documented non-goal, not a skipped requirement, so no blocking cloud/hosting/CI/DR gap exists to veto."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T22:59:35Z",
+    "phase": "Review",
+    "reviewer": "senior-full-stack",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/walteur-kit/skills/org-tdd-discipline.json"
+    ],
+    "summary": "Senior Full-Stack (owns tests + production-reality layers) independent third-pass brainstorm, focused on the ONE seam the prior reviewers waved through: the CODE_GEN_EXHAUSTED/500 path. AGENTS.md §4 'Minimum required coverage' lists 'a forced-collision test that drives store.save to CODE_GEN_EXHAUSTED' UNDER the HTTP integration suite; PLAN.md §7 Correctness SLO lists 'forced-collision -> CODE_GEN_EXHAUSTED' among the node --test green criteria. Grep of test/http.test.js for CODE_GEN_EXHAUSTED/500/startServer({store})/INTERNAL_ERROR hits ONLY a comment (line 195): there is NO HTTP-level 500/CODE_GEN_EXHAUSTED case and no INTERNAL_ERROR case. It is unit-covered (store.test.js:74-118). The prior brainstorm called this 'DoD literally met' by the unit test, but the DoD text places the forced-collision case in the HTTP suite, and the org-tdd-discipline.json receipt OVERCLAIMS by asserting the HTTP suite contains 'an injected-store CODE_GEN_EXHAUSTED -> 500 asserting no stack leaks to the wire' — false for the shipped http.test.js. To decide veto-vs-nit I forced the branch over real HTTP (ephemeral _force500.mjs, deleted): 500 + Content-Type application/json + {error:{code:CODE_GEN_EXHAUSTED}} + no stack leak — production code is correct. Verdict: the path works, but a REQUIRED HTTP-suite assertion is absent AND a skill receipt makes a false claim about it — a citable blocking gap in my discipline (tests), so I VETO with a concrete fix rather than pass to reduce friction."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:20:00Z",
+    "phase": "Review",
+    "reviewer": "senior-growth-final",
+    "artifacts": [
+      "field-runs/engine-urlshort/README.md",
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/walteur-kit/skills/org-tdd-discipline.json"
+    ],
+    "summary": "Senior Growth FINAL-round brainstorm after the prior Full-Stack + Security VETO (missing wire-level 500 cases + an overclaiming tdd receipt). Rather than re-litigate, I enumerated whether that veto is actually REMEDIATED in the current tree and cross-checked each demand against the shipped file. Demand 1 (add an injected-store CODE_GEN_EXHAUSTED -> 500 wire case asserting no stack): PRESENT at test/http.test.js:355-389 — startServer({store}) with an always-throwing save, asserts 500 + error.code CODE_GEN_EXHAUSTED + no '    at ' frame + exact 2-key {error:{code,message}} envelope. Demand 2 (add an injected raw-Error store -> 500 INTERNAL_ERROR wire case proving the secret stays off the wire): PRESENT at test/http.test.js:401-437 — asserts the LEAK_MARKER never appears in res.text; I independently saw that marker in the stderr log during my own `node --test` run, confirming server-side-only. Demand 3 (add both 500 codes to REQUIRED_ERROR_CODES so the ledger enforces them): PRESENT at http.test.js:68-69. Demand 4 (correct the overclaiming receipt): the org-tdd-discipline.json summary now carries an explicit CORRECTION acknowledging the earlier overclaim and pointing to the accurate 22:55:19Z receipt; no live receipt currently overclaims. Adoption angles I additionally brainstormed and closed with live evidence: README curls reproduce byte-for-byte (201 request-derived shortUrl -> 302 canonical Location), the npm-start structured log matches the documented shape, and the error table equals src/errors.js 12/12. Conclusion: the veto is fully cleared and no NEW citable adoption/onboarding gap exists in my discipline — PASS, not a friction rubber-stamp."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:46:00Z",
+    "phase": "Review",
+    "reviewer": "senior-security",
+    "artifacts": [
+      "field-runs/engine-urlshort/src/validate.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/test/http.test.js"
+    ],
+    "summary": "Senior Security independent attack-surface brainstorm. Rather than trust prior reviewers I enumerated every offensive vector a URL shortener exposes and drove each at the LIVE server. (1) Response-splitting / header injection through the stored URL into the Location header — the single highest-value vector for a redirector: probed 7 CRLF/NUL payloads (raw CR/LF and %0d%0a in path/query/fragment/userinfo) through validateUrl; the WHATWG parser strips or percent-encodes every control char in u.href (src/validate.js:114), so Location can never carry a raw CRLF, and node:http setHeader is a second wall that throws ERR_INVALID_CHAR on any raw CRLF — injection closed on two independent layers. (2) Scheme-allowlist bypass — ftp/javascript/file/data/mailto all rejected DISALLOWED_PROTOCOL post-parse (src/validate.js:107). (3) Unbounded-memory DoS — 1 MiB cap enforced mid-stream before JSON.parse (src/server.js:82-96); >1 MiB lands 413, socket drains, exit 0. (4) Prototype pollution via a __proto__ JSON body — Object.prototype stayed unpolluted. (5) Stack/secret leak on the 500 catch-all — forced a raw Error out of an injected store.save and confirmed over real HTTP the client sees only {code:INTERNAL_ERROR}, secret confined to stderr (src/server.js:268-269). The security CONTROLS are all sound. BUT one brainstormed vector exposed a real test gap that intersects the Full-Stack veto from my own angle: the no-stack-leak guarantee at the HTTP catch-all (server.js:268-269) — the exact integration point where a leak would occur — is asserted only at unit level (errors.test.js on sendError in isolation); test/http.test.js never drives an unexpected throw through the real catch-all, and its REQUIRED_ERROR_CODES (http.test.js:48-59) deliberately omits INTERNAL_ERROR and CODE_GEN_EXHAUSTED. A future regression making the catch-all echo err.message would ship green. Conclusion: attack surface is well-defended, but the security-critical no-leak-at-the-boundary assertion is missing from the wire suite — a citable gap I carry into my ruling."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:13:56Z",
+    "phase": "Review",
+    "reviewer": "senior-security-final",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/src/validate.js"
+    ],
+    "summary": "Senior Security FINAL-round brainstorm — the prior Security/Full-Stack VETO was the no-stack-leak-at-the-HTTP-catch-all assertion missing from the wire suite. I did not re-litigate; I enumerated whether that exact demand is REMEDIATED in the CURRENT tree and confirmed each against the shipped file and a live run. (1) Injected-store INTERNAL_ERROR wire case that drives a RAW (non-AppError) throw through the real catch-all (server.js:268-269) and asserts the secret marker never reaches res.text: PRESENT at test/http.test.js:401-437; I ran `node --test` myself and SAW the marker RAW-ERROR-SECRET-7c21-STDERR-ONLY emitted to stderr only, never on the wire — 71/71 green. (2) Injected-store CODE_GEN_EXHAUSTED wire case asserting 500 + no '    at ' frame + exact 2-key envelope: PRESENT at http.test.js:355-389. (3) Both 500 codes added to REQUIRED_ERROR_CODES so the self-policing ledger fails the build if either is silently dropped: PRESENT at http.test.js:68-69. New live probes I ran this pass (scratchpad/sec_probe.mjs): CRLF in a submitted URL is stripped/percent-encoded in the redirect Location (http://example.com/fooSet-Cookie:%20evil=1, NO Set-Cookie injected); an attacker Host / X-Forwarded-Proto header is reflected ONLY into the caller's own response-body shortUrl, never into the stored redirect target (GET /:code redirects to the validated href, not shortUrl), so it is a self-reflection with no second-party victim — not an open redirect and not a blocking gap. Conclusion: the prior VETO is fully cleared in the shipped tree and no NEW citable blocking security gap exists in my discipline — PASS, not a friction rubber-stamp."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:52:00Z",
+    "phase": "Review",
+    "reviewer": "senior-devops-sre-final",
+    "artifacts": [
+      "field-runs/engine-urlshort/bin/server.js",
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/AGENTS.md"
+    ],
+    "summary": "Senior DevOps/SRE FINAL-round brainstorm over the cloud-heavy layers I own (§14 L5 hosting, L6 cloud/compute, L7 CI/CD, L12 observability, L13 availability/DR). The prior Full-Stack + Security VETO was in the TESTS discipline (missing wire-level 500 cases + an overclaiming tdd receipt), which intersects my L12 no-leak-on-error concern, so before ruling I checked whether it is REMEDIATED in the current tree rather than re-litigating. It is: test/http.test.js:355-389 drives an injected always-exhausting store -> 500 CODE_GEN_EXHAUSTED asserting no '    at ' frame and an exact 2-key {error:{code,message}} envelope; test/http.test.js:401-437 drives an injected raw-Error store -> 500 INTERNAL_ERROR asserting the leak marker never reaches res.text; REQUIRED_ERROR_CODES (http.test.js:68-69) now lists both 500 codes so the self-policing ledger enforces them; and the overclaiming org-tdd-discipline.json now carries an explicit CORRECTION. I re-ran the full suite: 71/71 pass, exit 0, clean process exit (no undrained-body hang). Then I re-drove every load-bearing claim in MY lane with executed evidence: (a) L12 readiness — booted PORT=0 node bin/server.js, log carried the true OS-assigned port http://127.0.0.1:57404, not a hardcoded 3000; (b) L13/L12 crash-loud — spawned a second server against an occupied port, observed exit code 1 + a structured {level:fatal,code:EADDRINUSE} stderr line (bin/server.js:20-33), the correct supervisor-visible failure for a single-process service; (c) string-PORT coercion — env vars are strings, confirmed node listen('0') binds and address() reports numeric, so PORT in a container works; (d) phantom-infra — find for .github/workflows, Dockerfile, docker-compose, *.tf, Procfile returned NOTHING, so the OUT-OF-SCOPE marks on L5/L6/L7 are honest not aspirational, and README §4 explicitly discloses no-persistence/RPO=inf/RTO=restart/no-HA/no-TLS so nothing operational is silently implied. Conclusion: every layer I own is verified-working (L12) or honestly and explicitly scoped-out (L5/L6/L7/L13); the prior test-discipline veto touching my no-leak concern is cleared; no citable blocking gap remains in my discipline — PASS."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:13:47Z",
+    "phase": "Review",
+    "reviewer": "senior-full-stack-final",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/walteur-kit/skills/org-tdd-discipline.json",
+      "field-runs/engine-urlshort/walteur-kit/test-report.json"
+    ],
+    "summary": "Senior Full-Stack FINAL-pass brainstorm on the current working tree, re-checking whether the prior Full-Stack + Security VETOs (both cited the SAME gap: no HTTP-level CODE_GEN_EXHAUSTED/INTERNAL_ERROR case at the real catch-all, plus a tdd receipt that overclaimed the test existed) are actually remediated in shipped code or merely re-narrated in prose. I did not take the receipts on trust. Angles: (1) Do the two required 500 wire cases now exist? YES, read test/http.test.js case 12 (line 355: always-exhausting injected store -> 500 CODE_GEN_EXHAUSTED, asserts exact 2-key {error:{code,message}} envelope + no stack frame) and case 13 (line 401: injected store.save throws a RAW Error carrying LEAK_MARKER -> 500 INTERNAL_ERROR, asserts the marker is NOT on the wire). (2) Do both drive the GENUINE trust boundary, not a mock that bypasses it? YES; the injected save() throws inside handleShorten and propagates to the real handler try/catch (server.js:240-270): AppError branch for CODE_GEN_EXHAUSTED, logServerError + generic INTERNAL_ERROR at server.js:268-269 for the raw Error. (3) Does the self-policing ledger enforce them? YES, REQUIRED_ERROR_CODES lists both (http.test.js:68-69) and the final report case fails the build if either is unseen (line 450-451). (4) Was the overclaiming receipt corrected? YES; the 22:50:07Z tdd receipt now carries an explicit CORRECTION disavowing the earlier false claim, and the accurate claim lives in the 22:55:19Z receipt. I independently drove the live server: happy 201->302 to the exact canonical URL, CRLF payload preserved percent-encoded in Location (no raw CR/LF), __proto__ body left Object.prototype unpolluted, and ran node --test twice = 71/71 pass, 0 fail, clean exit. Conclusion: the two prior blocking vetoes in my discipline are genuinely closed by shipped test code, the receipt overclaim is repaired, and no new blocking gap exists in tests or the production-reality layers I own — PASS."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:20:00Z",
+    "phase": "Review",
+    "reviewer": "senior-ui-ux",
+    "artifacts": [
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/src/errors.js",
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Senior UI/UX independent brainstorm. No browser UI exists (pure JSON API), so I re-scoped my discipline to the DEVELOPER-facing UX surface: the response contract, state coverage, and message quality. I enumerated every state a client can land in and drove each at the LIVE server rather than trusting comments. Success: POST -> 201 {code,shortUrl} Content-Type application/json; GET /:code -> 302 with a Location header and an empty drained body (a redirect must not carry a payload). Errors: all 12 typed codes in src/errors.js render as one uniform {error:{code,message}} envelope with an actionable non-empty message and the right 4xx/5xx status; I confirmed a DISALLOWED_PROTOCOL message does NOT echo the raw offending URL (probed ftp://SECRETMARKER..., marker absent from the body) — no reflected-input smell. Edge states probed live: HEAD and OPTIONS on both routes return a graceful 405 + Allow header (not a crash/hang); GET / -> 404 NOT_FOUND; a text/plain body with valid JSON is leniently parsed — every off-happy-path input resolves to a typed documented state, none to an unhandled 500. Divergent angle: HEAD /:code -> 405 (vs a bodiless 200/302) is a minor HTTP-semantics nit (RFC 9110: a GET-supporting resource SHOULD accept HEAD) but fails gracefully with Allow: GET and is covered by the README wrong-method wording — non-blocking. The Host/X-Forwarded-Proto reflection into shortUrl (blind-review.json) is a Security trust-boundary item, not a UI/UX states/accessibility gap; README §2 discloses the header-derived behavior and the BASE_URL override, so it is documented not silent. Accessibility genuinely N/A (no rendered content). Conclusion: state coverage is complete and consistent, no happy-path-only shortcut, no unhandled/empty/failure state dangling — per CITE-OR-VETO no citable blocking gap in my discipline, so I raise none."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:30:00Z",
+    "phase": "Review",
+    "reviewer": "chief-of-staff",
+    "artifacts": [
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/src/server.js",
+      "field-runs/engine-urlshort/README.md"
+    ],
+    "summary": "Chief-of-Staff final-owner brainstorm: does the prior Full-Stack + Security VETO (missing HTTP-level CODE_GEN_EXHAUSTED/INTERNAL_ERROR wire cases plus a receipt that overclaimed them) still bind, or is it remediated in the SHIPPED tree? I diffed the actual on-disk test/http.test.js, not the receipts. The two 500 wire cases NOW EXIST: test 12 (http.test.js:355-389) drives an always-exhausting injected store to 500 CODE_GEN_EXHAUSTED asserting an exact 2-key {error:{code,message}} envelope and no stack frame; test 13 (http.test.js:401-437) drives a raw-Error injected store to 500 INTERNAL_ERROR asserting the secret marker is NOT on the wire (confined to stderr, which I watched print during my own run). REQUIRED_ERROR_CODES (http.test.js:68-69) now lists both, so the self-policing ledger enforces them. The org-tdd-discipline overclaim carries an explicit dated CORRECTION and the true claim now lives in the 22:55:19Z receipt. I re-ran node --test myself twice: 71/71 pass, exit 0, clean process exit, no hang. The prior VETO is CLOSED by real shipped code, not by narrative. Remaining blind-review items (Host reflection into shortUrl, stale readBody docstring, unvalidated PORT) I drove at the live server: none breaks the contract, shortUrl is SPEC-required request-derived and the redirect target is host-independent; all are documented non-blocking hardening notes. Conclusion: DoD met, no open citable blocking gap in scope."
+  },
+  {
+    "schema_version": 1,
+    "skill": "org-brainstorming",
+    "fired_at": "2026-07-02T23:58:00Z",
+    "phase": "Review",
+    "reviewer": "senior-pm",
+    "artifacts": [
+      "field-runs/engine-urlshort/AGENTS.md",
+      "field-runs/engine-urlshort/PLAN.md",
+      "field-runs/engine-urlshort/test/http.test.js",
+      "field-runs/engine-urlshort/walteur-kit/blind-review.json"
+    ],
+    "summary": "Senior-PM FINAL-round brainstorm over scope / wedge / measurable win / Definition of Done — the four things this seat owns. I enumerated every angle by which the build could miss its DoD and answered each against LIVE evidence, and I re-adjudicated the prior-round Full-Stack + Security VETO myself rather than trusting the sibling 'remediated' receipts. (1) The prior VETO: test/http.test.js lacked the AGENTS.md-4 / PLAN.md-7 REQUIRED forced-collision CODE_GEN_EXHAUSTED wire case (and INTERNAL_ERROR), and a tdd receipt overclaimed it existed. Fixed in the SHIPPED file? YES: http.test.js case 12 (line 355) drives an always-exhausting injected store to 500 CODE_GEN_EXHAUSTED over real HTTP asserting the exact 2-key envelope + no '    at ' frame; case 13 (line 401) drives a raw-Error store to 500 INTERNAL_ERROR asserting the leak marker never reaches the wire; REQUIRED_ERROR_CODES (line 49-70) now enforces BOTH 500 codes so the self-policing ledger fails the build if either path is dropped; and org-tdd-discipline.json's overclaim was honestly corrected with a dated CORRECTION note. Real remediation, not cosmetic. (2) Is the DoD (AGENTS.md 1: node --test green, round-trip 302, every typed-error path on status+error.code, 413/404/405, README error table byte-for-byte to src/errors.js) MET? I ran node --test -> 71/71 pass, exit 0, no hang, and a live probe confirmed 201->302 round-trip to the canonical URL, 405+correct Allow on both known paths, dedup non-goal holds, and a script diffing the README table against ERRORS confirmed all 12 codes+statuses byte-for-byte. (3) Scope drift in EITHER direction? None: the four documented non-goals (SSRF/private-IP, auth, rate-limit, persistence) are neither secretly implemented nor accidentally required — http://127.0.0.1, http://169.254.169.254, http://[::1], http://0.0.0.0 all validate to 201 exactly as README 4 discloses (validated != safe-to-fetch), and no Dockerfile/CI/IaC ships under an OUT-OF-SCOPE 14 layer. (4) The blind-review 'important' finding — buildShortUrl reflecting client Host/X-Forwarded-Proto into the cosmetic shortUrl — lands in my lane, so I adjudicated it: the STORED redirect target is unaffected (GET /:code redirects to legit.example.com, not the attacker Host — verified live), shortUrl is request-derived by EXPLICIT PLAN.md 23 design (the ephemeral-port test round-trip requires it) with a working BASE_URL override (verified -> short.mycorp.io), and no money/write/authz/redirect-integrity path is compromised. Documentable hardening nit, not a DoD gap. Conclusion: scope is coherent and honestly bounded, wedge is the zero-dep node:http typed-error contract, measurable win is 71/71 green + a self-policing per-code coverage artifact, prior VETO fully closed, and I find NO citable blocking gap in the PM discipline — PASS."
+  }
+]

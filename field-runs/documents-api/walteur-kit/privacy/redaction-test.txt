@@ -1,0 +1,1 @@
+documents-api privacy evidence: redaction-test — logging redaction test — Authorization appears as *** in every request log line; observed in the live run logs.

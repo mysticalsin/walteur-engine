@@ -1,0 +1,1 @@
+Build: client-side ES modules; no bundler step. node --test runs the real modules end-to-end.

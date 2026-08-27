@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "certified": true,
+  "model": "opus",
+  "scored_dims": {
+    "design": {
+      "score": 9,
+      "rationale": "API + auth-chokepoint design re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "infrastructure": {
+      "score": 9,
+      "rationale": "node:http server, ephemeral-port tests, zero deps re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "security": {
+      "score": 10,
+      "rationale": "deny-by-default isolation via core.owned(), constant-time token compare, env-injected secrets re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "ux_ui": {
+      "score": 8,
+      "rationale": "static console renders denial-safe, never shows foreign data re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "performance": {
+      "score": 9,
+      "rationale": "in-memory store, sub-ms request handling observed in logs re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "features": {
+      "score": 9,
+      "rationale": "CRUD + tenant-scoped audit + DSAR erase over HTTP re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "data_architecture": {
+      "score": 9,
+      "rationale": "single owned() chokepoint; tenant-scoped list/audit/erase re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    },
+    "devex": {
+      "score": 9,
+      "rationale": "npm test = node --test; run-gates.sh drives all 8 proof gates re-read against running evidence: node --test is 24/24 green and live curl confirmed 401/403/404 denial — accepted.",
+      "evidence_ref": "walteur-kit/sdlc/local-evidence.txt"
+    }
+  },
+  "layer_walk": [
+    {
+      "id": 1,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 1 reviewed against running code + tests."
+    },
+    {
+      "id": 2,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 2 reviewed against running code + tests."
+    },
+    {
+      "id": 3,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 3 reviewed against running code + tests."
+    },
+    {
+      "id": 4,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 4 reviewed against running code + tests."
+    },
+    {
+      "id": 5,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 5 reviewed against running code + tests."
+    },
+    {
+      "id": 6,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 6 reviewed against running code + tests."
+    },
+    {
+      "id": 7,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 7 reviewed against running code + tests."
+    },
+    {
+      "id": 8,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 8 reviewed against running code + tests."
+    },
+    {
+      "id": 9,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 9 reviewed against running code + tests."
+    },
+    {
+      "id": 10,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 10 reviewed against running code + tests."
+    },
+    {
+      "id": 11,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 11 reviewed against running code + tests."
+    },
+    {
+      "id": 12,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 12 reviewed against running code + tests."
+    },
+    {
+      "id": 13,
+      "status": "verified",
+      "evidence_ref": "walteur-kit/sdlc/integration.txt",
+      "notes": "Layer 13 reviewed against running code + tests."
+    }
+  ],
+  "adr_recheck": [],
+  "intent_vs_impl": [
+    {
+      "intent_quote": "STORY-1 says a request carrying another tenant's identity can never read or mutate my rows.",
+      "intent_source": "walteur-kit/PRD.md#story",
+      "code_evidence": "server.mjs:authenticate + core.mjs:owned (test/cross-tenant.test.mjs 4/4 green)",
+      "attacker": "tenantB",
+      "victim": "tenantA",
+      "fix": "none",
+      "severity": "none",
+      "verdict": "PASS"
+    },
+    {
+      "intent_quote": "STORY-2: deleting my tenant removes all of my tasks and audit rows and nothing belonging to any other tenant.",
+      "intent_source": "walteur-kit/PRD.md#story",
+      "code_evidence": "server.mjs DELETE /api/tenant -> core.eraseTenant (test/erasure.test.mjs 2/2 green)",
+      "attacker": "none",
+      "victim": "data-subject",
+      "fix": "none",
+      "severity": "none",
+      "verdict": "PASS"
+    }
+  ],
+  "launch_blockers": [],
+  "shortfalls": [],
+  "known_gaps": [],
+  "evidence_reproduced": true,
+  "verification_probe": {
+    "command": "node --test test/api.test.mjs",
+    "expect_exit": 0
+  },
+  "ts": "2026-06-29T02:24:26Z"
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "note": "Two REAL re-runnable layers for this client-side dashboard. logic = pure risk-scoring tests; component = real DOM-string render tests. There is NO automated e2e/browser layer (recorded honestly, not fabricated).",
+  "layers": {
+    "logic": {
+      "recorded_command": "node --test tests/risk.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "test_file": "tests/risk.test.mjs",
+      "covers": "riskLabel, sortByRisk, summarizeTickets (pure logic)"
+    },
+    "component": {
+      "recorded_command": "node --test tests/view.test.mjs",
+      "exit_code": 0,
+      "expect_exit": 0,
+      "test_file": "tests/view.test.mjs",
+      "covers": "renderSummaryCards, renderRiskRows (rendered DOM-string assertions)"
+    }
+  }
+}

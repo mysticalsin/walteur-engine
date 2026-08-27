@@ -1,0 +1,72 @@
+{
+  "reviewer": "senior-pm",
+  "fits_together": true,
+  "plan": "engine-todoapp (6 tasks, DOM-free state core + storage + a11y frontend + node:test suite + docs)",
+  "reviewed_at": "2026-07-02",
+  "red_flags": [
+    {
+      "id": "RF1",
+      "severity": "high",
+      "area": "T3<->T2 unowned export interface (storage.js imports state.js)",
+      "risk": "T3 (src/storage.js) imports the named exports serialize/deserialize FROM ./state.js, but those names are declared only on the CONSUMER side. T2's brief owns state.js as a 'DOM-free, side-effect-free module' without pinning the exact export identifiers. If T2 names them toJSON/fromJSON, stringifyState/parseState, or ships them as default-object methods, T3 throws SyntaxError: does not provide an export named 'serialize' at import time. Classic consumer-declares-the-contract mismatch that bites the instant storage.js is loaded.",
+      "owner_role": "Pure State-Logic Builder (T2)",
+      "mitigation": "FREEZE the state.js public API in T2's DoD as named exports before any consumer is built: export function serialize(state): string and export function deserialize(str): state, both pure and total (deserialize returns a valid default state on null/malformed input, never throws). T3 and T5 import ONLY these two names. Add an import-smoke assertion in T5 that fails loudly if either export is missing."
+    },
+    {
+      "id": "RF2",
+      "severity": "high",
+      "area": "T3<->T5 dependency injection seam (storage double has nothing to inject into)",
+      "risk": "T5 ships test/helpers/memory-storage.js — an in-memory Storage double — to test storage.js under node:test. But Node has NO global localStorage. If T3 hard-references the localStorage global inside storage.js, the memory-storage double has no injection point, storage.test.js cannot run headless, and every storage test either crashes (ReferenceError: localStorage is not defined) or silently no-ops. The DI seam is NOT stated in T3's brief. This is the single most likely integration break in the plan.",
+      "owner_role": "Pure State-Logic Builder (T3)",
+      "mitigation": "T3's DoD must make the storage backend an INJECTED dependency: load(key, adapter) / save(key, value, adapter) where adapter defaults to globalThis.localStorage in the browser and is passed memory-storage.js in tests. storage.js must contain zero direct references to the localStorage global except as a default parameter guarded by typeof. Lock the adapter interface shape (getItem/setItem/removeItem) as the T3<->T5 contract."
+    },
+    {
+      "id": "RF3",
+      "severity": "high",
+      "area": "T4 missing dependency edge on T3 (frontend can't persist)",
+      "risk": "T4 (index.html, app.js, styles.css) is declared deps=2 ONLY. But app.js is the sole UI consumer of persistence — a todo app must load on boot and save on mutation, which is storage.js (T3), not just state.js (T2). With the edge missing, T4 may be built/scheduled before T3 exists, or built against a storage API it has to guess, producing a UI that doesn't persist or that wires against a stale/invented storage signature.",
+      "owner_role": "Accessible Frontend Builder (T4)",
+      "mitigation": "Change T4 deps to 2,3. app.js imports load/save from ./storage.js and serialize/deserialize transitively via state.js. Add to T4's DoD: 'app persists across reload' as an acceptance criterion, exercised against the real localStorage adapter."
+    },
+    {
+      "id": "RF4",
+      "severity": "high",
+      "area": "T1 unowned package.json field with cross-task blast radius ('type':'module')",
+      "risk": "T5 runs node:test importing ES modules (state.js, storage.js) and T3/T4 use ES 'import'. This ALL requires package.json to set \"type\": \"module\". T1's brief is truncated ({name, private:tru...}) and does not explicitly own the type field. If T1 omits it, Node treats every .js as CommonJS and every import statement in the test suite and modules throws 'Cannot use import statement outside a module' — the whole test wave (T5) and the module graph fail at once.",
+      "owner_role": "Pure State-Logic Builder (T1)",
+      "mitigation": "T1's DoD must pin package.json to include \"type\": \"module\", \"private\": true, a \"test\": \"node --test\" script, and NO dependencies/devDependencies blocks with third-party entries. deps-baseline.json must assert the empty-dependency-set fact so T6's coverage report and T5's 'zero third-party deps' claim have a single source of truth."
+    },
+    {
+      "id": "RF5",
+      "severity": "high",
+      "area": "T4<->T6 contradiction: file:// run mode vs ES-module imports (CORS)",
+      "risk": "T6's README documents 'open index.html directly (file://) OR serve it'. But T4's app.js uses ES 'import' from ./state.js and ./storage.js. Browsers BLOCK ES module imports over the file:// protocol (CORS / opaque origin) — the module script fails to load and the app is blank when opened by double-click. The documented primary run path is architecturally impossible with the chosen module system. Users following the README hit a dead app on first contact.",
+      "owner_role": "Accessibility & Docs Verifier (T6) + Accessible Frontend Builder (T4)",
+      "mitigation": "Pick one and make it coherent: EITHER (a) T4 inlines app logic as a single non-module <script> (or an importmap-free bundle) so file:// truly works and README's file:// claim is honest; OR (b) T6 corrects the README to state that ES-module apps REQUIRE a static server (e.g. 'npx serve' / 'python -m http.server') and demotes/removes the file:// path. Recommend (b): keep clean ES modules, fix the docs. a11y-contract.json and README run steps must match the actual, tested launch method."
+    },
+    {
+      "id": "RF6",
+      "severity": "med",
+      "area": "T4 three-artifact task with an unspecified deep a11y contract",
+      "risk": "T4 is the widest task (3 files: index.html + app.js + styles.css) and carries all the accessibility weight — semantic h1, labelled form, tabindex=-1 focus-management heading, live-region announcements for add/remove, keyboard operability, visible focus, color-contrast. 'Accessible' is asserted but the specific SC (WCAG) criteria are not enumerated, so the a11y-contract.json (owned by T6) risks being written AFTER the fact to match whatever T4 shipped, rather than being the spec T4 builds to.",
+      "owner_role": "Accessibility & Docs Verifier (T6)",
+      "mitigation": "Author a11y-contract.json as a PRE-condition input to T4, not a post-hoc T6 output: enumerate the exact criteria (label association, programmatic name/role/value, focus moves to a tabindex=-1 status heading after mutation, aria-live=polite announcement, no keyboard trap, 3:1/4.5:1 contrast, prefers-reduced-motion honored). T6 then VERIFIES against that contract. Keep T4 at exactly these 3 files — do not let it absorb storage/test scope."
+    },
+    {
+      "id": "RF7",
+      "severity": "med",
+      "area": "deserialize/load robustness contract (corrupt persisted state) unassigned",
+      "risk": "load(key, adapter) reads whatever is in localStorage — which can be absent, empty string, truncated, or JSON from an older/foreign schema. If deserialize (T2) or load (T3) assumes well-formed input, the app throws on boot for any user with stale/corrupt storage and never recovers (permanent white screen, no way to clear). This is the enterprise 'malformed/empty/failure' branch WALTEUR's craft mandate requires, and it currently has no explicit owner.",
+      "owner_role": "Pure State-Logic Builder (T2/T3)",
+      "mitigation": "Make deserialize total: on null/''/invalid-JSON/schema-mismatch it returns a valid default state and never throws. load() catches adapter/get failures and falls back to default. T5 must include explicit tests: empty store, corrupt JSON string, wrong-shape object -> all yield default state, no throw. This is a named acceptance criterion, not an edge left to chance."
+    },
+    {
+      "id": "RF8",
+      "severity": "low",
+      "area": "T5 test-layer coverage claim vs T6 coverage report parity",
+      "risk": "T6 writes test-layer-coverage.json describing which layers are tested. T5 owns the actual tests (state.test.js unit, storage.test.js integration-with-double). If T6's report claims a layer (e.g. a DOM/app.js layer) that T5 never covered — node:test has no DOM, so app.js is intentionally untested — the coverage report overclaims and fails a truth gate. Frontend (T4) has no automated test in this plan by design.",
+      "owner_role": "Accessibility & Docs Verifier (T6)",
+      "mitigation": "test-layer-coverage.json must state honestly: state.js = unit-tested (node:test), storage.js = tested via injected memory-storage double, app.js/DOM = NOT unit-tested (documented rationale: no DOM in node:test; verified manually/via a11y contract). No claimed layer without a corresponding T5 test file. Single source of truth = deps-baseline.json + the real test/ directory."
+    }
+  ]
+}

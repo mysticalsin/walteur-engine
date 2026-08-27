@@ -1,0 +1,1 @@
+feature-flags privacy evidence (rollup): erasure_probe = node --test test/erasure.test.mjs (exit 0); DSAR removes caller flags+audit, sibling untouched; logs redact tokens.

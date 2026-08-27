@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/frontend-budget.schema.json",
+  "title": "WALTEUR Frontend Budget",
+  "description": "Browser payload and Core Web Vitals budget for any frontend build that ships JavaScript.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundles", "core_web_vitals"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "bundles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "max_kb"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "max_kb": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        }
+      }
+    },
+    "core_web_vitals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lcp_ms", "inp_ms", "cls"],
+      "properties": {
+        "lcp_ms": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "inp_ms": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cls": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

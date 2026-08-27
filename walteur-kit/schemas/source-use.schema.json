@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/source-use.schema.json",
+  "title": "WALTEUR Source-Use Receipts",
+  "description": "Machine-readable receipts proving how upstream source-router entries influenced a WALTEUR plan, stack, skill, tool, or subagent decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_use_id", "generated_at", "receipts"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "source_use_id": {
+      "type": "string",
+      "pattern": "^source-use-[a-z0-9][a-z0-9._-]*$"
+    },
+    "generated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "receipts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "receipt_id",
+          "source_id",
+          "pinned_ref",
+          "stage",
+          "use_type",
+          "why_selected",
+          "extracted_pattern",
+          "accepted_into_plan",
+          "rejected_parts",
+          "license_check",
+          "maintenance_check",
+          "security_check",
+          "fit_check",
+          "artifact_refs",
+          "verification_ref",
+          "rollback_ref"
+        ],
+        "properties": {
+          "receipt_id": {
+            "type": "string",
+            "pattern": "^source-use-[a-z0-9][a-z0-9._-]*$"
+          },
+          "source_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "pinned_ref": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "stage": {
+            "type": "string",
+            "enum": ["discover", "plan", "build", "review", "ship", "reflect"]
+          },
+          "use_type": {
+            "type": "string",
+            "enum": ["observe", "borrow-pattern", "tool-candidate", "install-runtime", "import-tool", "copy-code", "spec-change", "reject"]
+          },
+          "why_selected": { "type": "string", "minLength": 12 },
+          "extracted_pattern": { "type": "string", "minLength": 12 },
+          "accepted_into_plan": { "type": "boolean" },
+          "rejected_parts": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 3 }
+          },
+          "license_check": { "$ref": "#/definitions/check" },
+          "maintenance_check": { "$ref": "#/definitions/check" },
+          "security_check": { "$ref": "#/definitions/check" },
+          "fit_check": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["decision", "reason"],
+            "properties": {
+              "decision": {
+                "type": "string",
+                "enum": ["adopt", "adapt", "reject"]
+              },
+              "reason": { "type": "string", "minLength": 12 }
+            }
+          },
+          "artifact_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 3 }
+          },
+          "verification_ref": { "type": "string" },
+          "rollback_ref": { "type": "string" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence_ref"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["pass", "not_applicable", "needs_review", "blocked"]
+        },
+        "evidence_ref": { "type": "string", "minLength": 3 }
+      }
+    }
+  }
+}

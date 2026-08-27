@@ -1,0 +1,1 @@
+SDLC signoff — release-owner approves the pipeline; pipeline_probe 'node --test test/api.test.mjs' (10/10).

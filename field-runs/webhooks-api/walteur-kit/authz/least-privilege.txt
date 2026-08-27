@@ -1,0 +1,1 @@
+webhooks-api authz evidence: least-privilege — a tenant can reach ONLY its own bucket via core.owned(); no cross-tenant read/update/rotate/delete path exists. Proven by test/cross-tenant.test.mjs (6/6).

@@ -1,0 +1,1 @@
+documents-api privacy evidence: deletion-test — deletion test — DELETE /docs/:id removes the doc; proven by test/api.test.mjs.

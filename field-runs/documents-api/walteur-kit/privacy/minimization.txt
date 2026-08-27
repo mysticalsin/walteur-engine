@@ -1,0 +1,1 @@
+documents-api privacy evidence: minimization — data minimization — only id/title/body/timestamps are stored; no PII is required by the schema; the audit trail records ids + action, never document body content.

@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: integration — test/api.test.mjs exercises the full HTTP surface on an ephemeral port (10/10); cross-tenant + erasure suites green.

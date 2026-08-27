@@ -1,0 +1,1 @@
+documents-api privacy evidence: scan — PII scan — schema carries no mandatory PII; tenant content is opaque to the service; no secret literals committed (ops/secrets-policy.json static scan: zero).

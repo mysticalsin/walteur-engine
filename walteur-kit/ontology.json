@@ -1,0 +1,84 @@
+{
+  "ontology_version": 1,
+  "note": "WALTEUR ontology-lite — a FILE-SCALE TYPED ENTITY GLOSSARY the gates LINT against. This is NOT a second retrieval index: graphify stays the ONE retrieval brain (CLAUDE.md mandated nav order; one-brain law). The glossary's only job is to give the PRD/PLAN/ADR a shared, typed vocabulary so domain nouns mean the same thing across briefs and so ontology-lint.sh can WARN (advisory, exit 0) on a capitalized domain noun that no entity defines. Do not query it semantically; do not stand up a daemon over it; it is read flat by one zero-dep bash hook.",
+  "entities": [
+    {
+      "name": "WALTEUR",
+      "type": "System",
+      "aka": ["walteur", "the build engine"],
+      "definition": "The portable, hook-backed build-engine discipline that turns an idea into the single best, evidence-backed version through a think→plan→build→review→QA→audit lifecycle."
+    },
+    {
+      "name": "PRD",
+      "type": "Artifact",
+      "aka": ["product requirements document", "PRD.md"],
+      "definition": "The DISCOVER-phase contract (walteur-discover): problem · JTBD · success-metric+unit · prioritized scope · NOT-doing · load-bearing assumptions. No PLAN without a validated problem."
+    },
+    {
+      "name": "PLAN",
+      "type": "Artifact",
+      "aka": ["plan", "PLAN.md"],
+      "definition": "The implementation spec derived from and citing the PRD: goals, out-of-scope, success metric, acceptance criteria, tasks. Spec drift = rewrite."
+    },
+    {
+      "name": "ADR",
+      "type": "Artifact",
+      "aka": ["architecture decision record", "decision record"],
+      "definition": "An immutable record of an architecture decision: context, options considered, decision, consequences. Auto-numbered, append-only."
+    },
+    {
+      "name": "Gate",
+      "type": "Concept",
+      "aka": ["gates", "hook", "guard"],
+      "definition": "A deterministic check that warns (advisory, exit 0) or blocks (HARD, exit 2) at a lifecycle seam, armed via detect-or-SKIP and never silent-green."
+    },
+    {
+      "name": "Glossary",
+      "type": "Artifact",
+      "aka": ["ontology", "ontology.json", "entity glossary"],
+      "definition": "This file: the typed entity glossary the gates lint against. A shared vocabulary surface, not a retrieval index."
+    },
+    {
+      "name": "Entity",
+      "type": "Concept",
+      "aka": ["entities", "domain noun", "domain entity"],
+      "definition": "A named, typed domain concept in the glossary: {name, type, aka, definition}. The unit ontology-lint checks references against."
+    },
+    {
+      "name": "Build Contract",
+      "type": "Artifact",
+      "aka": ["build-contract.json", "intake contract", "request contract"],
+      "definition": "The typed intake artifact that records the promised outcome, build class, risk tier, interfaces, verification gates, and required evidence before runtime state starts."
+    },
+    {
+      "name": "Gate Registry",
+      "type": "Artifact",
+      "aka": ["gate-registry.json", "class-risk gate matrix", "required gate matrix"],
+      "definition": "The typed matrix that maps build class and risk tier to mandatory gate declarations, with gate availability and report metadata."
+    },
+    {
+      "name": "Harness Loop",
+      "type": "Concept",
+      "aka": ["HARNESS-LOOP", "enterprise loop", "phase loop"],
+      "definition": "The canonical WALTEUR control loop: intake, discover, plan, build, verify, review, ship, and reflect with evidence gates between phases."
+    },
+    {
+      "name": "Build Class",
+      "type": "Concept",
+      "aka": ["build_class", "project class", "delivery class"],
+      "definition": "The primary type of work a WALTEUR run is shipping: software, workflow, document, data-ai, cloud-iac, or mixed."
+    },
+    {
+      "name": "Evidence",
+      "type": "Artifact",
+      "aka": ["proof", "verification output", "receipt"],
+      "definition": "A command output, report, screenshot, review, audit, decision, source, or manual check used to justify a gate verdict."
+    },
+    {
+      "name": "STATE",
+      "type": "Artifact",
+      "aka": ["STATE.json", "harness state", "autopilot state"],
+      "definition": "The per-run control file that records phase, gates, evidence, budgets, blockers, known gaps, and handoff data."
+    }
+  ]
+}

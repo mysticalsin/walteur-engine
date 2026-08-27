@@ -1,0 +1,1 @@
+feature-flags privacy evidence: residual-risks — none open; cross-tenant leak and erasure-scope risks are closed by executing tests (cross-tenant 5/5, erasure 2/2).

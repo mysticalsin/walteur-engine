@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: e2e — start server + curl scenario (set/list/deny/erase/health) observed green; see staging-evidence.

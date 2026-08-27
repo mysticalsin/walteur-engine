@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: redaction-test — logging redaction test — live-run scan confirmed the issued raw key never appears in ops logs; logLine redacts authorization/token/key/secret. Asserted in test/api.test.mjs (audit body carries no raw key).

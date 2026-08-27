@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: build — no build step (Node ESM, built-ins only); node -c server.mjs succeeds.

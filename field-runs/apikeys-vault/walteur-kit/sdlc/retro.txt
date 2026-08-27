@@ -1,0 +1,1 @@
+retro — cloned the proven documents-api pattern into a new domain (API-key vault); the secret-rotation gate now exercises meaningfully because key lifecycle IS the domain.

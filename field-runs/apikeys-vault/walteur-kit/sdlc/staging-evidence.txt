@@ -1,0 +1,1 @@
+staging evidence — full suite green on an ephemeral port; live curl scenario (issue/list/rotate/cross-tenant-deny) confirmed.

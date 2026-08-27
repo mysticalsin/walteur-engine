@@ -1,0 +1,1 @@
+webhooks-api authz evidence: positive — authenticated same-tenant create/list/get/update/rotate/delete all succeed (201/200/204). Proven by test/api.test.mjs.

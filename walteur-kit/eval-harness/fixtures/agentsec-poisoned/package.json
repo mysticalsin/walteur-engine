@@ -1,0 +1,8 @@
+{
+  "name": "support-agent-service",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "openai": "^4.47.0"
+  }
+}

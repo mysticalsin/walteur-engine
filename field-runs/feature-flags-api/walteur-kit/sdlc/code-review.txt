@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: code-review — auth chokepoint + owned() reviewed against running tests; no cross-tenant path found.

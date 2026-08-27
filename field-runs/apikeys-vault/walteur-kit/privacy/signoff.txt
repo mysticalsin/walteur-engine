@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: signoff — signoff — owner Tony accepted the privacy proof against OBSERVED execution (erasure probe exit 0).

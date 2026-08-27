@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WALTEUR Privacy Data Proof",
+  "description": "Machine-checkable privacy data lifecycle proof for personal, sensitive, regulated, and AI-context data: inventory, processing records, minimization, lawful basis, retention, deletion, access and export, redacted logging, encryption, transfers, breach response, DPIA handling, verification tests, and signed evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "proof_id",
+    "run_date",
+    "build_class",
+    "risk_tier",
+    "verdict",
+    "applicability",
+    "inventory",
+    "retention_deletion",
+    "protection",
+    "transfers",
+    "risk",
+    "tests",
+    "evidence_refs",
+    "signoff"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "proof_id": { "type": "string", "minLength": 1 },
+    "run_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "build_class": { "type": "string", "minLength": 1 },
+    "risk_tier": { "type": "string", "minLength": 1 },
+    "verdict": { "const": "PASS" },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["personal_data", "sensitive_data", "regulated_data", "ai_context_data", "children_data"],
+      "properties": {
+        "personal_data": { "type": "boolean" },
+        "sensitive_data": { "type": "boolean" },
+        "regulated_data": { "type": "boolean" },
+        "ai_context_data": { "type": "boolean" },
+        "children_data": { "type": "boolean" }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_inventory_ref",
+        "processing_records_ref",
+        "purposes_ref",
+        "data_minimization_ref",
+        "lawful_basis_ref"
+      ],
+      "properties": {
+        "data_inventory_ref": { "$ref": "#/definitions/ref" },
+        "processing_records_ref": { "$ref": "#/definitions/ref" },
+        "purposes_ref": { "$ref": "#/definitions/ref" },
+        "data_minimization_ref": { "$ref": "#/definitions/ref" },
+        "lawful_basis_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "retention_deletion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retention_schedule_ref",
+        "deletion_path_ref",
+        "dsar_access_modify_export_ref",
+        "backup_deletion_policy_ref"
+      ],
+      "properties": {
+        "retention_schedule_ref": { "$ref": "#/definitions/ref" },
+        "deletion_path_ref": { "$ref": "#/definitions/ref" },
+        "dsar_access_modify_export_ref": { "$ref": "#/definitions/ref" },
+        "backup_deletion_policy_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "protection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encryption_at_rest_ref",
+        "encryption_in_transit_ref",
+        "logging_redaction_ref",
+        "access_control_ref",
+        "breach_response_ref"
+      ],
+      "properties": {
+        "encryption_at_rest_ref": { "$ref": "#/definitions/ref" },
+        "encryption_in_transit_ref": { "$ref": "#/definitions/ref" },
+        "logging_redaction_ref": { "$ref": "#/definitions/ref" },
+        "access_control_ref": { "$ref": "#/definitions/ref" },
+        "breach_response_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "transfers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subprocessors_ref", "third_country_transfer_ref", "safeguards_ref"],
+      "properties": {
+        "subprocessors_ref": { "$ref": "#/definitions/ref" },
+        "third_country_transfer_ref": { "$ref": "#/definitions/ref" },
+        "safeguards_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dpia_required", "dpia_ref", "residual_risks_ref", "owner_acceptance_ref"],
+      "properties": {
+        "dpia_required": { "type": "boolean" },
+        "dpia_ref": { "$ref": "#/definitions/ref" },
+        "residual_risks_ref": { "$ref": "#/definitions/ref" },
+        "owner_acceptance_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pii_scan_ref",
+        "retention_test_ref",
+        "deletion_test_ref",
+        "logging_redaction_test_ref",
+        "regression_command_ref"
+      ],
+      "properties": {
+        "pii_scan_ref": { "$ref": "#/definitions/ref" },
+        "retention_test_ref": { "$ref": "#/definitions/ref" },
+        "deletion_test_ref": { "$ref": "#/definitions/ref" },
+        "logging_redaction_test_ref": { "$ref": "#/definitions/ref" },
+        "regression_command_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/ref" }
+    },
+    "signoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "owner", "signoff_ref"],
+      "properties": {
+        "required": { "const": true },
+        "owner": { "type": "string", "minLength": 1 },
+        "signoff_ref": { "$ref": "#/definitions/ref" }
+      }
+    }
+  },
+  "definitions": {
+    "ref": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

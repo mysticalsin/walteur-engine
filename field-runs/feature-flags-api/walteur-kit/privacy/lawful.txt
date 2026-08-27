@@ -1,0 +1,1 @@
+feature-flags privacy evidence: lawful-basis — legitimate interest / contract (B2B tenant config). Tenant is the controller of its own flag config.

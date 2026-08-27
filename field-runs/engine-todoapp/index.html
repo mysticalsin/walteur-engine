@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Todo — accessible, zero-dependency</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <!--
+      Ports & adapters, view tier (PLAN.md §2/§5). This file is pure semantic markup:
+      a labelled add form, three aria-pressed filter buttons, a role="list" <ul> the
+      script fills, a tabindex="-1" focus anchor above the list for the delete-focus
+      redirect, and ONE persistent visually-hidden role="status" region that ships
+      empty and is only ever overwritten (never re-created) by src/app.js. No inline
+      script, no CDN asset — every reference is relative so the app runs from file://.
+    -->
+    <main class="app">
+      <h1>Todo</h1>
+
+      <form id="add-form" class="add-form" novalidate>
+        <label for="add-input" class="add-form__label">Add a task</label>
+        <div class="add-form__row">
+          <input
+            id="add-input"
+            class="add-form__input"
+            type="text"
+            name="text"
+            autocomplete="off"
+            enterkeyhint="done"
+            placeholder="What needs doing?"
+          />
+          <button type="submit" class="add-form__submit">Add</button>
+        </div>
+      </form>
+
+      <nav class="filters" aria-label="Filter tasks">
+        <!--
+          ADR 2: native <button> toggle group using aria-pressed="true|false" on every
+          control, with exactly one pressed. Native buttons give free keyboard activation
+          (Enter/Space) and correct focus order — no ARIA widget role is bolted on.
+        -->
+        <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="filter" data-filter="active" aria-pressed="false">Active</button>
+        <button type="button" class="filter" data-filter="done" aria-pressed="false">Done</button>
+      </nav>
+
+      <!--
+        Delete-focus anchor (PLAN.md §5): after a delete, focus is redirected HERE (a
+        tabindex="-1" heading above the list) rather than to a sibling row, which would be
+        ambiguous as items renumber. When a delete empties the list, focus goes to the add
+        input instead. h2 carries the list heading so the region is meaningfully named.
+      -->
+      <h2 id="list-heading" class="list-heading" tabindex="-1">Your tasks</h2>
+
+      <ul id="todo-list" class="todo-list" role="list"></ul>
+
+      <!--
+        Empty / all-filtered-out message slot. src/app.js writes a mode-specific message
+        here (friendly empty state, or "Nothing active/done") — it is NOT the live region
+        and is not aria-live; the live region below carries the terse announcement.
+      -->
+      <p id="empty-message" class="empty-message" hidden></p>
+
+      <!--
+        THE live region — exactly one, present at initial load, never removed/re-created.
+        role="status" implies aria-live="polite" + aria-atomic="true". It is visually
+        hidden but available to assistive tech; src/app.js only ever overwrites its single
+        text node via textContent. It ships EMPTY so no announcement fires on load.
+      -->
+      <p id="status" class="visually-hidden" role="status"></p>
+    </main>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

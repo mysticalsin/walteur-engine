@@ -1,0 +1,1 @@
+accessibility — public console uses real <form>s, labelled inputs, aria-live status + list, focus-visible outlines, prefers-reduced-motion; never renders foreign data.

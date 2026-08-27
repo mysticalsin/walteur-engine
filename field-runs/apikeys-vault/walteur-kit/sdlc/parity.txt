@@ -1,0 +1,1 @@
+environment parity — same Node built-ins in test and run; tests use createServer(store) on listen(0); the CLI entrypoint uses the same createServer with persistOnMutate.

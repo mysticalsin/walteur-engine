@@ -1,0 +1,58 @@
+# gitleaks configuration for the WALTEUR framework repo
+#
+# WHY THIS FILE EXISTS
+#   .github/workflows/ci.yml sets GITLEAKS_CONFIG: .gitleaks.toml, and this file did not exist. gitleaks
+#   exits 1 with "FTL unable to load gitleaks config" when pointed at a missing config, so the CI secret-scan
+#   arm could never be green — it was a red arm that looked configured. Panel #12 found it, 2026-07-25.
+#
+# THE DESIGN DECISION THAT MATTERS
+#   A default scan reports 10 findings on this repo. All 10 were read individually before anything was
+#   allowlisted. Every one is a NEGATIVE-CONTROL FIXTURE inside a selftest() function belonging to a gate
+#   whose whole job is detecting committed secrets:
+#
+#     walteur-kit/hooks/security-baseline-gate.sh:285,304,306  sk_live_0123456789abcdef  (selftest)
+#     walteur-kit/hooks/secret-rotation-gate.sh:315,332        Ab12Cd34Ef56Gh78Ij90      (selftest)
+#     walteur-kit/hooks/config-validation.sh:75                (selftest)
+#     field-runs/support-risk-command-center/.../config-validation.sh:75  (vendored copy of the same)
+#
+#   A secret scanner flagging another secret scanner's test fixtures. Removing the fixtures would disarm
+#   those gates, which is strictly worse than the finding.
+#
+#   So the allowlist is scoped to the DUMMY LITERAL VALUES, not to the files and not to the rules.
+#   That distinction is the entire point: a real credential committed to security-baseline-gate.sh is
+#   still caught, because only these exact placeholder strings are exempt. Allowlisting the PATHS would
+#   have created a permanent blind spot in the three files most likely to be edited while thinking about
+#   secrets. Verified by injecting a realistic non-placeholder key into one of those very files and
+#   confirming gitleaks still exits 1 on it — see the CI step and walteur-kit/hooks/secret-rotation-gate.sh.
+#
+#   Nothing here is a risk acceptance. No real finding is suppressed. If this file ever grows a [[rules]]
+#   removal or a path-wide allowlist, that is a regression, not a convenience.
+
+title = "WALTEUR framework"
+
+# Inherit the full upstream ruleset. Deliberately NOT redefining [[rules]] — replacing the default rule
+# set is how a config silently stops detecting whole credential families.
+[extend]
+useDefault = true
+
+[allowlist]
+description = """
+Selftest fixture credentials only, matched by exact placeholder VALUE. Path- and rule-scoped allowlists
+were considered and rejected: they would blind the scanner to real secrets in the same files.
+"""
+
+# Obviously-synthetic Stripe test literal used as a negative control by security-baseline-gate's selftest.
+# Sequential hex after the sk_live_ prefix — cannot be a live key. A real sk_live_ key does NOT match.
+regexes = [
+  # security-baseline-gate.sh selftest (3 sites). Sequential hex after sk_live_ — cannot be a live key.
+  '''sk_live_0123456789abcdef''',
+  # secret-rotation-gate.sh selftest. Committed-password negative control.
+  '''Ab12Cd34Ef56Gh78Ij90''',
+  # config-validation.sh:75 selftest, and its vendored copy under
+  # field-runs/support-risk-command-center/walteur-kit/hooks/. Sequential digits then sequential
+  # letters — the same obviously-synthetic shape as the two above.
+  '''sk-1234567890ABCDEFGHIJKLMNOP''',
+]
+
+# Note on stopwords/paths: intentionally empty. Every exemption above is a literal value, so the
+# blast radius of a mistake here is one string rather than one file or one rule.

@@ -1,0 +1,1 @@
+environment parity — same Node built-ins, same code path in test (ephemeral port) and live (PORT 8197); no env divergence.

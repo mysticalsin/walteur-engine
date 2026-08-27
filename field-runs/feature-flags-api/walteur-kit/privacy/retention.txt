@@ -1,0 +1,1 @@
+feature-flags privacy evidence: retention — flags persist until the tenant deletes them or erases the tenant (DSAR). Audit rows persist with the tenant and are erased on DSAR. See core.eraseTenant.

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "registry_id": "audit-tools",
+  "purpose": "Curated catalog of code/security AUDIT tools that RUN headless and emit a machine-parseable result (JSON / score / fail exit) — so WALTEUR can wrap them as EXECUTING gates (run + observe + fail-closed), the pattern that closes the PROOF gap. Web-verified 2026-06-28. Tools that only produce LLM judgment (no deterministic executable result) are reference-only — they cannot be executing gates.",
+  "verified_on": "2026-06-28",
+  "tools": [
+    {
+      "id": "knip", "name": "Knip", "repo": "https://github.com/webpro-nl/knip",
+      "license": "ISC", "license_class": "permissive", "tier": "core", "executable": true,
+      "category": "dead-code / unused-export / unused-dependency (JS/TS)",
+      "cli": "npx knip --reporter json",
+      "machine_output": "JSON {issues:[...]} per-file (files/dependencies/exports/unlisted/...) + fail-closed exit (0 clean, 1 findings, 2 error)",
+      "gate": "dead-code-gate (EXECUTING): run, parse issues, exit==2->FAIL(tool error), exit==1->FAIL(or jq threshold), exit==0->PASS",
+      "overlaps": "complements maintainability/anti-slop (replaces a shape-read 'no dead code' claim with an EXECUTED module-graph verdict); unlisted/phantom deps complement SBOM",
+      "governance": "ISC permissive, fully offline (no network/telemetry/PII), JS/TS only. Pin the version (fast-moving) + lockfile-backed acquisition.",
+      "leverage": "HIGH (run+observe+fail-closed on JS/TS)", "phase": ["verify", "review"]
+    },
+    {
+      "id": "orm-doctor", "name": "orm-doctor (NoctisNova)", "repo": "https://github.com/NoctisNovaStudio/orm-doctor",
+      "license": "MIT", "license_class": "permissive", "tier": "core", "executable": true,
+      "category": "static ORM/DB health (TS/Prisma/Drizzle): N+1, missing indexes, unsafe raw SQL, mass mutations, unbounded queries, missing transactions",
+      "cli": "npx orm-doctor@<pinned> --json --no-ai ./path",
+      "machine_output": "JSON {score:0-100, issueCount, issues[]{severity,penalty,file}} on STDOUT + exit 1 on any critical (e.g. $queryRawUnsafe, updateMany/deleteMany without WHERE)",
+      "gate": "db-health-gate (EXECUTING): parse STDOUT (not the interactive file), fail if exit!=0 OR .score<threshold OR any severity==critical",
+      "overlaps": "AST-grade upgrade to data-correctness-gate (which is static-regex); critical raw-SQL/table-wipe overlaps security-gate",
+      "governance": "MIT, offline in --json mode (verified zero network; --json exits before the interactive claude -p hand-off). BRAND NEW (0 stars, solo maintainer) -> PIN exact version + vendor the tarball + fail on parser error.",
+      "leverage": "HIGH (executes + scores + fails closed)", "phase": ["verify"]
+    },
+    {
+      "id": "medusa", "name": "MEDUSA (Pantheon-Security)", "repo": "https://github.com/Pantheon-Security/medusa",
+      "license": "AGPL-3.0-or-later", "license_class": "copyleft", "tier": "optional", "executable": true,
+      "category": "AI security scanner: 40k+ patterns (Log4Shell/Spring4Shell/LangChain RCE/MCP tool poisoning/prompt injection), secrets scan",
+      "cli": "medusa scan --git <URL>  |  medusa secrets scan",
+      "machine_output": "machine-parseable scan output + fail exit on findings (verify --json flag at pin time)",
+      "gate": "security-scan-gate (EXECUTING): run scan, fail on findings over severity threshold",
+      "overlaps": "complements security-gate/agent-security/osv/cve; strongest on AI/agent/MCP supply-chain + secrets",
+      "governance": "AGPL-3.0 — COPYLEFT: running it as a CI tool/CLI does NOT taint WALTEUR's code (mere aggregation/use), but DO NOT vendor/modify its source into the product. Network only if scanning a remote --git URL; secrets-scan is local. Treat as the 'before calling it finished' security pass.",
+      "leverage": "HIGH (real scan, fails closed)", "phase": ["verify", "ship"]
+    },
+    {
+      "id": "ponytail", "name": "Ponytail", "repo": "https://github.com/DietrichGebert/ponytail",
+      "license": "MIT", "license_class": "permissive", "tier": "reference", "executable": false,
+      "category": "AI code reviewer (maintainability/readability/architecture) — LLM judgment, works with 16 agents",
+      "cli": "(LLM-driven; no deterministic machine verdict)",
+      "machine_output": "none deterministic — it is an LLM reviewer (PROTOCOL judgment, not an executable pass/fail)",
+      "gate": "NOT an executing gate — it is a reviewer. Overlaps WALTEUR's existing reviewer panel + anti-slop/maintainability gates.",
+      "overlaps": "code-review / anti-slop-code / maintainability-gate / the senior reviewer persona",
+      "governance": "MIT clean. But it cannot close the PROOF gap (no deterministic result). Reference-only: optionally add as a reviewer in the persona panel; do not gate on it.",
+      "leverage": "LOW (cannot execute — shape/LLM only)", "phase": ["review"]
+    },
+    {
+      "id": "reconforge", "name": "ReconForge", "repo": "https://github.com/ferasbusiness666/ReconForge",
+      "license": "MIT", "license_class": "permissive", "tier": "reference", "executable": true,
+      "category": "AI-assisted recon (subdomain discovery via crt.sh, port scan, tech detection, scope checking) — bug-bounty/runtime",
+      "cli": "(python recon CLI against a DEPLOYED target)",
+      "machine_output": "markdown reports + findings (targets a live external attack surface, not source)",
+      "gate": "NOT a build-time gate — runtime/post-deploy recon. Relevant only ONCE a product is actually deployed (the field-ship); pairs with dast/security-baseline against the live URL.",
+      "overlaps": "dast-gate / security-baseline (runtime surface)",
+      "governance": "MIT. Recon against third-party infra has authorization/legal constraints (only scan owned/authorized targets). Reference-only until there is a deployed product to point it at.",
+      "leverage": "LOW for build-time PROOF (post-deploy tool)", "phase": ["operate"]
+    }
+  ]
+}

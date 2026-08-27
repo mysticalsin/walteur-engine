@@ -1,0 +1,605 @@
+{
+  "panel": 6,
+  "weighted_score_100": 67.9,
+  "lowest_dimension": {
+    "key": "memory",
+    "score": 4.5
+  },
+  "dimensions": [
+    {
+      "key": "oneshot",
+      "score": 6.5,
+      "confidence": "high — I independently re-ran node --test on jsonlint-cli (247/247 pass exit 0), reproduced the vite build for Cadence (built in 349ms exit 0), verified the BOM-fix round-trip (efbbbf preserved through --fix), visually inspected the real home.png screenshot, read git logs, run-trace.jsonl, audit.json, browser-proof.json + a11y/interaction evidence, and measured server.mjs sizes. Could NOT verify from disk the asserted \"97 agents / 118 min\" figure — the on-disk trace is 12 rows with zero token detail.",
+      "weight": 15,
+      "evidence": [
+        {
+          "claim": "One genuine end-to-end orchestrator run is real and reproducible: I re-ran the suite from scratch and it passed 247/247 exit 0, matching audit.json's certified:true; git history shows 5 real wave commits (bd9038b→deb1cbd).",
+          "cite": "field-runs/jsonlint-cli — node --test → tests 247 pass 0 fail; git log 05a792d/55fd4af/add435d/deb1cbd 'wip: before build wave N'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The audit is honest, not rubber-stamp: it self-found a real BOM-stripping defect, marked SHIPPABLE:false, codified it in _relay/ISSUES.md, then fixed it — I confirmed the fix (BOM now round-trips).",
+          "cite": "field-runs/jsonlint-cli/walteur-kit/audit.json shortfalls[0] (BOM) + my TMPDIR test: efbbbf...→efbbbf... after --fix",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Cadence is a genuine framework UI, not a mock: real React/Vite/TS source (14 .tsx/.ts files), reproducible build, and a real Playwright screenshot I viewed showing a working 25:00 focus timer with preset picker + session summary.",
+          "cite": "field-runs/design-proof-app — npm run build '✓ built in 349ms'; walteur-kit/browser/screenshots/home.png (real 61KB PNG); a11y/home.txt banner/main roles",
+          "polarity": "strength"
+        },
+        {
+          "claim": "ZERO external ships — the whole 'one-shot a real app' proof is local-only. The external ledger's product block is still the empty '<product name>' template; every FR row is self-labelled 'NONE external users', 'NOT public, no external URL'.",
+          "cite": "field-runs/SHIPPED.md — '### 1. <product name>' template unfilled; FR-1..8 all 'verified local — NOT public'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Only ONE app was actually built end-to-end by the orchestrator; FR-1..6 are self-admitted HAND-BUILT and Cadence was 'a subagent built it'. So the true one-shot-from-orchestrator capability rests on a single small zero-dep CLI.",
+          "cite": "field-runs/SHIPPED.md FR-7 'FIRST built end-to-end by the orchestrator itself (FR-1..6 were hand-built)'; FR-8 'a subagent built it'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The headline orchestration figure ('97 agents, 118 min') is prose-asserted, not evidenced: the on-disk run-trace is 12 phase rows with every token estimate = 0 and no per-agent detail — not reconstructable to 97 agents.",
+          "cite": "field-runs/jsonlint-cli/walteur-kit/run-trace.jsonl — 12 lines, grep '\"estimate\":0' = 12/12",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "'3–5 ships across domains' oversells diversity: FR-1,3,4,5,6 are ~284–347-line near-clones of one deny-by-default multi-tenant in-memory HTTP store, relabelled tasks/flags/documents/keys/webhooks rather than architecturally distinct apps.",
+          "cite": "field-runs/*/server.mjs line counts 284–347; shared authz/privacy/cutover executor-gate pattern across all five",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Where a genuinely multi-agent path was exercised (team-live), the harness is honest about its narrowness: a sequential 1-task micro-build, concurrent contention still unproven.",
+          "cite": "field-runs/team-live/RUN-EVIDENCE.md 'ran as a SEQUENTIAL pipeline... single 1-task micro-build... real concurrent contention still unproven'",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "At least one real EXTERNAL ship: a live third-party-openable URL (e.g. npm publish walteur-jsonlint or a deployed Cadence) with real users and one outcome metric — the empty ledger block #1 filled and verified",
+        "Multiple full apps (not clones) built end-to-end by walteur.js itself from a genuinely vague one-line prompt, with the DISCOVER→PRD→build trace captured, not hand-built or subagent-built",
+        "A richer, tamper-evident run-trace that actually substantiates the agent-count/token/duration claims (per-agent spans, token counts) so '97 agents' is reconstructable from disk, not just asserted in SHIPPED.md prose",
+        "At least one orchestrator one-shot of a non-trivial multi-service app (auth + DB + external integration live-wired), proving capability beyond a single zero-dep CLI and near-identical in-memory API clones",
+        "A reproducible harness entry point a skeptic can run from a vague prompt and get the same audited artifact, demonstrating true one-shot determinism rather than post-hoc verification of pre-built products"
+      ]
+    },
+    {
+      "key": "code",
+      "score": 7.4,
+      "weight": 12,
+      "confidence": "High — nearly everything is first-hand: ran `bash -n` on all 159 walteur-kit hooks + 18 .claude/hooks (0 failures), `node -c` on both JS files (both parse), ran the full walteur-kit/selftest.sh to 213+ green assertions (0 real failures), and EMPIRICALLY reproduced + CONFIRMED the anti-slop-code fail-open end-to-end by running the real gate against a 3001-file tree. Discipline metrics (set lines, quoting, duplication counts, jq-absence paths) are from grep over the real files. shellcheck was unavailable so no static-lint layer was applied; that is the only claim I could not run.",
+      "evidence": [
+        {
+          "claim": "All 159 walteur-kit/hooks/*.sh + 18 .claude/hooks/*.sh pass `bash -n` (0 syntax failures) and both walteur.js (1725 LOC) + walteur-run.mjs parse under `node -c` — no syntax debt across ~177 shell files.",
+          "cite": "ran: for f in walteur-kit/hooks/*.sh; bash -n → '0 fail / 159 total'; node -c walteur.js → OK",
+          "polarity": "strength"
+        },
+        {
+          "claim": "CONFIRMED silent fail-open: anti-slop-code-gate.sh:51 `has_source(){ grep -rIilE ... | head -1 | grep -q .; }` SIGPIPEs (rc=141) under `set -uo pipefail` when non-excluded source filenames exceed the ~64KB pipe buffer; line 259 `if ! has_source; then write_report NOT_APPLICABLE ... exit 0` turns that into a clean pass. Ran the real gate against a 3001-file tree containing a real `// TODO: implement` stub → verdict 'NOT_APPLICABLE — no production source files', slop undetected.",
+          "cite": "walteur-kit/hooks/anti-slop-code-gate.sh:51,259; ran real gate on mktemp 3001-file tree → report.json verdict:NOT_APPLICABLE despite slop.ts present",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "This fail-open is a regression of the project's OWN documented lesson (pipefail-sigpipe-grep-q-trap.md): the capture-first fix WAS applied in measured-quality-gate.sh:81 (with an explanatory comment naming the exact trap) but NOT propagated to anti-slop-code-gate.sh, security-baseline-gate.sh:108 (secret-detection vector), apple-grade-design-gate.sh:103, or edge-protection.sh:114 — 4+ remaining `| head | grep -q` SIGPIPE sites.",
+          "cite": "grep `\\| head( -N)? \\| grep -[qc]` → 7 hits; measured-quality-gate.sh:81 fixed w/ comment vs anti-slop-code-gate.sh:51 unfixed",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The gate's own selftest gives false confidence on this exact defect: `anti-slop-code-gate --selftest (33/33)` passes green because its fixture is tiny (below the pipe buffer), so 33 assertions never cross the SIGPIPE threshold — the 'selftest-green ≠ real-file-green' gap made concrete.",
+          "cite": "selftest log: 'ok — anti-slop-code-gate --selftest (33/33)' passes while my 3001-file run of the same gate fails open",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Consistent, deliberate shell discipline: 156/159 gates use `set -uo pipefail` (the 3 exceptions are 2 sourced preambles + 1 proof), uniform `#!/usr/bin/env bash` shebang across all 159, and `-e` is intentionally omitted so gates control their own exit codes.",
+          "cite": "grep: 156 `set -uo pipefail`, 159/159 `#!/usr/bin/env bash`; files-without-set = _ast-grep-preamble.sh,_probe-proof.sh (sourced)",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Strong quoting hygiene: zero unquoted `[ $VAR = ... ]` test expressions across all 159 gates; unquoted expansions are confined to intentional flag-splitting ($INC/$XD grep args).",
+          "cite": "grep `\\[ +\\$VAR +[=!]` excluding quoted → 0 matches across walteur-kit/hooks/*.sh",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Exceptionally thorough verification harness: 157/159 gates ship a `--selftest`; the full selftest.sh ran to 213+ 'ok' assertions with zero real failures, including high per-gate counts (chaos-resilience 40/40, zero-downtime-cutover 32/32, anti-reward-hack 28/28) and explicit fail-closed cases (missing scoreboard, jq-absent, corrupt input).",
+          "cite": "ran walteur-kit/selftest.sh → 213 `ok` lines, 0 real fails; e.g. 'chaos-resilience-gate --selftest (40/40)'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "walteur.js orchestrator is clean: 0 hardcoded model ids (centralized config), 14 catch blocks against 96 awaits, explicit throw/process.exit discipline (11), and the 5 TODO/FIXME tokens are all inside prompt STRINGS that instruct against TODOs — not orchestrator slop.",
+          "cite": "grep on .claude/workflows/walteur.js: claude-(opus|sonnet|haiku)=0, catch=14, await=96; TODO hits at lines 576,652,662,1173,1246 all in template literals",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Heavy copy-paste liability: 135 files each redefine `have()` and 132 redefine `write_report()` — defensible for drop-in single-file portability, but it is the direct mechanism by which the SIGPIPE fix reached one gate and not its siblings; a bug fix cannot propagate without 100+ hand-edits.",
+          "cite": "grep: 135 files define have(), 132 define write_report; vs only 19 sourcing a shared preamble",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Uneven fail-closed discipline on missing jq: for a harness whose thesis is 'fail-closed', several gates SKIP/exit-0 (fail-open) when jq is absent (e.g. apple-grade-design-gate.sh:70 `have jq || ... write_report SKIP; exit 0`), though 68 gates do fail-closed on tool absence.",
+          "cite": "grep `have jq ||` → apple-grade-design-gate.sh:70 SKIP/exit0; 68 files fail-closed on jq/tool absence",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Fix the confirmed SIGPIPE fail-open in anti-slop-code-gate.sh:51 and the other 4 `| head | grep -q` sites (security-baseline:108, apple-grade:103, edge-protection:114, plus the find-piped ones) using capture-first or `find -print -quit`; the anti-slop-code gate currently silently disables itself on any repo >~1000 source files.",
+        "Add large-tree assertions (>1000 files, crossing the pipe buffer) to each affected gate's --selftest so 'selftest-green' actually implies 'real-file-green' — the 33/33 pass currently cannot catch this class of defect.",
+        "De-duplicate have()/write_report (135×/132×) into a single sourced helper lib so a fix propagates once instead of requiring 100+ hand-edits — the duplication is the root cause of the un-propagated SIGPIPE fix.",
+        "Make jq-absence uniformly fail-closed, or annotate each SKIP-on-missing-jq as a consciously-justified fail-open; a fail-closed harness should not silently exit 0 when its core dependency is missing.",
+        "Add shellcheck to CI and enforce it — it was not installed/available, and it would statically flag the masked-return / SC2196-class issues behind these fail-opens before they ship."
+      ]
+    },
+    {
+      "key": "security",
+      "score": 7.9,
+      "confidence": "high — I executed injection-resistance-gate --selftest (12/12), ran it against field-runs/jsonlint-cli with WALTEUR_ROOT set (PASS 5/5, probe_executed:true), ran a poison-twin refutation (canary-leaking jsonlint -> FAIL 0/5), ran security-gate/osv/supply-chain/agent-security/security-baseline selftests (9/16/16/19/30 all green), read injection-resistance-gate.sh end-to-end, and enumerated injection-manifest coverage across all 13 field-runs. Not relied-on: I did not fuzz beyond the declared corpus or run a live OSV network call.",
+      "weight": 12,
+      "evidence": [
+        {
+          "claim": "injection-resistance-gate is a GENUINE executed adversarial probe, not a posture-claim: its selftest builds real leaky/hanging/crashing/traversal fixture targets and the gate catches every one (12/12).",
+          "cite": "$ bash walteur-kit/hooks/injection-resistance-gate.sh --selftest -> 'injection-resistance-gate selftest: 12/12 passed' (canary-leaking->FAIL, hanging->FAIL timeout, crashing->FAIL signal, traversal-content leak->FAIL); source lines 150-160 classify exit 124=DoS, >=128=crash, >max_exit, marker/canary leak",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The probe actually EXECUTES against the real field-run binary and survives a real hostile corpus (DoS deep-nest, 50k-array, prototype-pollution, path-traversal, env-canary exfil).",
+          "cite": "$ WALTEUR_ROOT=field-runs/jsonlint-cli bash .../injection-resistance-gate.sh -> 'PASS (all 5 adversarial cases survived, probe executed)'; report probe_executed:true, cases_run:5, cases_passed:5, failures:[] ; manifest field-runs/jsonlint-cli/walteur-kit/injection-probes.json:16-59",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Refutation proves the gate is not always-green: a poisoned jsonlint that dumps process.env.INJECTION_CANARY is correctly caught on every case.",
+          "cite": "poison-twin run -> 'FAIL (0/5 cases survived)', report {\"verdict\":\"FAIL\",\"cases_passed\":0,\"cases_run\":5,\"failures\":5} with 'leaked forbidden marker in output: wlt-inj-canary-2026-do-not-emit'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Adjacent security gates are executed with poison-twin refutation and honest epistemics, not checkbox posture: osv-gate hits the real OSV querybatch API and fail-closes only on MAL-* advisories, explicitly stating PASS is 'not a clean bill of health'.",
+          "cite": "osv-gate.sh:11-14,191-192 ('PASS — no MALICIOUS advisory ... Not a clean bill of health'); selftests: osv 16/16, supply-chain 16/16, agent-security 19/19 (catches secret-var concatenated into an LLM prompt), security-baseline 30/30, security-gate 9/9",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The gate is wired into the aggregate proof and registry and the release ledger discloses its provenance transparently (reverse-tested + refuted).",
+          "cite": "walteur-kit/selftest.sh:2198 'injection-resistance-gate --selftest (12/12)'; gate-registry.json:1293-1298; release-ledger.json B56 entry records 237/0/0 aggregate and 144 gates",
+          "polarity": "strength"
+        },
+        {
+          "claim": "COVERAGE GAP: the executed injection probe is opt-in-by-manifest and exactly 1 of 13 field-runs carries injection-probes.json — the other 12 (including apikeys-vault a secrets store, webhooks-api, documents-api, multitenant-tasks, feature-flags-api) get a free NOT_APPLICABLE exit-0. The panel-cited 'no executed injection eval' gap is closed in MECHANISM but not in ADOPTION.",
+          "cite": "$ find field-runs -name injection-probes.json -> only field-runs/jsonlint-cli; injection-resistance-gate.sh:300-304 absent-manifest -> NOT_APPLICABLE exit 0",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The adversarial corpus is hand-authored (5 static cases) not fuzzed/generated, and there is no code-level SAST/taint analysis — injection is proven only at the runtime-corpus level and only where a human declared cases.",
+          "cite": "injection-probes.json cases[] is 5 literal/gen entries; gate loops manifest cases only (source:105-169); no semgrep/CodeQL-class taint gate among the hooks reviewed",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "osv-gate depends on network/curl; offline it LOUD-SKIPs and only fail-closes under WALTEUR_TOOLGATE_STRICT at ship — so a non-ship run can pass without any real supply-chain check, and ordinary CVEs are never hard-blocked (only MAL-*).",
+          "cite": "osv-gate.sh:14 'A LOUD SKIP (no network/curl) is honest', :199 strict fail-closed only; :10-11 hard block limited to MAL-*/malicious=true",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Author injection-probes.json for every field-run that ingests untrusted input (webhooks-api, documents-api, multitenant-tasks, feature-flags-api, apikeys-vault) and gate ship on manifest-present-when-input-surface-exists, so NOT_APPLICABLE cannot silently mask an untested attack surface — raise executed coverage from 1/13 toward full.",
+        "Add generative/fuzz case expansion (property-based or corpus-mutation) on top of the hand-authored 5 cases so the probe explores beyond declared inputs.",
+        "Add a code-level SAST/taint gate (semgrep/CodeQL-class) with a poison-twin selftest to catch injection at the source layer, complementing the runtime corpus.",
+        "Make osv/supply-chain checks fail-closed (or cache a signed offline advisory snapshot) even outside STRICT, and add a hard-CVE severity gate rather than MAL-* only, so a non-ship run cannot pass with zero real dependency verification.",
+        "Field-prove the full security suite (not just injection) end-to-end on a deliberately-vulnerable field-run and record the caught findings as shipped evidence."
+      ]
+    },
+    {
+      "key": "design",
+      "score": 7,
+      "weight": 10,
+      "confidence": "high — I ran all 6 gates live against field-runs/design-proof-app (all rc=0/PASS reproduced), read browser-proof-gate.sh and apple-grade-design-gate.sh in full, verified home.png bytes are actually 1440x1160 via struct.unpack, visually inspected the screenshot and matched it line-by-line against a11y/home.txt, and grepped the entire walteur-kit/hooks dir for any luminance/contrast computation (found none). Relied-on-not-run: I did not execute replay mode (WALTEUR_BROWSER_EXEC=1) against a live server.",
+      "evidence": [
+        {
+          "claim": "All 6 design/browser gates run and PASS live against the Cadence field-run — reproducible, not just cached reports (browser-proof PASS, design-gate PASS 9 UI files, design-depth PASS, apple-grade PASS, hollow NOT_APPLICABLE, anti-slop-ui PASS 10 files).",
+          "cite": "live run of walteur-kit/hooks/{browser-proof-gate,design-gate,design-depth-gate,apple-grade-design-gate,hollow-artifact-gate,anti-slop-ui}.sh -> each rc=0",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The browser-proof bundle is genuinely evidence-consistent: a11y tree, screenshot, and interaction log all describe the SAME Cadence app in the SAME idle state. Screenshot text (Cadence/25:00/FOCUS/Deep Work 50m/Saturday July 4/0 SESSIONS) matches a11y/home.txt exactly.",
+          "cite": "field-runs/design-proof-app/walteur-kit/browser/a11y/home.txt vs visual read of screenshots/home.png",
+          "polarity": "strength"
+        },
+        {
+          "claim": "evidence_must_contain is a real, regression-tested anti-staleness defense with BOTH a positive and a negative control (marker present->PASS, marker absent->FAIL), added specifically after a prior panel caught a stale a11y snapshot of a different artifact.",
+          "cite": "walteur-kit/hooks/browser-proof-gate.sh:212-226 and 352-371",
+          "polarity": "strength"
+        },
+        {
+          "claim": "A previously-flagged width mismatch (screenshot 1200 vs declared 1440 viewport) is genuinely fixed — the shipped PNG is actually 1440 wide, verified at the byte level.",
+          "cite": "python3 struct.unpack on home.png -> w,h=(1440, 1160)",
+          "polarity": "strength"
+        },
+        {
+          "claim": "NO computed-contrast layer exists anywhere in the harness. WCAG 4.5:1 is enforced only as a plan-prose keyword regex (does the design doc contain 'wcag'/'accessib'), never computed from actual foreground/background colors — a UI with unreadable low-contrast text passes every gate.",
+          "cite": "grep -riE 'luminance|0.2126|contrast-ratio' walteur-kit/hooks -> NONE; design-depth-gate.sh:212 regex 'wcag|accessib'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "No visual-judgment layer: apple-grade-design-gate ('build it like Apple built it') is pure CSS-hygiene — count distinct font-sizes<=8, spacing px%4==0, raw-hex count<=6, grep for 'transition', and DESIGN.md exists. A grid-aligned, token-using but visually hideous UI passes.",
+          "cite": "walteur-kit/hooks/apple-grade-design-gate.sh:74-100",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The screenshot is trust-based, not machine-verified: the gate only checks the PNG is non-empty (-s) and never analyzes a pixel. evidence_must_contain greps only the TEXT a11y file, so screenshot<->a11y 'same app?' consistency rests on human eyeballing, not any automated layer.",
+          "cite": "browser-proof-gate.sh:326-333 (safe_ref non-empty only) and 352-371 (content match hits a11y_file only)",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The gate never actually drives a browser: browser_probe_executed is false, so the recorded 'npm run build && playwright navigate...' command was never re-executed — the proof is a static agent-produced receipt whose shape/freshness/text-markers are validated. Replay (WALTEUR_BROWSER_EXEC) exists but is off by default.",
+          "cite": "field-runs/design-proof-app/walteur-kit/browser-proof-report.json browser_probe_executed:false; browser-proof-gate.sh:382-411",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Add a computed-contrast layer: parse resolved foreground/background token pairs (or sample rendered pixels) and assert WCAG AA 4.5:1 / APCA, instead of only keyword-matching 'wcag' in the plan prose.",
+        "Add a real visual-judgment layer on the screenshot (pixel diff vs baseline, blank/near-uniform detection, layout-overlap or hierarchy checks) so a wrong or blank PNG cannot pass while the a11y text file is correct.",
+        "Make the browser probe actually execute by default in CI (drive Playwright, not just validate a static receipt) so browser_probe_executed:true is the norm, closing the recorded-but-never-run command gap.",
+        "Bind screenshot<->a11y consistency mechanically (OCR key markers out of the PNG, or capture both in one gate-driven render) rather than relying on human review to catch a stale/mismatched screenshot.",
+        "Move apple-grade beyond lint metrics toward perceptual craft signals (spacing-rhythm consistency, type-scale ratio coherence, focus-ring visibility measured on render) so 'Apple-grade' is judged, not just counted."
+      ]
+    },
+    {
+      "key": "uxdx",
+      "score": 7.5,
+      "weight": 10,
+      "confidence": "high — I directly ran doctor.sh (both --selftest and default), gate-suite.sh --selftest, grep-verified all 13 remediation anchors against REMEDIATION.md headers, jq-inspected the null-reason reports + their timestamps, and read QUICKSTART.md, doctor.sh, REMEDIATION.md and _relay/BATON.md end-to-end. Nothing here is relied-upon; every evidence item is a command output or file:line I saw.",
+      "evidence": [
+        {
+          "claim": "doctor.sh --selftest passes 21/21 live with rigorous GOOD+POISONED twins including false-green hardening (a core gate printing '0/5 passed' but exit 0, and a no-count gate, both correctly caught as FAIL)",
+          "cite": "ran `bash walteur-kit/hooks/doctor.sh --selftest` -> 'doctor selftest: 21/21 passed' EXIT=0; twins at doctor.sh:225-250",
+          "polarity": "strength"
+        },
+        {
+          "claim": "doctor default run triages every FAIL report with gate id + reason + a live REMEDIATION.md anchor, plus a copy-paste 'What to do next' epilogue of re-run commands — a genuine failure-triage entrypoint, not a bare smoke test",
+          "cite": "ran `bash walteur-kit/hooks/doctor.sh` -> 'Failing gates (13) — triage:' block + 'What to do next (top 3...)' with `bash walteur-kit/hooks/<gate>.sh` commands; doctor.sh:69-76,421-425",
+          "polarity": "strength"
+        },
+        {
+          "claim": "All 13 triage fix-pointers resolve to LIVE REMEDIATION.md headers via a real resolver (tries <id>,<id>-gate,<id>-lint,<id>-check); REMEDIATION.md is 163 structured sections each with Enforces/Common-failure/Fix/Bypass",
+          "cite": "`grep -Fxq \"## <id>\"` -> LIVE for all 13; doctor.sh:384-390; REMEDIATION.md:1-40 sample supply-chain-gate section",
+          "polarity": "strength"
+        },
+        {
+          "claim": "QUICKSTART is honest and runnable — every command verified on-box, exit-code contract documented, Troubleshooting + 'Where things live' table, explicit warning not to run the 4-min full gate-suite during onboarding",
+          "cite": "QUICKSTART.md:26-52,127-144",
+          "polarity": "strength"
+        },
+        {
+          "claim": "BATON.md gives a fresh model a real resume surface: timestamped RESUME SNAPSHOT (phase/next_action), cycle history, suite/ledger/gate counts, and queued next levers",
+          "cite": "_relay/BATON.md:22-27 (```RESUME SNAPSHOT ... next_action: Re-run /goal)",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The canonical/flagship repo's own doctor run is perpetually RED — exit 1 with 13 FAIL gates spanning 2026-06-13..2026-07-04 — so the QUICKSTART promise 'Is the kit healthy right now? -> bash doctor.sh' returns UNHEALTHY on the reference repo, and a newcomer cannot distinguish 'expected stale red' from real breakage",
+          "cite": "ran doctor.sh -> 'Health: HEALTHY tools, but 13 gate report(s) are FAIL' EXIT=1; ts spread 2026-06-13T20:14:46Z ai-safety .. 2026-07-04",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "5 of 13 failing gates (a11y-content, gate-suite, maintainability, worktree, ai-safety) ship reports with reason:null, so ~38% of surfaced failures do NOT explain themselves — directly contradicting REMEDIATION.md's own 'read the reason field first' instruction; operator must re-run the gate to learn why",
+          "cite": "`jq {reason}` -> all five report reason:null; triage prints '(no reason field in report)'; REMEDIATION.md:5-7 promises 'read the reason field first'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "QUICKSTART doc drift: claims doctor selftest is '18/18 passed' but the live count is 21/21 — a specific verified number in the onboarding doc is now stale",
+          "cite": "QUICKSTART.md:59 ('18/18 passed') vs live 'doctor selftest: 21/21 passed'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "BATON.md leans on dense insider shorthand (B01/B30/B35/B44/B50-B55, 'unblock-tdd-guard.txt') with no inline legend, raising the onboarding cost for a truly cold model despite the clean RESUME snapshot",
+          "cite": "_relay/BATON.md:6-13 references B01/B03/B07/B09/B10/B11/B21/B22/B26/B29/B30/B32 with no glossary",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Every failing gate must write a non-null reason: no doctor triage line should ever read '(no reason field in report)' — enforce reason presence at gate-write time (5/13 currently violate the 'read reason first' contract).",
+        "Ship the canonical repo with a green (or explicitly-quarantined) doctor: either clear/expire stale self-eval FAIL reports or mark them as expected-fixtures so a first `doctor.sh` on the reference repo returns HEALTHY, and 'expected red' is distinguishable from real breakage.",
+        "Kill doc drift with a generated-number discipline: QUICKSTART's 18/18 (now 21/21) and gate-count figures should be emitted from the tools, not hand-typed, so onboarding numbers can't go stale.",
+        "Give BATON.md an inline backlog legend (B-code -> one-line meaning) so a cold model resumes without external context.",
+        "Offer a bounded 'deeper than selftest, faster than 4-min full-suite' operator lane so QUICKSTART step 2 isn't a choice between a synthetic-fixture selftest and a run that doesn't finish in 4 minutes."
+      ]
+    },
+    {
+      "key": "memory",
+      "score": 4.5,
+      "confidence": "high — I read walteur.js recall/consolidate/self-optimize wiring (lines 435-442, 601, 1668-1683), the full 26-line lessons.jsonl, all of lesson-gate.sh (237 lines), memory-staleness-gate.sh, and ran: lesson-gate --selftest (22/22 pass), the live gates, `wc -l ~/.walteur/memory/lessons.jsonl` (ABSENT), and `find` for lesson-feedback.sh/reflect.sh/pending-feedback.jsonl/conflicts.jsonl/retired.jsonl (all absent). Not run: an end-to-end walteur.js build (would confirm recall returns [] but I traced the path statically).",
+      "weight": 12,
+      "evidence": [
+        {
+          "claim": "The recall agent — the recall-before-act half — reads the WRONG store: `cat ~/.walteur/memory/lessons.jsonl` which is ABSENT, while the 26 real lessons live in walteur-kit/memory/lessons.jsonl. On a real build recall returns [] and ZERO accumulated lessons reach the plan prompt.",
+          "cite": ".claude/workflows/walteur.js:439 (recall reads ~/.walteur/memory/lessons.jsonl); `wc -l ~/.walteur/memory/lessons.jsonl` -> ABSENT; `wc -l walteur-kit/memory/lessons.jsonl` -> 26 rows",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The helpful/harmful/attribution/prune loop is vaporware. No lesson-feedback.sh, reflect.sh, pending-feedback.jsonl, conflicts.jsonl, or retired.jsonl exists anywhere (find returns nothing). ALL 26 lessons carry helpful:0, harmful:0 — no code path anywhere writes a non-zero score. MEASURE->ATTRIBUTE->PRUNE (3/4 of the claimed loop) is dead.",
+          "cite": "`find . -name lesson-feedback.sh -o -name reflect.sh -o -name pending-feedback.jsonl -o -name conflicts.jsonl -o -name retired.jsonl` -> empty; grep for a helpful/harmful writer across hooks/workflows -> only init-to-0 at lesson-gate.sh:75",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "walteur.js STILL describes the dead loop as wired ('drains it via walteur-kit/memory/lesson-feedback.sh --drain ... recall -> apply -> MEASURE -> ATTRIBUTE -> PRUNE') despite the harness's own lesson-20260704T000907Z-52294 confessing these files 'NONE existed'. The confession was captured but the overclaim in code was never corrected.",
+          "cite": ".claude/workflows/walteur.js:1676-1683 vs lessons.jsonl lesson id lesson-20260704T000907Z-52294",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Consolidation gates capture through the WRONG path: it checks `if walteur-kit/memory/lesson-gate.sh exists` but the gate lives at walteur-kit/hooks/lesson-gate.sh, so the quality-gated dedupe path always misses and falls back to a hand-rolled append to a THIRD store (~/.walteur/memory). Three fragmented store paths: recall reads ~/.walteur (empty), --capture writes walteur-kit/memory, consolidate falls back to ~/.walteur.",
+          "cite": ".claude/workflows/walteur.js:1672 references walteur-kit/memory/lesson-gate.sh; actual file: walteur-kit/hooks/lesson-gate.sh",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The /optimize reflection artifact is dead-stale: ~/.walteur/memory/self-optimization-report.md is dated 2026-06-21 and reports 'Active lessons: 0 ... no eval runs recorded' while 26 lessons accrued through 2026-07-04. It cites reflect.sh as its generator — which does not exist. Confirms the reflection half never runs.",
+          "cite": "~/.walteur/memory/self-optimization-report.md (header 2026-06-21T02:46:51, 'Active lessons: 0')",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The CAPTURE layer is genuinely strong and field-exercised: lesson-gate.sh has working --capture (schema-normalized append), --apply (atomic temp+mv counter bump, idempotent, unknown-id->exit1), and a freshness WARN; 22/22 selftest passes; it is wired into gate-registry.json and the aggregate selftest.sh. The B43 store-resolution bug is FIXED here — it prefers the co-located walteur-kit/memory store.",
+          "cite": "`bash walteur-kit/hooks/lesson-gate.sh --selftest` -> 22/22 passed; gate-registry.json:1284-1289; selftest.sh:2218; lesson-gate.sh:52-56 (co-located-store preference)",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The lesson store itself is high-quality, dense, evidence-backed memory — 26 specific reproducible failure modes (BSD-date epochs, zsh word-split false-pass, gitleaks-blind, mktemp templates) each with source/ts/tags/class/severity, not platitudes. 4 lessons show applied>0 (8,2,2,2,2), proving the apply half was exercised at least manually.",
+          "cite": "walteur-kit/memory/lessons.jsonl (26 rows; e.g. lesson-20260703T131013Z-3490 applied:8, lesson-20260703T140926Z-14933 applied:2)",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The gate hooks are scrupulously honest in their own headers — lesson-gate.sh explicitly disclaims 'no contradiction-resolution, no supersession' and flags the stale lesson-gate.sh.patch as inapplicable; memory-staleness-gate.sh is a real independent HARD gate (playbook valid_until, fail-closed). The dishonesty is confined to walteur.js comments, not the shipped hooks.",
+          "cite": "walteur-kit/hooks/lesson-gate.sh:1-13 (self-disclaiming header); memory-staleness-gate.sh:1-10; live run NOT_APPLICABLE rc=0",
+          "polarity": "strength"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Fix walteur.js:439 recall to read the real store (walteur-kit/memory/lessons.jsonl, or honor WALTEUR_MEM / prefer co-located) so accumulated lessons actually reach a real build's plan prompt — verify end-to-end that recall returns non-empty on this repo.",
+        "Build the attribution half for real: a lesson-feedback.sh --drain that consumes pending-feedback.jsonl and writes helpful/harmful, plus auto-retire of net-harmful lessons (invalidated_at). Until a scorer writes a non-zero helpful/harmful, the loop is not self-improving.",
+        "Reconcile the three store paths (recall ~/.walteur, --capture walteur-kit/memory, consolidate fallback ~/.walteur) into one canonical resolver, and fix walteur.js:1672 to point at walteur-kit/hooks/lesson-gate.sh so consolidation actually hits the dedupe gate.",
+        "Delete or truthfully downgrade the 'MEASURE->ATTRIBUTE->PRUNE ... drains via lesson-feedback.sh' claims in walteur.js comments until the code exists — mark unbuilt parts ROADMAP (the harness's own lesson-52294 already demands this).",
+        "Regenerate the self-optimization report from the live 26-lesson store (or delete the dead 2026-06-21 artifact), and add a CI/selftest assertion that fails when helpful/harmful stay all-zero across N builds, so a dead feedback loop can't hide behind a green capture gate.",
+        "Prove the loop closes on a real field-run: recall N lessons, apply them, feed an outcome, watch a lesson's helpful score move and a deliberately-bad lesson get retired — evidence in a run-trace, not just unit selftests."
+      ]
+    },
+    {
+      "key": "qa",
+      "score": 7.4,
+      "confidence": "high — I ran the full selftest.sh end-to-end (3:53, exit 0, 237/0/0), fired ship-gate.sh against the real top-level repo (exit 2, fail-closed), ran a real field-run's test suite both in- and out-of-sandbox (38/38 pass), enumerated hook-vs-selftest coverage, and cross-checked the field-run audit's test-count claim against reality. All evidence is from commands I executed, not claims I read.",
+      "evidence": [
+        {
+          "claim": "selftest.sh reproduces the claimed 237/0/0 exactly — ran it end-to-end, exit 0, 'ALL GREEN', and selftest-report.json records passed:237 failed:0 skipped:0",
+          "cite": "ran `bash walteur-kit/selftest.sh` → '237 passed, 0 failed, 0 skipped / ALL GREEN' (3:53.80 total, EXIT=0); walteur-kit/selftest-report.json:6-9",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Fail-closed behavior is genuinely tested and works: ship-gate BLOCKS on missing scoreboard/DoD, tool-readiness fail-closes on absent tool, gates cover jq-absent/binary-absent/offline paths",
+          "cite": "selftest.out: 'ship-gate BLOCKS on missing scoreboard.json (fail-closed) (exit 2)', 'tool-readiness FAIL-CLOSED on declared-required absent tool (exit 2)', 'osv-gate --selftest (16/16, offline, corrupt+jq-absent+global-strict fail-closed)'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "A real-file audit claim is TRUE: field-run audit.json states '38/38 green (14 core + 24 HTTP)' and I independently reproduced exactly 38/38 pass on the real deliverable code",
+          "cite": "ran `node --test` in field-runs/apikeys-vault (sandbox off) → '# tests 38 # pass 38 # fail 0'; field-runs/apikeys-vault/walteur-kit/audit.json:9 ('node --test is 38/38 green (14 core + 24 HTTP)')",
+          "polarity": "strength"
+        },
+        {
+          "claim": "selftest also validates real on-disk source files, not only temp fixtures — 239 assertions reference the real SRC_KIT/SRC_ROOT schemas and registry",
+          "cite": "`grep -cE 'SRC_KIT|SRC_ROOT' walteur-kit/selftest.sh` → 239; e.g. selftest.sh:163,234,498 assert real schema files exist/match",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Coverage is dominated by SYNTHETIC temp-dir fixtures: selftest builds a 'throwaway green project' and NEVER exercises any real field-run deliverable — it proves hooks FIRE on constructed inputs, not that gates correctly grade real repos",
+          "cite": "walteur-kit/selftest.sh:3 ('Builds a throwaway green project in a temp dir'); `grep -c 'field-runs' selftest.sh` → 0",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The terminal ship-gate is never demonstrated green on any real repo: the harness repo's own scoreboard.json/qa-report.json/audit.json are 0 bytes and its DoD is a template with 88 unchecked boxes, so firing ship-gate exits 2",
+          "cite": "`ls -la walteur-kit/*.json` → scoreboard.json 0B, qa-report.json 0B, audit.json 0B; firing ship-gate on repo root → 'SHIP-GATE FAIL: DEFINITION-OF-DONE.md has unchecked items ... SHIPGATE_EXIT=2'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Gates cannot be re-fired against a real field-run as shipped: every field-run is missing PLAN.md, scoreboard.json, qa-report.json and DEFINITION-OF-DONE.md — the ship-gate inputs are gitignored transients, so preserved gate evidence is only partial (audit.json + some *-report.json survive)",
+          "cite": "checked 5 field-runs — all show scoreboard.json/qa-report.json/DoD/PLAN.md MISSING/EMPTY; walteur-kit/.gitignore ignores `*-report.json`",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "~6 of 159 hook scripts have no named selftest assertion (craft-gate, edge-protection, observe-probe, skill-index-build, story-coverage, _ast-grep-preamble)",
+          "cite": "`ls hooks/*.sh | wc -l` → 159; loop checking each basename against selftest.sh printed 'UNTESTED: craft-gate.sh / edge-protection.sh / observe-probe.sh / skill-index-build.sh / story-coverage.sh / _ast-grep-preamble.sh'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The shipped `npm test` command under-runs the real suite: it runs 24 of 38 tests, silently skipping the root core.test.mjs (14 tests) — the audit's 38/38 came from `node --test` auto-discovery, not the committed script",
+          "cite": "`npm test` in apikeys-vault (sandbox off) → '# tests 24 # pass 24'; `node --test` → '# tests 38'; package.json script is `node --test test/**/*.test.mjs` which excludes root-level core.test.mjs",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "selftest must exercise gates against at least one real preserved field-run deliverable (not only a synthetic throwaway green project), so 'the gate grades real code correctly' is proven, not just 'the hook fires on a fixture'",
+        "Preserve re-runnable ship evidence for each field-run (scoreboard/qa-report/DoD/PLAN committed, not gitignored transients) so ship-gate can be independently re-fired and shown green on a real build",
+        "Demonstrate the terminal ship-gate passing green on at least one real repo end-to-end; today the harness repo fails its own gate and field-runs lack the artifacts to fire it",
+        "Close hook-coverage holes: add named selftest assertions for the 6 currently-untested hooks (craft-gate, edge-protection, observe-probe, skill-index-build, story-coverage, _ast-grep-preamble)",
+        "Make the shipped `npm test` command run the full suite (include core.test.mjs) so the executable test entrypoint matches the audit's 38/38 claim",
+        "Add a jq-absent / real-ledger drift assertion to the default selftest run (per the repo's own memory that '--selftest green ≠ real-file green'), so fail-open regressions are caught without a manual PATH-shim pass"
+      ],
+      "weight": 10
+    },
+    {
+      "key": "orchestration",
+      "score": 6.5,
+      "confidence": "high — I read walteur.js (routing/budget/wave/emitSpan sections at lines 78-300, 851-876, 1131-1218), model-routing.json in full, and walteur-run.mjs in full; I EXECUTED walteur-run.mjs (TEMP=$TMPDIR) and observed the real 14-row trace + the routing_mismatch negative control firing. What I could NOT verify (no runtime available): that the harness agent() global actually routes to the requested model, and that a real harness budget object exists — both are trust-the-harness.",
+      "evidence": [
+        {
+          "claim": "Budget enforcement is real, fail-closed logic: budgetGuard gates on remaining()>40k tokens AND estUsd()<MAX_USD, with a HARD_REFINE_CAP=5 fallback when no budget object exists so cost can never run away on a stuck refine loop.",
+          "cite": ".claude/workflows/walteur.js:88-91",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The BUG-G fix is a genuine engineering catch: estUsd() subtracts a per-build start snapshot from the turn-wide shared budget.spent() pool, so a busy session doesn't trip the $ ceiling on every new build before work starts.",
+          "cite": ".claude/workflows/walteur.js:83-84",
+          "polarity": "strength"
+        },
+        {
+          "claim": "routingConformance is a REAL self-falsifying check, not a no-op — I ran walteur-run.mjs and the deliberately poisoned Audit+sonnet span produced exactly 1 'routing_mismatch:true(declared=opus,requested=sonnet)' row folded into gate_verdict in the written trace.",
+          "cite": ".claude/workflows/walteur-run.mjs:227 + observed run output row 14",
+          "polarity": "strength"
+        },
+        {
+          "claim": "DAG orchestration is correct real code: toWaves() topologically batches tasks whose deps are satisfied (with a cycle guard), disjointBatches() greedily serializes same-file collisions, plus a redundant per-wave claim registry — genuine parallel-writer race prevention.",
+          "cite": ".claude/workflows/walteur.js:852-876, 1140-1160",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The stub runner is exemplary honesty engineering: it EXTRACTS emitSpan/flushSpans/routingConformance source verbatim from walteur.js at runtime (cannot silently drift), stubs every model call with __stub:true labels, and carries a falsification negative control — I ran it and it wrote a real 14-row run-trace.jsonl in the correct schema.",
+          "cite": ".claude/workflows/walteur-run.mjs:114-171 + observed output",
+          "polarity": "strength"
+        },
+        {
+          "claim": "Bounded concurrency is NOT implemented. parallel() is a harness Promise.all of ALL thunks with no width cap, semaphore, pool, or p-limit anywhere; a wave of N disjoint-file tasks fans out all N agents at once. disjointBatches bounds by file-collision (correctness), never by concurrency width. grep for concurren|semaphore|pool|maxParallel|throttle finds zero caps in the engine.",
+          "cite": ".claude/workflows/walteur.js:1164 (await parallel(...)) — no cap; grep returned no concurrency limiter",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Ironic gap: the engine PREACHES 'bounded concurrency (no unbounded fan-out)' as a non-negotiable to the products it builds, while the orchestrator itself does unbounded Promise.all fan-out.",
+          "cite": ".claude/workflows/walteur.js:561",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Model routing is only DECLARED intent plus a self-conformance lint — the code itself admits it cannot verify the harness actually routed to the requested model (agent() results carry no model-echo metadata), so 'Opus plans, Sonnet executes' is unproven at runtime.",
+          "cite": ".claude/workflows/walteur.js:256-260",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "MODEL_ROUTING_BY_PHASE is a hand-maintained flat MIRROR of model-routing.json with no runtime read (the file has no fs/require), creating silent drift risk; worse, it contradicts the policy's own subtask escalation — by_phase Build='sonnet' but routes[] escalates hard/security/concurrency Build tasks to opus, so routingConformance('Build','opus') would FALSE-FLAG a correctly-Opus security task as a mismatch.",
+          "cite": ".claude/workflows/walteur.js:254,261 vs model-routing.json:36",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Budget enforcement is vacuous without a harness-provided metered budget: when haveBudget is false, estUsd() returns 0 so the $ ceiling never trips and only the refine-count cap bounds cost — and no integration test exercises budgetStop() or a real wave fan-out; the sole executable proof (the stub runner) exercises telemetry + routing-lint only, not budget enforcement or concurrency.",
+          "cite": ".claude/workflows/walteur.js:84,91 + walteur-run.mjs honesty header lines 18-27",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Implement actual bounded concurrency: a semaphore/pool (p-limit style) capping simultaneous agent() fan-out width per wave, independent of file-disjointness — the named 'bounded-concurrency' pillar is currently absent.",
+        "Make model routing verifiable end-to-end: capture a model-echo from agent() results (or a harness receipt) and assert requested==actual in the trace, instead of only linting the engine's self-declared table.",
+        "Eliminate the routing mirror drift + false-positive: read model-routing.json at runtime (or generate the embedded table from it) AND teach routingConformance the subtask escalation rules so a legitimately-Opus security Build task isn't flagged as a mismatch.",
+        "Add a real integration test that drives budgetStop() and a multi-wave fan-out (not just the telemetry/routing-lint path) with a metered budget stub, proving the $ ceiling actually halts a run and checkpoints resume.",
+        "Prove the budget path is non-vacuous without a harness budget: either require a metered budget object or bound waves by an independent cost estimate when haveBudget is false, so cost enforcement never degrades to only the refine cap."
+      ],
+      "weight": 7
+    },
+    {
+      "key": "reliability",
+      "score": 6.8,
+      "confidence": "High / mostly-verified. I executed rather than relied: reproduced the tdd-guard deadlock (PIPE_RC=141 SIGPIPE -> deterministic block, 5/5) in a repo with 129 test files; ran the real harness-self-audit-gate (PASS 98/100, 144 gates); ran its --selftest (5/9 in-sandbox, bare-mktemp false-fail); proved jq fail-open via a PATH shim (\"SKIP (no jq)\" rc0); verified PAUSED live (rc2 paused / rc0 resumed); grepped hooks+workflows and confirmed no run-level heartbeat/watchdog. Could NOT verify: behavior of a genuinely hung/crashed walteur.js run (no watchdog exists to test), and whether the live loop actually exports WALTEUR_TDD=off to route around the broken guard in practice — the shipped state is default-on.",
+      "weight": 7,
+      "evidence": [
+        {
+          "claim": "Kill-switch is clean fail-closed: PAUSED file -> exit 2, verified live (rc=2 paused, rc=0 after resume); every gate checks PAUSED first.",
+          "cite": ".claude/hooks/kill-switch.sh:12 + live run: 'WALTEUR PAUSED ... kill-switch rc=2' then 'resumed rc=0'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "harness-self-audit-gate genuinely fail-closes on regression: real run PASS 98/100 with baseline snapshot, gate-count-regression, vanished-gate (comm -23), and score-drop detection — a real anti-erosion mechanism, not a vibe.",
+          "cite": ".claude/hooks/harness-self-audit-gate.sh:114-119 + live 'PASS (score 98/100, 144 gates)'",
+          "polarity": "strength"
+        },
+        {
+          "claim": "tool-liveness-probe EXECs each required tool and classifies missing|broken|timeout beyond `command -v`, fail-closing on a dead shim — a real tool-level liveness idea.",
+          "cite": ".claude/hooks/tool-liveness-probe.sh:36-44,67-68",
+          "polarity": "strength"
+        },
+        {
+          "claim": "LIVE deterministic deadlock: tdd-guard.sh line 26 `find ... -print | grep -q .` under `set -uo pipefail` returns 141 (SIGPIPE) on the big repo tree -> `if ! 141` -> BLOCK. Reproduced rc=2 5/5 editing a source path while the repo holds 129 test files (a false block). Wired live in PreToolUse and ships default-on; fix is parked behind the human gate.",
+          "cite": ".claude/hooks/tdd-guard.sh:15,26 + probe 'PIPE_RC=141 BRANCH=block' x3 + settings.json:11 + walteur-kit/harness-100/PENDING-HOOKS-PATCH.md:28",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "The reliability auditor itself FAILS OPEN when its own toolchain degrades: missing jq -> exit 0 SKIP (proven via PATH shim: 'harness-self-audit-gate: SKIP (no jq)'). 6 gates share this pattern — the exact silent-disarm scenario tool-liveness-probe was built to catch, yet the auditor doesn't gate on it.",
+          "cite": ".claude/hooks/harness-self-audit-gate.sh:52 + PATH-shim run output",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "No run-level heartbeat/watchdog for the orchestrator: grep across hooks+workflows finds none; a hung/crashed walteur.js run has no detector — only manual PAUSED or a per-tool --version timeout. The harness's own panel-baseline.json admits this ('No engine-level crash/stall detection').",
+          "cite": "grep heartbeat|watchdog|stale-run -> only walteur-kit/harness-100/panel-baseline.json:325 self-admission; nothing in .claude/",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Self-verification is not sandbox-hermetic: harness-self-audit-gate --selftest uses bare `mktemp -d` (8 occurrences) and scores 5/9 in-sandbox (mkdtemp Operation not permitted -> paths collapse to /walteur-kit/...). A green selftest is only real with sandbox off — a documented mktemp trap left unfixed in this file.",
+          "cite": ".claude/hooks/harness-self-audit-gate.sh:154-167 + live '--selftest ... 5/9 passed', 'mkdtemp failed ... Operation not permitted'",
+          "polarity": "weakness"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Fix the tdd-guard SIGPIPE deadlock (use `find ... -print -quit` emptiness test, not `-print | grep -q .` under pipefail) so the live PreToolUse guard stops deterministically blocking all source edits, and ship it default-on without the deadlock instead of parking the fix behind the human gate.",
+        "Make reliability-critical gates fail-CLOSED (or hard-require jq) rather than exit-0 SKIP on missing jq; gate the harness-self-audit on tool-liveness-probe so the auditor cannot silently disarm exactly when the toolchain is degraded.",
+        "Add a run-level heartbeat/watchdog: write {ts,phase,pid} to STATE.json on every phase() transition in walteur.js plus a --check stall-detector that FAILs when updated_at exceeds a staleness threshold — currently nothing detects a hung/crashed orchestrator.",
+        "Make the selftest sandbox-hermetic (TMPDIR-anchored mktemp) so a green selftest is trustworthy in-sandbox, not only sandbox-off.",
+        "Add a kill-mid-run + assert-clean-resume-from-BATON test to prove the recovery/resume path actually works end-to-end; today it is untested because no watchdog exists to trigger it."
+      ]
+    },
+    {
+      "key": "docs",
+      "score": 6.4,
+      "weight": 5,
+      "confidence": "High — ran jq on gate-registry.json (144), ran full selftest.sh live sandbox-off (237/0/0 reproduced), jq on personas.json (68) and skill-index.json (223), grep-diffed the doc twins.",
+      "evidence": [
+        {
+          "claim": "Docs claim 144 registered gates and the live registry confirms it exactly.",
+          "cite": "jq '[.gates[]]|length' walteur-kit/gate-registry.json -> 144; matches README.md:104, QUICKSTART.md:36, STAMP.md:12",
+          "polarity": "strength"
+        },
+        {
+          "claim": "The 237/0/0 aggregate is honest — reproduced live, not cached.",
+          "cite": "bash walteur-kit/selftest.sh -> '237 passed, 0 failed, 0 skipped / ALL GREEN'; matches README.md:34",
+          "polarity": "strength"
+        },
+        {
+          "claim": "68-PERSONA count is accurate.",
+          "cite": "jq '.personas|length' personas.json -> 68; matches README.md:104",
+          "polarity": "strength"
+        },
+        {
+          "claim": "README status is materially FALSE/stale: claims orchestrator 'has not yet run end-to-end' but repo records multiple e2e runs.",
+          "cite": "README.md:36 vs QUICKSTART.md:102, SHIPPED.md:153/173, STAMP.md:53-54 (S036/S037)",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "FEATURES self-test spine still says 160/0/0 vs verified 237/0/0.",
+          "cite": "FEATURES.md:105 '160/0/0' vs README.md:34 '237' and live run",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Two docs say '190-skill lint' but skill-index has 223.",
+          "cite": "README.md:104 + FEATURES.md:73 '190-skill' vs jq skill-index.json -> 223, STAMP.md:39",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "STAMP Current gate count contradicts its own latest history row.",
+          "cite": "STAMP.md:12 'gates:144 last stamp S037' vs STAMP.md:53 S037 'gates=142'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "README changelog headline is ~5 stamps stale.",
+          "cite": "README.md:104 'v10 (latest · 2026-06-27)' vs STAMP.md:12 'S037 on 2026-07-02'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Repo tracks a standing unclosed doc-drift across many stamps.",
+          "cite": "STAMP.md:34-38 repeated 'twin drift=1 doc-twin'",
+          "polarity": "weakness"
+        },
+        {
+          "claim": "Honest, caveated claims where verifiable are a genuine quality signal.",
+          "cite": "QUICKSTART.md:4 'Every command below was run on this box'; QUICKSTART.md:123 'one small CLI, not an enterprise system'",
+          "polarity": "strength"
+        }
+      ],
+      "gaps_to_reach_10": [
+        "Rewrite README.md:35-36 'Status — honest': it is false; the orchestrator HAS run e2e (FR-7, humansize, url-shortener per SHIPPED.md/STAMP S036-S037).",
+        "Fix FEATURES.md:105 160/0/0 -> 237/0/0.",
+        "Fix README.md:104 + FEATURES.md:73 '190-skill' -> 223.",
+        "Reconcile STAMP Current (gates:144) with S037 row (gates=142).",
+        "Refresh README changelog headline date/version (still 2026-06-27 v10).",
+        "Close the standing doc-twin drift=1 so twin-invariant reports 0.",
+        "Add a doc-freshness gate that machine-diffs numeric claims across twins vs source-of-truth and fails closed on drift."
+      ]
+    }
+  ],
+  "critic": "Verified against the repo. Here is the completeness critique.\n\n---\n\n## 1. Dimensions whose evidence is thin / claim-based / should be re-run\n\n**security (7.9) — TOP re-run candidate.** It is the only dimension that *jumped up* vs the last blind panel (panel-5: 6.7 → 7.9) on the strength of a gate built in the **same** cycle it's being scored in — `walteur-kit/hooks/injection-resistance-gate.sh` (cycle 33, see `_relay/BATON.md`). That evidence has never faced an independent blind panel. Panel-5's live security finding was \"`security-gate` aggregate still **fail-OPEN** when only gitleaks ran\" (`walteur-kit/harness-100/panel-5.json`, SCORECARD security row). A 7.9 that credits the new injection eval but doesn't re-verify that fail-open aggregate is closed is partly self-attested. Re-run security with a required cite that the aggregate fail-closes when a scanner is absent.\n\n**oneshot (6.5) and orchestration (6.5) — claim-based *by construction*, do NOT waste a panel on them.** Both rest on source-reading a runner that is an honest stub: `.claude/workflows/walteur-run.mjs` returns `__stub:true`, and every field trace carries `tokens.estimate:0` (SCORECARD orchestration row; panel-5 oneshot confidence note — \"not a live re-run of the orchestrator\"). No live dispatch exists to observe, so the \"97 agents / 118 min\" claim is inherently unverifiable. A fresh panel will just re-roll the same ±1.6 blind variance (panel range oneshot 5.7–7.3). The number won't get more honest without a real runner (engine work), so re-running is wasted tokens — fix the runner instead.\n\n**memory (4.5) — do NOT re-run; it is the most evidence-backed low score in the set.** Earlier panels drifted 4.8→7.3 by reading \"recall is wired\" without checking the store on-box. I verified the actual defect: `.claude/workflows/walteur.js:439` recall reads `~/.walteur/memory/lessons.jsonl`, which **does not exist on this box** (`~/.walteur/memory/` holds only `self-optimization-report.md`), while all **26 real lessons live in `walteur-kit/memory/lessons.jsonl`**. So recall reads zero lessons at runtime. Telemetry is inert: `helpful:0` on all 26 rows, `applied:0` on 23 of 26. And `lesson-gate.sh` / `lesson-feedback.sh` — referenced by `walteur.js:1672` and `_relay/BATON.md` — are **absent** from `walteur-kit/memory/` (only `lessons.jsonl` is present). 4.5 is the honest number; keep it and fix the split-brain.\n\n---\n\n## 2. THE single most load-bearing gap\n\n**B30 — a real external public ship (EXTERNAL, Tony-only).** `field-runs/SHIPPED.md` has **zero verified external rows**; every field-run is `localhost`/on-disk with \"NONE\" users and revenue. Per the rubric, `oneshot` (w15) and `design` (w10) are both contractually capped below 9.0 without a publicly-reachable deployed URL. That pins **25% of the total weight under 9** regardless of any internal hardening. It is the one gap that arithmetically caps the goal.\n\nThe most load-bearing gap the *agent* can reach: the **tdd-guard SIGPIPE human gate** (`.claude/hooks/tdd-guard.sh`, `unblock-tdd-guard.txt`) — its `find | grep -q` false-negative under `pipefail` deadlocks all `.sh/.js/.mjs` Edit/Write ops, and the self-modification classifier refuses to let the agent fix its own guard. This freezes the entire `.claude/hooks` + `walteur.js` source wave (B01/B03/B21/B22/B32…). But clearing it still cannot reach 98 — B30 dominates.\n\n---\n\n## 3. File-scoped backlog (highest-leverage first)\n\n| # | Item | File(s) | Tag |\n|---|------|---------|-----|\n| 1 | Fix memory split-brain: make recall fall back to `walteur-kit/memory/lessons.jsonl` (or symlink/seed `~/.walteur/memory/`) so the 26 lessons are actually read at recall time | `.claude/workflows/walteur.js:439` | **GATED** (walteur.js, tdd-guard) |\n| 2 | Ship `lesson-gate.sh` + `lesson-feedback.sh` into the SPEC distribution and wire the drain so `helpful/harmful/applied` stop being 0 (close recall→apply→measure→prune) | new `walteur-kit/memory/lesson-gate.sh`, `walteur-kit/memory/lesson-feedback.sh` | **NON-gated** |\n| 3 | Re-run the **security** panel with a required \"aggregate fail-closes on absent scanner\" cite | `walteur-kit/hooks/security-gate.sh`, `injection-resistance-gate.sh` | **NON-gated** |\n| 4 | Extract `lib/report.sh` and dedupe `write_report()` — **141** copies confirmed across `walteur-kit/hooks` (biggest code w12 lever the panels keep flagging) | new `walteur-kit/hooks/lib/report.sh` + 141 gates | **NON-gated** |\n| 5 | Sweep the SIGPIPE `grep -q` pipeline class — **60** files in `walteur-kit/hooks` use `grep -q` (same defect family as the tdd-guard deadlock) | `walteur-kit/hooks/*.sh` | **NON-gated** |\n| 6 | Real orchestrator runner to replace `__stub:true` / `tokens.estimate:0` — the only thing that lifts oneshot+orchestration off claim-based | `.claude/workflows/walteur-run.mjs`, `walteur.js` | **GATED** |\n| 7 | Fix the tdd-guard SIGPIPE false-negative (unblocks the whole source wave) | `.claude/hooks/tdd-guard.sh` | **GATED** (human gate) |\n| 8 | Docs freshness: reconcile stale `--selftest` counts and the QUICKSTART bash-version claim panels flagged | `README.md`, `QUICKSTART.md` | **NON-gated** |\n| 9 | Real external public deploy with a verifiable URL + a `verified` row | `field-runs/SHIPPED.md` (B30) | **EXTERNAL** (Tony-only) |\n\n---\n\n## 4. Arithmetic verdict on \"98 with no dimension below 9\"\n\n**Confirmed impossible while the caps hold** — and I re-derived the weights from your own numbers (Σweights = 100; my recompute of the total = **67.92 ≈ 67.9** ✓, matching `walteur-kit/harness-100/RUBRIC.md`).\n\nTwo independent blockers:\n\n1. **Floor rule:** certification requires *no dimension < 9*. `oneshot` (w15) and `design` (w10) are contractually capped below 9 without an external URL (B30). Any capped-below-9 dimension fails the floor outright — no weighting can rescue it.\n\n2. **Even ignoring the floor:** to hit 98 you need Σ(score×weight) ≥ 980, i.e. a total \"deficit-below-10\" budget of only **20 weighted points**. With `oneshot` realistically at ~6.5 its deficit *alone* is (10−6.5)×15 = **52.5**, already 2.6× the entire budget. Best achievable with every *other* dimension at a perfect 10 is (6.5×15 + 10×85)/10 = **94.75 < 98**. Add design's cap and the ceiling drops further.\n\nSo 98/no-dim-<9 is unreachable by harness work alone; it is gated entirely on B30 (the external ship), which is Tony-only. Every internal lever in the backlog above is legitimate hardening but cannot move the certification verdict past the cap.",
+  "workflow_id": "wf_fecaf544-8c8",
+  "task_id": "wtns1ivf8",
+  "panel_date": "2026-07-04",
+  "blind": true,
+  "note": "Reconstructed losslessly from the workflow result. 10 blind Opus experts + critic."
+}

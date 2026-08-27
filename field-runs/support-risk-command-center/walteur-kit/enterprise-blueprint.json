@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "blueprint_id": "walteur-build-a-support-risk-command-center-that-helps-s-20260624095838-blueprint",
+  "raw_goal": "Build a support risk command center that helps support leads spot aging, blocked, and SLA-near tickets from seeded data",
+  "enterprise_goal": "Deliver a concrete, verified software outcome for: Build a support risk command center that helps support leads spot aging, blocked, and SLA-near tickets from seeded data. The first slice must name the user, surfaces, proof, owner, trust controls, recovery path, and final handoff.",
+  "primary_user": {
+    "role": "Support lead",
+    "pain": "The requested outcome is not yet captured as a concrete workflow, surface, proof path, and owner model.",
+    "success_moment": "The owner can inspect the delivered artifact, run the listed checks, and decide the next action without rediscovery."
+  },
+  "owner_or_buyer": {
+    "role": "Support lead",
+    "decision_metric": "The requested outcome is accepted only after the gate reports and final delivery packet prove the agreed behavior."
+  },
+  "job_map": [
+    {
+      "job": "Turn the raw request into a verified deliverable",
+      "current_workaround": "Rely on a loose prompt, ad-hoc checks, or a generic scaffold that does not name concrete proof.",
+      "desired_outcome": "Work from a typed blueprint that names artifacts, acceptance criteria, trust controls, operations, cuts, and proof refs."
+    }
+  ],
+  "artifact_map": [
+    {
+      "artifact": "Primary deliverable",
+      "type": "ui",
+      "purpose": "Expose the requested outcome through the smallest useful artifact that can be verified.",
+      "owner": "Support lead",
+      "done_when": "The artifact satisfies the acceptance suite and its evidence refs are read before completion.",
+      "evidence_ref": "walteur-kit/build-contract.json#request"
+    },
+    {
+      "artifact": "Verification and handoff packet",
+      "type": "test",
+      "purpose": "Prove the delivery works and make the result reviewable by the owner.",
+      "owner": "Support lead",
+      "done_when": "The final response includes what changed, how to use it, proof read, known gaps, rollback or recovery, and next action.",
+      "evidence_ref": "walteur-kit/build-contract.json#verification"
+    }
+  ],
+  "surface_map": {
+    "ui": [
+      "Primary user surface"
+    ],
+    "api": [
+      "Declared integration contract when applicable"
+    ],
+    "data": [
+      "Inputs, outputs, data class, and evidence refs named in the build contract"
+    ],
+    "jobs": [
+      "Plan, verify, review, ship, and reflect stage work"
+    ],
+    "docs": [
+      "Build contract",
+      "Final delivery packet"
+    ],
+    "ops": [
+      "Owner",
+      "rollback or recovery path",
+      "known gaps review"
+    ]
+  },
+  "acceptance_suite": [
+    {
+      "id": "AC-001",
+      "statement": "The primary deliverable satisfies the raw user outcome without expanding beyond approved scope.",
+      "verification": "Read the build contract and final gate reports before claiming completion.",
+      "evidence_ref": "walteur-kit/build-contract.json#request"
+    },
+    {
+      "id": "AC-002",
+      "statement": "The verification path includes fresh command, report, screenshot, audit, or signed evidence appropriate to the build class.",
+      "verification": "Run the selected registry gates and inspect their report files.",
+      "evidence_ref": "walteur-kit/build-contract.json#verification"
+    },
+    {
+      "id": "AC-003",
+      "statement": "The final handoff names what changed, how to use it, proof read, known gaps, rollback or recovery, and next action.",
+      "verification": "Compare the final delivery packet against this blueprint and the definition of done.",
+      "evidence_ref": "walteur-kit/build-contract.json#evidence_required"
+    }
+  ],
+  "trust_model": {
+    "authn": "Use the target project identity boundary or record why authentication is not applicable to this slice.",
+    "authz": "Deny by default for restricted actions and record role or owner boundaries before ship.",
+    "data_policy": "Respect the declared data classification and avoid logging secrets or personal data in proof artifacts.",
+    "privacy": "Use redacted or synthetic evidence when screenshots, logs, or examples could expose sensitive data.",
+    "security": "Run selected security, dependency, tool, and configuration checks before release where applicable.",
+    "auditability": "Every PASS claim cites a report, command output, local artifact, or signed manual evidence."
+  },
+  "operating_model": {
+    "observability": "Name logs, metrics, traces, reports, or manual checks that prove the artifact remains understandable after handoff.",
+    "support": "Name the owner who receives questions and the path for defects or unresolved gaps.",
+    "rollback": "Name how to revert, disable, restore, or replace the artifact if the delivery is wrong.",
+    "incident_response": "Record the escalation trigger for failures that affect users, data, production, or external commitments.",
+    "ownership": "The build owner accepts scope, cuts, proof standards, and next action before ship."
+  },
+  "quality_bar": {
+    "must_feel_like": "A specific, owner-ready delivery with concrete surfaces, commands, proof, and recovery path.",
+    "must_not_feel_like": "A generic scaffold, vague recommendation, proof-free summary, or ceremony that hides missing decisions.",
+    "reference_quality": "The standard is a staff-engineer handoff: narrow scope, clear owner, fresh evidence, explicit risk, and readable next step.",
+    "concreteness_floor": "Every meaningful claim names a user, artifact, acceptance criterion, control, command, or evidence reference."
+  },
+  "explicit_cuts": [
+    {
+      "item": "Unapproved scope expansion",
+      "reason": "The first delivery must prove the stated outcome before adding adjacent features or speculative polish.",
+      "risk": "Some desirable follow-up work remains outside this run and must be named in known gaps.",
+      "review_trigger": "Revisit when the owner accepts the verified first slice or changes the outcome."
+    }
+  ],
+  "final_delivery_packet": {
+    "must_include": [
+      "what changed",
+      "how to use it",
+      "files changed",
+      "commands run",
+      "proof read",
+      "known gaps",
+      "rollback or recovery",
+      "next action"
+    ]
+  },
+  "ts": "2026-06-24T09:58:38Z"
+}

@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: risks — residual risks — (1) a tenant losing its one-time raw key must rotate to get a new one (by design); (2) control-plane token compromise is mitigated by 90d rotation + constant-time compare. Accepted by owner.

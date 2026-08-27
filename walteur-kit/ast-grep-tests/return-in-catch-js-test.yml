@@ -1,0 +1,25 @@
+id: walteur-return-in-catch-js
+valid:
+  - |
+    function f() { try { return work(); } catch (e) { log.error(e); return computeFallback(e); } }
+  - |
+    function f() { try { return work(); } catch (e) { throw new AppError("x", { cause: e }); } }
+  - |
+    function f() { try { return work(); } catch (e) { return cachedValue; } }
+  - |
+    function f() { try { return work(); } catch (e) { return { ok: false }; } }
+  - |
+    function f() { try { return work(); } catch (e) { return [defaultItem]; } }
+  - |
+    function f() { try { return work(); } catch (e) { console.warn(e); return null; } }
+invalid:
+  - |
+    function f() { try { return work(); } catch (e) { return null; } }
+  - |
+    function f() { try { return work(); } catch (e) { return []; } }
+  - |
+    function f() { try { return work(); } catch (e) { return 0; } }
+  - |
+    function f() { try { return work(); } catch (e) { return {}; } }
+  - |
+    function f() { try { return work(); } catch (e) { return undefined; } }

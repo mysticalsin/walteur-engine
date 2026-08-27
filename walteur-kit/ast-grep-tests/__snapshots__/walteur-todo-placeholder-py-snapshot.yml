@@ -1,0 +1,38 @@
+id: walteur-todo-placeholder-py
+snapshots:
+  ? |
+    def stub():
+        raise NotImplementedError
+  : labels:
+    - source: |-
+        def stub():
+            raise NotImplementedError
+      style: primary
+      start: 0
+      end: 41
+    - source: stub
+      style: secondary
+      start: 4
+      end: 8
+    - source: raise NotImplementedError
+      style: secondary
+      start: 16
+      end: 41
+  ? |
+    def todo():
+        pass
+  : labels:
+    - source: |-
+        def todo():
+            pass
+      style: primary
+      start: 0
+      end: 20
+    - source: todo
+      style: secondary
+      start: 4
+      end: 8
+    - source: pass
+      style: secondary
+      start: 16
+      end: 20

@@ -1,0 +1,1 @@
+feature-flags authz evidence: anon — no-credential request => 401 empty body. Proven by test/api.test.mjs (no credential case).

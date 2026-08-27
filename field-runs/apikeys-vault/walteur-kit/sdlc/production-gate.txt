@@ -1,0 +1,1 @@
+production gate — deploy + smoke + monitoring + rollback-trigger required.

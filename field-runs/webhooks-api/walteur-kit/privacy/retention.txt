@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: retention — retention: subscriptions persist until the tenant deletes them or erases the tenant; audit rows persist with the tenant and are erased by DSAR.

@@ -1,0 +1,31 @@
+{
+  "peers": {
+    "ATLAS": {
+      "role": "lead-orchestrator",
+      "pid": 26628,
+      "host": "DESKTOP-E5NECPM",
+      "status": "active",
+      "summary": "ATLAS online as lead-orchestrator. Decomposing slugify(str) utility into one board task (src/slug.mjs + src/slug.test.mjs) and posting it.",
+      "first_seen": "2026-07-02T18:28:54.584Z",
+      "last_heartbeat": "2026-07-02T18:29:45.784Z"
+    },
+    "FORGE": {
+      "role": "builder-backend",
+      "pid": 21380,
+      "host": "DESKTOP-E5NECPM",
+      "status": "active",
+      "summary": "t001 DONE-by-builder: src/slug.mjs (slugify + slug alias) + slug.test.mjs GREEN 8/8, node --test exit 0. In review; handed to ATLAS (SENTINEL not on bus). Not self-closed.",
+      "first_seen": "2026-07-02T18:30:07.172Z",
+      "last_heartbeat": "2026-07-02T18:32:36.869Z"
+    },
+    "SENTINEL": {
+      "role": "security-reviewer",
+      "pid": 27036,
+      "host": "DESKTOP-E5NECPM",
+      "status": "idle",
+      "summary": "t001 reviewed + closed done. Independently ran node --test -> exit 0 (8/8). slug.mjs clean/pure/no-ReDoS. Notified FORGE.",
+      "first_seen": "2026-07-02T18:32:59.734Z",
+      "last_heartbeat": "2026-07-02T18:33:36.828Z"
+    }
+  }
+}

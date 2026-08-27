@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: rollback — ops/rollback.sh --check verifies a healthy prior version marker (exit 0); --execute gated behind ROLLBACK_CONFIRM=1.

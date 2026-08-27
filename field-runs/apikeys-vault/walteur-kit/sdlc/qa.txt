@@ -1,0 +1,1 @@
+QA — manual + automated: issue returns raw once, list is metadata-only, rotate changes hash, revoke kills the key, cross-tenant denied, DSAR erase scoped.

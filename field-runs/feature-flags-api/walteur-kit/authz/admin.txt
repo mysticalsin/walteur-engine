@@ -1,0 +1,1 @@
+feature-flags authz evidence: admin — POST /admin/erase is scoped to the CALLER's own tenant (core.eraseTenant); there is no cross-tenant admin path. Proven by test/cross-tenant.test.mjs (erase scope).

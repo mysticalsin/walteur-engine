@@ -1,0 +1,1 @@
+Smoke: node --test tests/risk.test.mjs tests/view.test.mjs -> exit 0 post-deploy.

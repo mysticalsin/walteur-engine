@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/enterprise-blueprint.schema.json",
+  "title": "WALTEUR Enterprise Blueprint",
+  "description": "Plan-stage artifact that turns a raw goal into a concrete enterprise-grade build target before implementation starts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "blueprint_id",
+    "raw_goal",
+    "enterprise_goal",
+    "primary_user",
+    "owner_or_buyer",
+    "job_map",
+    "artifact_map",
+    "surface_map",
+    "acceptance_suite",
+    "trust_model",
+    "operating_model",
+    "quality_bar",
+    "explicit_cuts",
+    "final_delivery_packet",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "blueprint_id": { "type": "string", "minLength": 1 },
+    "raw_goal": { "type": "string", "minLength": 8 },
+    "enterprise_goal": { "type": "string", "minLength": 24 },
+    "primary_user": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "pain", "success_moment"],
+      "properties": {
+        "role": { "type": "string", "minLength": 3 },
+        "pain": { "type": "string", "minLength": 12 },
+        "success_moment": { "type": "string", "minLength": 12 }
+      }
+    },
+    "owner_or_buyer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "decision_metric"],
+      "properties": {
+        "role": { "type": "string", "minLength": 3 },
+        "decision_metric": { "type": "string", "minLength": 12 }
+      }
+    },
+    "job_map": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["job", "current_workaround", "desired_outcome"],
+        "properties": {
+          "job": { "type": "string", "minLength": 8 },
+          "current_workaround": { "type": "string", "minLength": 8 },
+          "desired_outcome": { "type": "string", "minLength": 8 }
+        }
+      }
+    },
+    "artifact_map": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact", "type", "purpose", "owner", "done_when", "evidence_ref"],
+        "properties": {
+          "artifact": { "type": "string", "minLength": 3 },
+          "type": { "type": "string", "enum": ["ui", "api", "workflow", "document", "data", "ai", "iac", "test", "ops"] },
+          "purpose": { "type": "string", "minLength": 12 },
+          "owner": { "type": "string", "minLength": 3 },
+          "done_when": { "type": "string", "minLength": 12 },
+          "evidence_ref": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "surface_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ui", "api", "data", "jobs", "docs", "ops"],
+      "properties": {
+        "ui": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "api": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "data": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "jobs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "docs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "ops": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "acceptance_suite": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "verification", "evidence_ref"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^AC-[0-9]{3}$" },
+          "statement": { "type": "string", "minLength": 16 },
+          "verification": { "type": "string", "minLength": 12 },
+          "evidence_ref": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "trust_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authn", "authz", "data_policy", "privacy", "security", "auditability"],
+      "properties": {
+        "authn": { "type": "string", "minLength": 8 },
+        "authz": { "type": "string", "minLength": 8 },
+        "data_policy": { "type": "string", "minLength": 12 },
+        "privacy": { "type": "string", "minLength": 12 },
+        "security": { "type": "string", "minLength": 12 },
+        "auditability": { "type": "string", "minLength": 12 }
+      }
+    },
+    "operating_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observability", "support", "rollback", "incident_response", "ownership"],
+      "properties": {
+        "observability": { "type": "string", "minLength": 12 },
+        "support": { "type": "string", "minLength": 12 },
+        "rollback": { "type": "string", "minLength": 12 },
+        "incident_response": { "type": "string", "minLength": 12 },
+        "ownership": { "type": "string", "minLength": 12 }
+      }
+    },
+    "quality_bar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["must_feel_like", "must_not_feel_like", "reference_quality", "concreteness_floor"],
+      "properties": {
+        "must_feel_like": { "type": "string", "minLength": 12 },
+        "must_not_feel_like": { "type": "string", "minLength": 12 },
+        "reference_quality": { "type": "string", "minLength": 12 },
+        "concreteness_floor": { "type": "string", "minLength": 12 }
+      }
+    },
+    "explicit_cuts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "reason", "risk", "review_trigger"],
+        "properties": {
+          "item": { "type": "string", "minLength": 3 },
+          "reason": { "type": "string", "minLength": 12 },
+          "risk": { "type": "string", "minLength": 8 },
+          "review_trigger": { "type": "string", "minLength": 8 }
+        }
+      }
+    },
+    "final_delivery_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["must_include"],
+      "properties": {
+        "must_include": {
+          "type": "array",
+          "minItems": 6,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "ts": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T" }
+  }
+}

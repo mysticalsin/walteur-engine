@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/qa-report.schema.json",
+  "title": "WALTEUR QA Report",
+  "description": "Typed multi-dimension QA proof artifact for WALTEUR verification.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "verdict",
+    "dimensions",
+    "acceptance_criteria_coverage",
+    "blockers",
+    "known_gaps",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "VETO", "BLOCKED"]
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "unit_integration",
+        "functional",
+        "logic",
+        "integration",
+        "data_integrity",
+        "security",
+        "ux_resilience"
+      ],
+      "properties": {
+        "unit_integration": { "$ref": "#/definitions/dimension" },
+        "functional": { "$ref": "#/definitions/dimension" },
+        "logic": { "$ref": "#/definitions/dimension" },
+        "integration": { "$ref": "#/definitions/dimension" },
+        "data_integrity": { "$ref": "#/definitions/dimension" },
+        "security": { "$ref": "#/definitions/dimension" },
+        "ux_resilience": { "$ref": "#/definitions/dimension" }
+      }
+    },
+    "acceptance_criteria_coverage": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ac_coverage" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/known_gap" }
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  },
+  "definitions": {
+    "dimension": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["verdict", "owner", "summary"],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": ["PASS", "WAIVED", "FAIL", "VETO", "BLOCKED"]
+        },
+        "owner": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "evidence_ref": { "type": "string", "minLength": 1 },
+        "recorded_command": { "type": "string", "minLength": 1 },
+        "exit_code": { "type": "integer" },
+        "reason": { "type": "string", "minLength": 1 },
+        "waiver_reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ac_coverage": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["story", "ac", "verdict", "evidence_ref"],
+      "properties": {
+        "story": { "type": "string", "minLength": 1 },
+        "ac": { "type": "string", "minLength": 1 },
+        "verdict": {
+          "type": "string",
+          "enum": ["PASS", "WAIVED", "FAIL", "VETO", "BLOCKED"]
+        },
+        "evidence_ref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["dimension", "gap", "fix", "severity"],
+      "properties": {
+        "dimension": { "type": "string", "minLength": 1 },
+        "gap": { "type": "string", "minLength": 1 },
+        "fix": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "minLength": 1 }
+      }
+    },
+    "known_gap": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["gap", "severity", "owner"],
+      "properties": {
+        "gap": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "next_action": { "type": "string", "minLength": 1 },
+        "accepted_reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

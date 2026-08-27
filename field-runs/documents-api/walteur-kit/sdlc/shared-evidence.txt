@@ -1,0 +1,1 @@
+shared-dev evidence — node --test test/**/*.test.mjs = 17/17 green over the HTTP surface.

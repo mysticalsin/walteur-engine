@@ -1,0 +1,8 @@
+{"ts":"2026-06-29T05:37:30.808Z","level":"info","event":"listening","port":8197,"pid":26756,"data_file":"data.live.json"}
+{"ts":"2026-06-29T05:37:31.331Z","level":"info","method":"GET","path":"/health","status":200,"tenant":"-","ms":0.972}
+{"ts":"2026-06-29T05:37:31.350Z","level":"info","method":"POST","path":"/docs","status":201,"tenant":"tenantA","ms":1.051,"authorization":"***"}
+{"ts":"2026-06-29T05:37:31.505Z","level":"warn","method":"GET","path":"/docs/doc_fcb7c6c880d72878f7","status":404,"tenant":"tenantB","ms":0.244,"authorization":"***"}
+{"ts":"2026-06-29T05:37:31.617Z","level":"warn","method":"DELETE","path":"/docs/doc_fcb7c6c880d72878f7","status":403,"tenant":"tenantB","ms":0.29,"authorization":"***"}
+{"ts":"2026-06-29T05:37:31.645Z","level":"warn","method":"PUT","path":"/docs/doc_fcb7c6c880d72878f7","status":403,"tenant":"tenantB","ms":0.3,"authorization":"***"}
+{"ts":"2026-06-29T05:37:31.661Z","level":"warn","method":"GET","path":"/docs","status":401,"tenant":"-","ms":0.15}
+{"ts":"2026-06-29T05:37:31.740Z","level":"info","method":"GET","path":"/docs/doc_fcb7c6c880d72878f7","status":200,"tenant":"tenantA","ms":0.121,"authorization":"***"}

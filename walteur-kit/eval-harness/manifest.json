@@ -1,0 +1,224 @@
+[
+  {
+    "fixture": "slop-code",
+    "gate": "anti-slop-code-gate.sh",
+    "expect": "FAIL",
+    "note": "TODO/placeholder/stub/as-any in production source — must be caught"
+  },
+  {
+    "fixture": "clean-code",
+    "gate": "anti-slop-code-gate.sh",
+    "expect": "PASS",
+    "note": "clean production-code twin — must not false-fire"
+  },
+  {
+    "fixture": "slop-ui",
+    "gate": "anti-slop-ui.sh",
+    "expect": "FAIL",
+    "note": "gradient-text/raw-hex/lorem/fake-data UI slop — must be caught"
+  },
+  {
+    "fixture": "clean-ui",
+    "gate": "anti-slop-ui.sh",
+    "expect": "PASS",
+    "note": "sleek token-driven UI twin — must not false-fire"
+  },
+  {
+    "fixture": "malware-pkg",
+    "gate": "supply-chain-gate.sh",
+    "expect": "FAIL",
+    "note": "malicious install-lifecycle script (Shai-Hulud class) — must be caught"
+  },
+  {
+    "fixture": "clean-pkg",
+    "gate": "supply-chain-gate.sh",
+    "expect": "PASS",
+    "note": "clean hash-pinned lockfile twin — must not false-fire"
+  },
+  {
+    "fixture": "insecure-ci",
+    "gate": "ci-hardening-gate.sh",
+    "expect": "FAIL",
+    "note": "mutable-tag action / static keys / broad permissions — must be caught"
+  },
+  {
+    "fixture": "tautology-tests",
+    "gate": "anti-reward-hack-gate.sh",
+    "expect": "FAIL",
+    "note": "always-pass tautological tests gaming coverage — must be caught"
+  },
+  {
+    "fixture": "real-tests",
+    "gate": "anti-reward-hack-gate.sh",
+    "expect": "PASS",
+    "note": "genuine-assertion twin — must not false-fire"
+  },
+  {
+    "fixture": "unvalidated-llm",
+    "gate": "structured-output-gate.sh",
+    "expect": "FAIL",
+    "note": "unparsed/unvalidated LLM output consumed — must be caught"
+  },
+  {
+    "fixture": "plain-cli",
+    "gate": "anti-slop-code-gate.sh",
+    "expect": "PASS",
+    "note": "plain clean CLI baseline — must not false-fire"
+  },
+  {
+    "fixture": "playbook-fresh",
+    "gate": "memory-staleness-gate.sh",
+    "expect": "PASS",
+    "note": "clean playbook.jsonl, all entries future-dated — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "playbook-stale",
+    "gate": "memory-staleness-gate.sh",
+    "expect": "FAIL",
+    "note": "one entry with a past valid_until among otherwise-fresh entries — must be caught (verified: exit 2)"
+  },
+  {
+    "fixture": "agentsec-clean",
+    "gate": "agent-security-gate.sh",
+    "expect": "PASS",
+    "note": "agent surface + good agent-security.json; admin token used only as a tool-call credential, never in a prompt — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "agentsec-poisoned",
+    "gate": "agent-security-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin of agentsec-clean; ADMIN_API_TOKEN is interpolated into the system-prompt template literal (OWASP LLM/Agentic secret-in-prompt) — caught by the ACTIVE scan even though agent-security.json declares no_secret_in_prompt:true (verified: exit 2)"
+  },
+  {
+    "fixture": "spec-clean",
+    "gate": "spec-gate.sh",
+    "expect": "PASS",
+    "note": "realistic 4-FR tenant-rate-limiter spec+constitution+plan, every FR-### traced into PLAN.md — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "spec-poisoned",
+    "gate": "spec-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin of spec-clean; PLAN.md drops the FR-104 task (spec grew a requirement, plan never caught up) — genuinely untraced FR-### must be caught (verified: exit 2)"
+  },
+  {
+    "fixture": "secbase-clean",
+    "gate": "security-baseline-gate.sh",
+    "expect": "PASS",
+    "note": "multi-tenant schema WITH ENABLE ROW LEVEL SECURITY + a real isolating policy (not USING(true)) — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "secbase-poisoned",
+    "gate": "security-baseline-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin; tenant tables with no RLS DDL anywhere, while security-baseline.json attests rls:verified — the ACTIVE scan must override the false attestation (verified: exit 2)"
+  },
+  {
+    "fixture": "cve-clean",
+    "gate": "cve-gate.sh",
+    "expect": "PASS",
+    "note": "vulnerable dep removed and its usage replaced, scan reports zero vulnerabilities — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "cve-poisoned",
+    "gate": "cve-gate.sh",
+    "expect": "FAIL",
+    "note": "open unexcepted CRITICAL CVE against a dep that is actually declared in the lockfile and actually used in source — must be caught (verified: exit 2). NOTE: cve-gate fails closed on scan freshness (scanned_at older than 14 days), so both twins' scanned_at must be re-dated periodically — see README"
+  },
+  {
+    "fixture": "xtenant-clean",
+    "gate": "cross-tenant-probe-gate.sh",
+    "expect": "PASS",
+    "note": "invoice lookup scoped by tenant_id, cross-tenant read returns 403 — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "xtenant-poisoned",
+    "gate": "cross-tenant-probe-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin differing in exactly one file; lookup matches on invoice id only and never checks tenant_id — the classic cross-tenant read leak, must be caught (verified: exit 2)"
+  },
+  {
+    "fixture": "secrot-clean",
+    "gate": "secret-rotation-gate.sh",
+    "expect": "PASS",
+    "note": "credential read from process.env, rotation policy fresh — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "secrot-poisoned",
+    "gate": "secret-rotation-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin; hardcoded AWS key literal (AWS's own always-invalid documentation example key) committed in source — must be caught (verified: exit 2). NOTE: scan freshness window is 7 days — see README"
+  },
+  {
+    "fixture": "testclaim-clean",
+    "gate": "test-claim-verifier-gate.sh",
+    "expect": "PASS",
+    "note": "qa-report claims PASS and the recorded command genuinely reproduces green — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "testclaim-poisoned",
+    "gate": "test-claim-verifier-gate.sh",
+    "expect": "FAIL",
+    "note": "near-identical twin with a real one-line bug; qa-report claims tests PASS but the recorded command really exits 1 — the agent-lied-about-green failure mode, must be caught (verified: exit 2)"
+  },
+  {
+    "fixture": "mutation-clean",
+    "gate": "mutation-gate.sh",
+    "expect": "PASS",
+    "note": "internally-consistent Stryker-shaped report, score 92 >= 80 — must not false-fire (verified: exit 0)"
+  },
+  {
+    "fixture": "mutation-poisoned",
+    "gate": "mutation-gate.sh",
+    "expect": "FAIL",
+    "note": "internally-consistent report with score 65 < 80 — fails on the honest score path, not on the shape/authenticity checks (verified: exit 2)"
+  },
+  {
+    "fixture": "slop-in-excluded",
+    "gate": "anti-slop-code-gate.sh",
+    "expect": "PASS",
+    "note": "clean production source whose ONLY slop lives in excluded dirs (node_modules/, vendor/) — must not false-fire, and KILLS the unexclude mutant: dropping the gate exclusions makes it scan those dirs and fail"
+  },
+  {
+    "fixture": "reward-hack-in-excluded",
+    "gate": "anti-reward-hack-gate.sh",
+    "expect": "PASS",
+    "why": "a tautological test inside vendor/ must stay OUT of scope; kills the unexclude mutant"
+  },
+  {
+    "fixture": "xtenant-in-excluded",
+    "gate": "cross-tenant-probe-gate.sh",
+    "expect": "PASS",
+    "why": "tenant_id only inside node_modules/ must not make the gate applicable; kills the unexclude mutant"
+  },
+  {
+    "fixture": "secbase-in-excluded",
+    "gate": "security-baseline-gate.sh",
+    "expect": "PASS",
+    "why": "a USING(true) RLS policy inside node_modules/ must stay OUT of scope; kills the unexclude mutant"
+  },
+  {
+    "fixture": "cve-at-window-edge",
+    "gate": "cve-gate.sh",
+    "expect": "PASS",
+    "why": "scan aged EXACTLY 14 days sits on the freshness threshold; kills the boundary mutant"
+  },
+  {
+    "fixture": "mem-expires-today",
+    "gate": "memory-staleness-gate.sh",
+    "expect": "PASS",
+    "why": "valid_until == today sits on the staleness threshold; kills the boundary mutant"
+  },
+  {
+    "fixture": "regcontract-clean",
+    "gate": "registry-report-contract-gate.sh",
+    "expect": "PASS",
+    "why": "registry names the exact report path the hook writes"
+  },
+  {
+    "fixture": "regcontract-poisoned",
+    "gate": "registry-report-contract-gate.sh",
+    "expect": "FAIL",
+    "why": "registry names demo-gate-report.json while the hook writes demo-report.json — the unobservable-gate shape found live in 3 of 148 gates"
+  }
+]

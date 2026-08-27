@@ -1,0 +1,3 @@
+blocker: walteur-kit/integrator/ship-audit-r6.last.txt is the highest-round receipt and its last line is VERDICT: REVISE, so integrator-audit-gate would refuse ship; older r5/r4 SHIP receipts cannot override the higher round.
+risk: walteur-kit/release-ledger-report.json remains FAIL only on the disclosed aggregate-report residual from selftest-report.json FAIL 238/5/0 and the five OneDrive-unreadable eval scripts.
+VERDICT: REVISE

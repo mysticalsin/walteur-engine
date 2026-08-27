@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: retention — retention — key records persist until revoked + erased; a tenant can self-erase all of its data via POST /admin/erase (DSAR). Issued-key rotation cadence is governed by ops/secrets-policy.json (90d).

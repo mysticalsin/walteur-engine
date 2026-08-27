@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: scan — PII scan — no PII beyond an opaque tenantId and a key label; no names/emails/identifiers stored. Scan finds no special-category data.

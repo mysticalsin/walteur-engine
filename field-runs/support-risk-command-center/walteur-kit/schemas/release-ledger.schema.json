@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/release-ledger.schema.json",
+  "title": "WALTEUR Release Ledger",
+  "description": "Machine-readable release truth for WALTEUR distribution version, proof counts, source-count claims, mirrored docs, and component manifest IDs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_id",
+    "updated_at",
+    "policy",
+    "current_version",
+    "aggregate_proof",
+    "aggregate_history",
+    "source_manifest",
+    "scaffold_proof",
+    "registry",
+    "required_strings",
+    "mirrored_pairs",
+    "proof_claim_paths",
+    "source_claim_paths",
+    "component_manifests"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "ledger_id": { "type": "string", "minLength": 1 },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "policy": { "type": "string", "minLength": 30 },
+    "current_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "aggregate_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_path", "expected_passed", "expected_failed", "expected_skipped"],
+      "properties": {
+        "report_path": { "type": "string", "minLength": 1 },
+        "expected_passed": { "type": "integer", "minimum": 1 },
+        "expected_failed": { "type": "integer", "const": 0 },
+        "expected_skipped": { "type": "integer", "const": 0 }
+      }
+    },
+    "aggregate_history": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "expected_passed", "expected_failed", "expected_skipped"],
+        "properties": {
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+$"
+          },
+          "expected_passed": { "type": "integer", "minimum": 1 },
+          "expected_failed": { "type": "integer", "const": 0 },
+          "expected_skipped": { "type": "integer", "const": 0 }
+        }
+      }
+    },
+    "source_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "expected_source_count", "required_source_id"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "expected_source_count": { "type": "integer", "minimum": 1 },
+        "required_source_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      }
+    },
+    "scaffold_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selftest_label", "expected_passed"],
+      "properties": {
+        "selftest_label": { "type": "string", "pattern": "^[0-9]+/[0-9]+$" },
+        "expected_passed": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "expected_gate_count", "required_gate_id"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "expected_gate_count": { "type": "integer", "minimum": 1 },
+        "required_gate_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "required_strings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "contains"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "contains": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "mirrored_pairs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["left", "right"],
+        "properties": {
+          "left": { "type": "string", "minLength": 1 },
+          "right": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "proof_claim_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "source_claim_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "component_manifests": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "field", "expected"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "field": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+          "expected": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

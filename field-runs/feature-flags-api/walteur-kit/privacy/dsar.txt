@@ -1,0 +1,1 @@
+feature-flags privacy evidence: dsar — right-to-erasure via POST /admin/erase -> core.eraseTenant; returns count erased; tenant-scoped. Proven by test/erasure.test.mjs (2/2).

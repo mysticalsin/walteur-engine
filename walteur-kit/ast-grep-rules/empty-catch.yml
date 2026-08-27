@@ -1,0 +1,29 @@
+# R-AST-1 (python arm)  EMPTY EXCEPT whose body is only `pass` — a swallowed error.
+# Upgrades resilience-lint.sh R1 (awk indent heuristic) to a real tree-sitter AST proof.
+# VERIFIED against ast-grep 0.42.x: except_clause > block; matched/non-matched proven by the
+# good/POISONED twin fixture in ../ast-grep-tests/empty-catch-test.yml (ast-grep test).
+# EXACT for `except[...]: pass`. (`except: ...` Ellipsis-only is intentionally NOT covered — it is an
+# expression_statement and excluding it cleanly needs more than this rule expresses; rare in practice.)
+id: walteur-empty-catch-py
+language: python
+severity: error
+message: "Empty except: body is only `pass` — a swallowed error. Handle, re-raise, or log with context."
+note: "WALTEUR R1 (AST-exact). A bare-pass except hides failures. If intentional, narrow the exception and add a comment explaining why it is safe to ignore."
+rule:
+  kind: except_clause
+  has:
+    kind: block
+    all:
+      - has: { kind: pass_statement }
+      - not:
+          has:
+            stopBy: end
+            any:
+              - { kind: expression_statement }
+              - { kind: return_statement }
+              - { kind: raise_statement }
+              - { kind: if_statement }
+              - { kind: for_statement }
+              - { kind: while_statement }
+              - { kind: assignment }
+              - { kind: call }

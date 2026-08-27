@@ -1,0 +1,1 @@
+multitenant-tasks privacy evidence: encrypt-rest — DSAR erasure in core.mjs eraseTenant(); proven by core.test.mjs.

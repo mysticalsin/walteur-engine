@@ -1,0 +1,13 @@
+{
+  "name": "mutation-gate-poisoned-fixture",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:mutation": "stryker run"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "@stryker-mutator/core": "^8.0.0",
+    "@stryker-mutator/jest-runner": "^8.0.0"
+  }
+}

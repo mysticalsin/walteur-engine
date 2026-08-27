@@ -1,0 +1,1 @@
+apikeys-vault SDLC evidence: local-evidence — node --test core.test.mjs + test/ = 38/38 green (14 core + 12 api + 6 cross-tenant + 4 rotation + 2 erasure); core.mjs owned() chokepoint; rotate changes the stored hash; raw key never stored. Proven by execution.

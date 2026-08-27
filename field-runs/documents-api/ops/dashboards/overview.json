@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "dashboard": "documents-api-overview",
+  "service": "documents-api",
+  "source": "structured JSON request logs from server.mjs (Authorization/token redacted to ***)",
+  "panels": [
+    {
+      "id": "status-mix",
+      "title": "Request status mix",
+      "query": "count(requests) by status",
+      "note": "401/403 are EXPECTED deny-by-default outcomes; only rising 5xx burns the availability budget."
+    },
+    {
+      "id": "latency",
+      "title": "Latency p50/p99",
+      "query": "percentile(ms, [50,99]) by path",
+      "paths": ["/docs", "/docs/:id", "/audit", "/admin/erase"]
+    },
+    {
+      "id": "tenant-activity",
+      "title": "Mutations per tenant",
+      "query": "count(method in [POST,PUT,DELETE]) by tenant",
+      "note": "Never exposes another tenant's document contents."
+    },
+    {
+      "id": "erase-events",
+      "title": "DSAR erase executions",
+      "query": "count(path=/admin/erase and status=200)"
+    }
+  ],
+  "linked_slo": "ops/slo.json",
+  "runbook": "ops/dashboards.md#on-call-runbook-per-alert"
+}

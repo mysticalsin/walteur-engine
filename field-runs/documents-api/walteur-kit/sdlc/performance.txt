@@ -1,0 +1,1 @@
+performance — in-memory per-tenant Map; sub-ms request handling observed in the structured logs during the live run.

@@ -1,0 +1,1 @@
+build — zero-build: ES modules run directly on node v24; package.json type:module, scripts start/test.

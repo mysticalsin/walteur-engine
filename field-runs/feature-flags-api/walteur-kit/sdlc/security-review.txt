@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: security-review — constant-time compare, env-only secrets, redacted logs, 401/403/404 deny verified by curl + tests.

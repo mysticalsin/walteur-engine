@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: accessibility — accessibility: public/index.html uses real <form>s, <label>s, aria-live status, role=alert one-time-secret box, focus-visible outlines, reduced-motion guard.

@@ -1,0 +1,1 @@
+local-gate: node --test tests/risk.test.mjs tests/view.test.mjs OBSERVED exit 0 (6/6).

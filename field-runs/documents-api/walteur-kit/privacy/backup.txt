@@ -1,0 +1,1 @@
+documents-api privacy evidence: backup — backup deletion policy — the only on-disk copy is data.json, rewritten atomically on each mutation; an erase removes the tenant from the next snapshot. No separate backup store retains erased data.

@@ -1,0 +1,1 @@
+TDD: tests authored before/with src (risk.test.mjs, view.test.mjs). node --test -> 6/6 pass, exit 0. See test-output.txt.

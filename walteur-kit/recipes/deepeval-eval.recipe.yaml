@@ -1,0 +1,159 @@
+# WALTEUR recipe — evaluate LLM/agent output quality with deepeval.
+# Validates against walteur-kit/schemas/recipe.schema.json. Interpreted by walteur.js (NO goose).
+# Run:   node .claude/workflows/walteur.js run walteur-kit/recipes/deepeval-eval.recipe.yaml \
+#          --param test_file=tests/eval_output_quality.py --param output_dir=walteur-kit/eval/deepeval-results
+#
+# NOTE: deepeval login is NOT required.
+#   Set DEEPEVAL_TELEMETRY_OPT_OUT=YES and use local mode only.
+#   DEEPEVAL_RESULTS_FOLDER is the evidence path prove-pillar (§ A/B benchmark) cites.
+#
+# This recipe rides the EXISTING pytest verification gate — a failing deepeval metric
+# assertion IS a failing test. No new runner, no new hook required.
+version: "1.0.0"
+title: Evaluate LLM output quality with deepeval
+description: >-
+  Run a pytest file whose test cases use deepeval metrics (GEval, FaithfulnessMetric,
+  HallucinationMetric, TaskCompletionMetric) to assert LLM/agent output quality.
+  Deepeval rides the existing pytest verification gate — a failing metric assertion IS a
+  failing test. Results land in DEEPEVAL_RESULTS_FOLDER so the prove-pillar evidence path
+  can cite them. No deepeval login, no telemetry, local mode only.
+
+author:
+  contact: you@example.com
+  metadata: WALTEUR deepeval eval recipe — Task D
+
+parameters:
+  - key: test_file
+    type: string
+    requirement: required
+    description: >-
+      Repo-relative (or absolute) path to the pytest file containing deepeval assertions,
+      e.g. 'tests/eval_output_quality.py'. The file must import deepeval and use assert_test().
+
+  - key: output_dir
+    type: string
+    requirement: optional
+    default: walteur-kit/eval/deepeval-results
+    description: >-
+      Directory where deepeval writes its JSON results. Becomes DEEPEVAL_RESULTS_FOLDER.
+      This is the evidence path prove-pillar (§ A/B benchmark) cites when verifying
+      output-quality pillars. Created if absent.
+
+  - key: model
+    type: string
+    requirement: optional
+    default: claude-sonnet-4-6
+    description: >-
+      LLM used as the deepeval judge inside metric scoring (GEval, FaithfulnessMetric, etc.).
+      Passed as the `model` argument to deepeval metrics. Defaults to claude-sonnet-4-6.
+      Only relevant for metrics that call an LLM judge; deterministic metrics ignore it.
+
+instructions: >-
+  You are a WALTEUR eval agent. Honor the discipline: simplest thing that works,
+  minimal blast radius, no swallowed errors.
+
+  IMPORTANT — this recipe adds no new runner and no new hook. It runs the pytest file at
+  {{ test_file }} under the EXISTING pytest verification gate. A deepeval assertion that
+  fails is a pytest test failure; pytest exit code drives the verdict. Do not invent a
+  second runner.
+
+  Before running:
+  1. Ensure {{ output_dir }} exists (mkdir -p). This is DEEPEVAL_RESULTS_FOLDER.
+  2. Set DEEPEVAL_TELEMETRY_OPT_OUT=YES (mandatory — no network call, no login).
+  3. Set DEEPEVAL_RESULTS_FOLDER={{ output_dir }}.
+  4. Run: pytest {{ test_file }} --tb=short -q
+
+  Parse pytest's exit summary to populate the response schema. Never mark verdict=pass
+  if any test failed. Absence of result files in DEEPEVAL_RESULTS_FOLDER is NOT-FOUND,
+  not proven-clean — report it as a caveat, not a pass.
+
+  Label your report HARD vs PROTOCOL:
+  - pytest exit code is HARD (blocks).
+  - LLM-judge scores inside deepeval metrics are PROTOCOL (inform; do not self-certify).
+
+prompt: >-
+  Run deepeval assertions in "{{ test_file }}" using pytest.
+
+  Steps:
+  1. mkdir -p "{{ output_dir }}"
+  2. Set env: DEEPEVAL_TELEMETRY_OPT_OUT=YES, DEEPEVAL_RESULTS_FOLDER={{ output_dir }}
+  3. Run: pytest "{{ test_file }}" --tb=short -q
+  4. Parse output: count tests run, passed, failed.
+  5. Verify that result files appeared in {{ output_dir }}; note their paths.
+
+  The judge model for GEval / FaithfulnessMetric / HallucinationMetric / TaskCompletionMetric
+  is: {{ model }}
+
+  A deepeval metric that scores below its threshold FAILS the test. Treat it as any other
+  pytest failure — do not rationalize it away.
+
+  Return the structured result. Do not modify {{ test_file }} or add tests that were not
+  already there.
+
+  Example deepeval pytest pattern (for reference — do not rewrite the file):
+
+    from deepeval import assert_test
+    from deepeval.metrics import GEval
+    from deepeval.test_case import LLMTestCase, LLMTestCaseParams
+
+    def test_output_quality():
+        metric = GEval(
+            name="Correctness",
+            criteria="Output correctly answers the question without hallucination",
+            evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
+            threshold=0.7,
+        )
+        test_case = LLMTestCase(
+            input="...",
+            actual_output="...",   # the agent's answer
+            expected_output="...",
+        )
+        assert_test(test_case, [metric])
+
+response:
+  json_schema:
+    type: object
+    additionalProperties: false
+    required:
+      - tests_run
+      - tests_passed
+      - tests_failed
+      - results_folder
+      - verdict
+    properties:
+      tests_run:
+        type: integer
+        description: total pytest test items collected and executed
+      tests_passed:
+        type: integer
+        description: test items that passed (exit 0, all assertions met)
+      tests_failed:
+        type: integer
+        description: test items that failed (deepeval threshold not met or other assertion error)
+      results_folder:
+        type: string
+        description: >-
+          Absolute or repo-relative path to DEEPEVAL_RESULTS_FOLDER where result JSON files
+          landed. This is the evidence path prove-pillar cites.
+      verdict:
+        type: string
+        enum:
+          - pass
+          - fail
+          - skip
+        description: >-
+          pass = all tests passed; fail = one or more tests failed; skip = pytest could
+          not run (missing deps, file not found, deepeval not installed — LOUD SKIP, never
+          silent-green).
+      notes:
+        type: string
+        description: any caveats, contamination notices, or missing-result warnings
+
+settings:
+  model: claude-sonnet-4-6
+  temperature: 0.0    # deterministic eval — no creative variance in the runner
+  max_turns: 10
+  retry:
+    max_attempts: 2
+    on_failure: abort
+    checkpoint: "[ -d \"$DEEPEVAL_RESULTS_FOLDER\" ]"   # self-validating: results dir must exist

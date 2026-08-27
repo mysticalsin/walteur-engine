@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: qa — QA: live curl scenario on port 8209 — health 200, no-token 401, A create 201 (secret once), B GET 404 / DELETE 403 / rotate 403, A intact 200, wrong-token 401, data.json zero raw secrets.

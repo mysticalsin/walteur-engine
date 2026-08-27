@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: monitoring — monitoring: structured JSON logs (token+secret-redacted) feed ops/dashboards/overview.json panels (request/deny/error/latency/per-tenant-mutations). No live sink wired in this field app (honest gap).

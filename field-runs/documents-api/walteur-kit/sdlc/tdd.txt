@@ -1,0 +1,1 @@
+TDD — core.test.mjs and the HTTP test/ suite were written to assert the deny-by-default + erasure + audit invariants; the implementation is validated by them, not by self-assertion.

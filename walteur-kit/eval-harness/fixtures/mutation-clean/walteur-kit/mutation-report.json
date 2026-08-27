@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "tool": "stryker",
+  "thresholds": {"high": 80, "low": 60, "break": 50},
+  "score": 92,
+  "mutationScore": 92,
+  "metrics": {
+    "totalMutants": 25,
+    "killed": 23,
+    "survived": 2,
+    "timeout": 0,
+    "noCoverage": 0,
+    "ignored": 0,
+    "compileErrors": 0
+  },
+  "files": {
+    "src/discount.js": {
+      "mutants": 25,
+      "killed": 23,
+      "survived": 2,
+      "metrics": {"mutationScore": 92}
+    }
+  }
+}

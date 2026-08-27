@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: audit — audit — core.mjs auto-audits every create/rotate/revoke (ts, tenantId, action, key id); reads are not audited; a denied cross-tenant action writes NO row; raw key material is never recorded.

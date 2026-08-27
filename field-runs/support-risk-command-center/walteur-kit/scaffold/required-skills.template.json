@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "_comment": "Fresh harness scaffold: no required skills selected yet. PLAN must add required:true skills when the build context needs them.",
+  "skills": []
+}

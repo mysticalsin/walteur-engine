@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/skill-receipt.schema.json",
+  "title": "WALTEUR Skill Receipt",
+  "description": "Content-bound breadcrumb proving a required skill actually fired: it names when it fired, in what phase, which on-disk artifact(s) it produced or touched, and a non-trivial summary of what the discipline concluded. Replaces existence-only breadcrumbs (file present == PASS), which are forgeable with an empty or garbage file.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["skill", "fired_at", "phase", "artifacts", "summary"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "skill": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Skill id, matching the 'skill' field in required-skills.json / skill-routing.json."
+    },
+    "fired_at": {
+      "type": "string",
+      "description": "ISO-8601 UTC timestamp (e.g. 2026-07-01T12:00:00Z) marking when the skill ran and produced this receipt.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "phase": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Build phase the skill fired in (e.g. Plan, Build, Review, Ship). Should be a phase the skill is affine to."
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Repo-relative paths to file(s) that must exist on disk as evidence the discipline actually touched something concrete.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 40,
+      "description": "What the discipline concluded — not a placeholder. Must be at least 40 characters of substantive content."
+    },
+    "verdict": {
+      "type": "string",
+      "description": "Optional verdict string (e.g. PASS/FAIL/NOTED). When a manifest entry declares breadcrumb_verdict_key/breadcrumb_pass_value, that key/value pair is checked instead of this field."
+    }
+  }
+}

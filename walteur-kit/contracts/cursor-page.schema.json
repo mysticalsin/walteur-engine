@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/contracts/cursor-page.schema.json",
+  "title": "WALTEUR Cursor-Paginated Collection Response",
+  "description": "Canonical envelope for every collection (list) endpoint a WALTEUR API exposes. Cursor pagination (a.k.a. keyset pagination) is mandated over offset/limit because offset pagination drifts, skips, and duplicates rows under concurrent writes and degrades O(n) on deep pages. The contract: a 'data' array of items, plus a 'page' object whose 'next_cursor' is an OPAQUE, server-minted token. Clients MUST treat the cursor as a black box (never parse, construct, or mutate it) and pass it back verbatim as the 'cursor' query parameter to fetch the next page. 'has_more' is the authoritative end-of-collection signal — a null 'next_cursor' AND has_more=false means the collection is exhausted. CONSTRAINT (enforced via allOf): when has_more is true, next_cursor MUST be a non-null string; when has_more is false, next_cursor MUST be null.",
+  "type": "object",
+  "required": [
+    "data",
+    "page"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "The page of items. Each item's shape is defined by the specific endpoint; this contract only governs the envelope, not the element schema. Order MUST be stable and total across pages (the same sort key the cursor encodes), so concatenating pages yields a consistent sequence.",
+      "items": {}
+    },
+    "page": {
+      "type": "object",
+      "description": "Pagination metadata. The ONLY supported forward-paging mechanism is next_cursor + has_more.",
+      "required": [
+        "has_more"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "OPAQUE, server-minted continuation token. Pass it verbatim as the 'cursor' query parameter to retrieve the next page. null iff there is no next page. Clients MUST NOT decode, parse, persist semantics from, or construct this value — its internal structure (e.g. base64-encoded keyset) is an implementation detail that may change without notice.",
+          "minLength": 1
+        },
+        "prev_cursor": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "OPTIONAL opaque token for backward paging on endpoints that support it. null when there is no previous page or backward paging is unsupported. Same opacity rule as next_cursor.",
+          "minLength": 1
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "Authoritative signal: true iff at least one more page exists after this one. Clients MUST loop on has_more, NOT on the presence of next_cursor alone, to avoid an off-by-one fetch."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "The page size actually applied by the server (which MAY be smaller than a requested page size that exceeded the server cap). Echoed so clients can detect clamping.",
+          "minimum": 1
+        },
+        "total_estimate": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "OPTIONAL APPROXIMATE total count of items in the full collection. Explicitly an estimate — exact counts are deliberately NOT guaranteed under cursor pagination because an exact COUNT defeats the performance rationale for keyset paging. null when the server declines to estimate.",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "has_more=true REQUIRES a non-null next_cursor (there must be something to continue from).",
+      "if": {
+        "properties": {
+          "page": {
+            "properties": {
+              "has_more": {
+                "const": true
+              }
+            },
+            "required": [
+              "has_more"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ]
+      },
+      "then": {
+        "properties": {
+          "page": {
+            "properties": {
+              "next_cursor": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "next_cursor"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "$comment": "has_more=false REQUIRES next_cursor to be null (the collection is exhausted).",
+      "if": {
+        "properties": {
+          "page": {
+            "properties": {
+              "has_more": {
+                "const": false
+              }
+            },
+            "required": [
+              "has_more"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ]
+      },
+      "then": {
+        "properties": {
+          "page": {
+            "properties": {
+              "next_cursor": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "next_cursor"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "data": [
+        { "id": "u_1", "name": "Ada" },
+        { "id": "u_2", "name": "Grace" }
+      ],
+      "page": {
+        "next_cursor": "eyJpZCI6InVfMiJ9",
+        "has_more": true,
+        "limit": 2,
+        "total_estimate": 1284
+      }
+    },
+    {
+      "data": [
+        { "id": "u_3", "name": "Katherine" }
+      ],
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "limit": 2,
+        "total_estimate": 1284
+      }
+    }
+  ]
+}

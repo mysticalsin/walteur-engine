@@ -1,0 +1,1 @@
+apikeys-vault authz evidence: role-matrix — role/permission matrix — every tenant has exactly one role: OWNER of its own keys. No cross-tenant role exists. The only privileged op is POST /admin/erase, scoped to the caller's OWN tenant.

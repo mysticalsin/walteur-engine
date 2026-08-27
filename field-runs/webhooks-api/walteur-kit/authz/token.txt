@@ -1,0 +1,1 @@
+webhooks-api authz evidence: token — tenant auth tokens are env-injected (WALTEUR_TENANT_TOKENS) only — zero committed values; webhook signing secrets are minted in-process and never persisted raw. See ops/secrets-policy.json.

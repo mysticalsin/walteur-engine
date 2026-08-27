@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: logging — logging redaction: server.mjs logLine REDACTS authorization/token/bearer/secret fields to "***"; neither auth token nor signing secret can reach a log sink. Proven by structured-log inspection.

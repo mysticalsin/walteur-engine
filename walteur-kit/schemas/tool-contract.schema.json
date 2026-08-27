@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://walteur.dev/schemas/tool-contract.schema.json",
+  "title": "WALTEUR Agent Tool Contract",
+  "description": "Per-tool contract for an agent-callable tool. Every tool the agent can invoke MUST declare a typed input/output, its side-effect class, idempotency, an error taxonomy, and whether a human/oversight gate is required. CONSTRAINT: write_irreversible and external_money side effects REQUIRE oversight_gate=true.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "input",
+    "output",
+    "side_effect_class",
+    "idempotent",
+    "error_taxonomy",
+    "oversight_gate"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Stable, unique tool identifier the agent calls.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]*$"
+    },
+    "input": {
+      "$ref": "https://json-schema.org/draft/2020-12/schema",
+      "description": "JSON Schema describing the tool's input arguments."
+    },
+    "output": {
+      "$ref": "https://json-schema.org/draft/2020-12/schema",
+      "description": "JSON Schema describing the tool's successful output."
+    },
+    "side_effect_class": {
+      "type": "string",
+      "description": "Blast radius of invoking this tool. read = no external mutation; write_undoable = mutation with a known compensating action; write_irreversible = mutation with no rollback; external_money = moves money or incurs unrecoverable cost.",
+      "enum": [
+        "read",
+        "write_undoable",
+        "write_irreversible",
+        "external_money"
+      ]
+    },
+    "idempotent": {
+      "type": "boolean",
+      "description": "True iff calling the tool more than once with identical input has the same effect as calling it once."
+    },
+    "error_taxonomy": {
+      "type": "array",
+      "description": "Enumerated, named failure modes the caller must be able to handle.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable machine-readable error code, e.g. RATE_LIMITED, NOT_FOUND, PERMISSION_DENIED."
+          },
+          "retryable": {
+            "type": "boolean",
+            "description": "Whether the caller may safely retry on this error."
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable explanation of when this error fires."
+          }
+        }
+      }
+    },
+    "oversight_gate": {
+      "type": "boolean",
+      "description": "True iff a human (or higher-authority gate) must approve before the tool executes."
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "write_irreversible REQUIRES oversight_gate=true.",
+      "if": {
+        "properties": {
+          "side_effect_class": { "const": "write_irreversible" }
+        },
+        "required": ["side_effect_class"]
+      },
+      "then": {
+        "properties": {
+          "oversight_gate": { "const": true }
+        },
+        "required": ["oversight_gate"]
+      }
+    },
+    {
+      "$comment": "external_money REQUIRES oversight_gate=true.",
+      "if": {
+        "properties": {
+          "side_effect_class": { "const": "external_money" }
+        },
+        "required": ["side_effect_class"]
+      },
+      "then": {
+        "properties": {
+          "oversight_gate": { "const": true }
+        },
+        "required": ["oversight_gate"]
+      }
+    }
+  ]
+}

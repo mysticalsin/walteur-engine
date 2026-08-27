@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: deletion — deletion path — DELETE /keys/:id revokes (soft, audit-preserving); POST /admin/erase hard-erases ALL of the caller tenant's key records AND audit rows from the in-memory store + next persist.

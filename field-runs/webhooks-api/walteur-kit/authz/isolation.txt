@@ -1,0 +1,1 @@
+webhooks-api authz evidence: isolation — isolation invariant across many tenants/ids: no cross-tenant read/delete/update ever succeeds. Proven by core.test.mjs isolation-invariant test + live curl (B GET=404, DELETE/rotate=403).

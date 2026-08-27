@@ -1,0 +1,1 @@
+documents-api privacy evidence: transfer — third-country transfer — none; no data leaves the host process except the response to the owning tenant.

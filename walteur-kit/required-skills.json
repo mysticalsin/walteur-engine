@@ -1,0 +1,13 @@
+{
+  "_comment": "WALTEUR required-skills manifest (v9.2). Consumed by skill-readiness.sh at ship time.",
+  "_doc": "required:true -> fail-closed if breadcrumb absent. required:false -> advisory only, never blocks.",
+  "skills": [
+    {
+      "skill": "org-confidentiality-guard",
+      "required": true,
+      "breadcrumb": "walteur-kit/confidentiality-pass.json",
+      "discipline": "security",
+      "description": "Confidentiality scan must run and write a PASS stamp before any external-facing output ships."
+    }
+  ]
+}

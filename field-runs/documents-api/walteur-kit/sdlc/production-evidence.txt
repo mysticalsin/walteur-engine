@@ -1,0 +1,1 @@
+production evidence — health 200 live; structured token-redacted logs; SLOs + alerts defined in ops/slo.json.

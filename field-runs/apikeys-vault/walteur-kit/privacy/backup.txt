@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: backup — backup deletion policy — the only persistence is data.json (hashes only, atomic tmp+rename). An erase rewrites the snapshot on the next mutation; there is no separate backup store retaining erased records.

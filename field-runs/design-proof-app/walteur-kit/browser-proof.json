@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "run_date": "2026-07-04",
+  "tool": "playwright-mcp (chromium)",
+  "command": "npm run build && python3 -m http.server 8141 (dist) && playwright navigate/resize 1440x900/snapshot/screenshot/click",
+  "command_output_ref": "walteur-kit/browser/command.txt",
+  "target_url": "http://localhost:8141/",
+  "note": "Re-generated after panel #5 flagged a stale a11y snapshot + a viewport/width mismatch in the prior bundle. All three evidence files are now captured in one Cadence render at viewport 1440x900; the screenshot is 1440x1160 (full page, width == viewport). evidence_must_contain lets browser-proof-gate assert the cited a11y tree is really Cadence.",
+  "routes": [
+    {
+      "path": "/",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "status": "PASS",
+      "screenshot_ref": "walteur-kit/browser/screenshots/home.png",
+      "accessibility_ref": "walteur-kit/browser/a11y/home.txt",
+      "interaction_ref": "walteur-kit/browser/interactions/home.txt",
+      "evidence_must_contain": ["Cadence", "25:00", "Deep Work", "Focus timer"],
+      "id": "home"
+    }
+  ]
+}

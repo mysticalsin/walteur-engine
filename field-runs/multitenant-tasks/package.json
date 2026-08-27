@@ -1,0 +1,14 @@
+{
+  "name": "multitenant-tasks",
+  "version": "1.0.0",
+  "description": "Deny-by-default multi-tenant task store with an HTTP surface over core.mjs. Node built-ins only, zero deps.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

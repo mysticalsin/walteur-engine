@@ -1,0 +1,1 @@
+e2e — live server on PORT 8203: GET /health 200, no-token 401, A issues key, B GET 404 / rotate 403 / revoke 403, A rotate changes hash. Observed.

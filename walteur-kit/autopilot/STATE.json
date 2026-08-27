@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "run_id": "harness-100-wave-1",
+  "goal": "harness-100 wave-1: close the top-3 baseline-panel gaps (memory 4.8/10, design 4.2/10, code dead-gate drift) \u2014 see _agent_state/org-goal/goal-2026-07-03-harness-100.json",
+  "build_class": "software",
+  "risk_tier": "medium",
+  "phase": "build",
+  "autonomy_policy": "full_autopilot",
+  "recovery_policy": {
+    "posture": "i_will_figure_it_out",
+    "obstacle_trigger": "At every blocker, tool failure, missing input, contradiction, or stalled stage.",
+    "paths_required": 3,
+    "dimensions_required": [
+      "what",
+      "artefact",
+      "assumption",
+      "cost",
+      "failure_mode",
+      "validation"
+    ],
+    "decision_log_path": "walteur-kit/figure-it-out.jsonl",
+    "validation_required": true,
+    "escalation_rule": "Escalate only after three paths are scored, one path is chosen, validation fails, and the escalation question is specific."
+  },
+  "context_sentinel": {
+    "user_name": "Tony",
+    "response_prefix": "Tony,",
+    "every_response": true,
+    "missing_prefix_action": "compact_and_resume",
+    "compaction_target": "_relay/BATON.md",
+    "baton_path": "_relay/BATON.md",
+    "degradation_signal": "If a WALTEUR agent stops starting responses with Tony, treat it as context drift and compact before continuing."
+  },
+  "budgets": {
+    "time_minutes": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0
+  },
+  "stages": [
+    {
+      "name": "intake",
+      "status": "passed",
+      "evidence_ids": [
+        "ev-recon"
+      ]
+    },
+    {
+      "name": "discover",
+      "status": "passed",
+      "evidence_ids": [
+        "ev-baseline-panel",
+        "ev-scorecard"
+      ]
+    },
+    {
+      "name": "plan",
+      "status": "passed",
+      "evidence_ids": [
+        "ev-loop-prompt"
+      ]
+    },
+    {
+      "name": "build",
+      "status": "in_progress",
+      "evidence_ids": [
+        "ev-registry-lint"
+      ]
+    },
+    {
+      "name": "verify",
+      "status": "not_started",
+      "evidence_ids": []
+    },
+    {
+      "name": "review",
+      "status": "not_started",
+      "evidence_ids": []
+    },
+    {
+      "name": "ship",
+      "status": "not_started",
+      "evidence_ids": []
+    },
+    {
+      "name": "reflect",
+      "status": "not_started",
+      "evidence_ids": []
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate-registry-lint",
+      "stage": "intake",
+      "status": "PASS",
+      "evidence_ids": [
+        "ev-registry-lint"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-recon",
+      "kind": "report",
+      "verdict": "PASS",
+      "summary": "m1 recon of Hermes/graphify/memory spine surfaces completed and captured in the goal session_log",
+      "path": "_agent_state/org-goal/goal-2026-07-03-harness-100.json",
+      "timestamp": "2026-07-03T05:50:08Z"
+    },
+    {
+      "id": "ev-baseline-panel",
+      "kind": "report",
+      "verdict": "PASS",
+      "summary": "Baseline 10-expert blind panel: weighted score 65.8/100 (RUBRIC.md v1); worst dims memory 4.8, design 4.2",
+      "path": "walteur-kit/harness-100/panel-baseline.json",
+      "timestamp": "2026-07-03T06:15:00Z"
+    },
+    {
+      "id": "ev-scorecard",
+      "kind": "report",
+      "verdict": "PASS",
+      "summary": "Baseline scorecard with per-dimension scores and wave-1 fix list published",
+      "path": "walteur-kit/harness-100/SCORECARD.md",
+      "timestamp": "2026-07-03T06:15:00Z"
+    },
+    {
+      "id": "ev-loop-prompt",
+      "kind": "report",
+      "verdict": "PASS",
+      "summary": "Concrete improvement LOOP prompt authored; 5-minute wave loop armed",
+      "path": "walteur-kit/harness-100/LOOP-PROMPT.md",
+      "timestamp": "2026-07-03T06:15:00Z"
+    },
+    {
+      "id": "ev-registry-lint",
+      "kind": "command",
+      "verdict": "PASS",
+      "command": "bash walteur-kit/hooks/gate-registry-lint.sh",
+      "path": "walteur-kit/gate-registry-report.json",
+      "timestamp": "2026-07-03T06:17:36Z"
+    }
+  ],
+  "known_gaps": [
+    {
+      "gap": "budgets (time_minutes/input_tokens/output_tokens/cost_usd) are not yet metered for this run; recorded as 0, not measured",
+      "owner": "Tony",
+      "severity": "low",
+      "accepted_reason": "Not yet instrumented; tracked here so the gap is visible rather than silently zeroed."
+    }
+  ],
+  "next_action": "Wave-1 verification: reproduce each of the 3 landed fixes (checkpoint-commit lane, kill-switch Bash-tool coverage, self-audit real-file drift) with fresh evidence, then advance phase build -> verify.",
+  "baton_path": "_relay/BATON.md",
+  "updated_at": "2026-07-03T06:17:36Z"
+}

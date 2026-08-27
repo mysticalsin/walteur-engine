@@ -1,0 +1,1 @@
+documents-api authz evidence: audit — audit log — core.mjs auto-audits every create/update/delete (who/what/when/id); reads are not audited; a denied cross-tenant write writes NO row; tenant-scoped via auditTrail().

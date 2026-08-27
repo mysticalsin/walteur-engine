@@ -1,0 +1,1 @@
+documents-api authz evidence: regression — regression command — node --test test/cross-tenant.test.mjs (5/5 green) re-runs the deny-by-default proof on every change.

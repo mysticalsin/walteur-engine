@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: transfer — third-country transfer: none — fully in-process, no data leaves the host.

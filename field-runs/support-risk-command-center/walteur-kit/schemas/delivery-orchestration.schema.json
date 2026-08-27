@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://walteur.local/schemas/delivery-orchestration.schema.json",
+  "title": "WALTEUR Delivery Orchestration Contract",
+  "description": "Typed proof that a WALTEUR run selected the right agent team, SDLC gates, handoffs, coverage, and audit trail for the requested delivery.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "build_class",
+    "risk_tier",
+    "coordination_pattern",
+    "sdlc_mode",
+    "roster",
+    "decomposition",
+    "stage_gates",
+    "coverage",
+    "handoffs",
+    "independence",
+    "worktree_strategy",
+    "audit",
+    "ts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "verdict": { "type": "string", "enum": ["PASS"] },
+    "build_class": {
+      "type": "string",
+      "enum": ["software", "workflow", "document", "data-ai", "cloud-iac", "mixed"]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "regulated"]
+    },
+    "coordination_pattern": {
+      "type": "string",
+      "enum": ["coordinator", "pipeline", "fanout_fanin", "ensemble", "debate", "supervisor", "hierarchical", "solo"]
+    },
+    "sdlc_mode": {
+      "type": "string",
+      "enum": ["full_5_stage", "light", "non_software", "manual_exception"]
+    },
+    "roster": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "responsibility", "permission", "independent_from"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "role": {
+            "type": "string",
+            "enum": [
+              "orchestrator",
+              "product",
+              "architect",
+              "frontend",
+              "backend",
+              "fullstack",
+              "api",
+              "data",
+              "ai",
+              "security",
+              "qa",
+              "ux",
+              "sre",
+              "devops",
+              "compliance",
+              "reviewer",
+              "evaluator",
+              "docs",
+              "release",
+              "developer",
+              "other"
+            ]
+          },
+          "responsibility": { "type": "string", "minLength": 1 },
+          "model_tier": { "type": "string", "enum": ["low", "standard", "high", "human", "tool", "unknown"] },
+          "permission": {
+            "type": "string",
+            "enum": ["read_only", "write_draft", "write_code", "execute", "approve"]
+          },
+          "independent_from": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "decomposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_ref", "tasks"],
+      "properties": {
+        "source_ref": { "type": "string", "minLength": 1 },
+        "tasks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "owner", "workstream", "touch_refs", "depends_on", "verification_ref"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "owner": { "type": "string", "minLength": 1 },
+              "workstream": {
+                "type": "string",
+                "enum": ["product", "frontend", "backend", "api", "data", "ai", "devops", "security", "qa", "ux", "docs", "workflow", "infra", "release", "other"]
+              },
+              "touch_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "depends_on": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "parallel_group": { "type": "string", "minLength": 1 },
+              "verification_ref": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "stage_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "owner", "status", "criteria"],
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": ["discover", "plan", "local_build", "shared_dev", "staging", "beta", "production", "reflect"]
+          },
+          "owner": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["PLANNED", "PASS", "SKIP"] },
+          "criteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidence_ref": { "type": "string", "minLength": 1 },
+          "skip_reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frontend", "backend", "api", "data", "security", "qa", "devops", "ux", "observability", "docs", "release", "rollback"],
+      "properties": {
+        "frontend": { "$ref": "#/definitions/coverage_item" },
+        "backend": { "$ref": "#/definitions/coverage_item" },
+        "api": { "$ref": "#/definitions/coverage_item" },
+        "data": { "$ref": "#/definitions/coverage_item" },
+        "security": { "$ref": "#/definitions/coverage_item" },
+        "qa": { "$ref": "#/definitions/coverage_item" },
+        "devops": { "$ref": "#/definitions/coverage_item" },
+        "ux": { "$ref": "#/definitions/coverage_item" },
+        "observability": { "$ref": "#/definitions/coverage_item" },
+        "docs": { "$ref": "#/definitions/coverage_item" },
+        "release": { "$ref": "#/definitions/coverage_item" },
+        "rollback": { "$ref": "#/definitions/coverage_item" }
+      }
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "artifact_ref", "validation_ref"],
+        "properties": {
+          "from": { "type": "string", "minLength": 1 },
+          "to": { "type": "string", "minLength": 1 },
+          "artifact_ref": { "type": "string", "minLength": 1 },
+          "validation_ref": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "independence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["builder_ids", "reviewer_ids", "evaluator_ids", "reviewer_independent", "evaluator_independent"],
+      "properties": {
+        "builder_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "evaluator_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reviewer_independent": { "type": "boolean", "const": true },
+        "evaluator_independent": { "type": "boolean", "const": true }
+      }
+    },
+    "worktree_strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "collision_policy", "boundaries"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["single", "isolated_worktrees", "sequential_handoffs", "not_applicable"] },
+        "collision_policy": { "type": "string", "minLength": 1 },
+        "boundaries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["owner", "paths"],
+            "properties": {
+              "owner": { "type": "string", "minLength": 1 },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trace_ref", "run_state_ref", "escalation_policy", "human_signoff_required"],
+      "properties": {
+        "trace_ref": { "type": "string", "minLength": 1 },
+        "run_state_ref": { "type": "string", "minLength": 1 },
+        "escalation_policy": { "type": "string", "minLength": 1 },
+        "human_signoff_required": { "type": "boolean" },
+        "signoff_ref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ts": { "type": "string", "format": "date-time" }
+  },
+  "definitions": {
+    "coverage_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "owner", "status"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "owner": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["PLANNED", "PASS", "SKIP"] },
+        "evidence_ref": { "type": "string", "minLength": 1 },
+        "skip_reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

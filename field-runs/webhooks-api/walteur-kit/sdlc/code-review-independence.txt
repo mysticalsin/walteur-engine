@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: code-review-independence — code-review independence: reviewer (code-reviewer) is independent from builders (core-builder, api-builder).

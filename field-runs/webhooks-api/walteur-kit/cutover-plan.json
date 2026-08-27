@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "plan_id": "webhooks-api-cutover-blue-green",
+  "strategy": "blue-green",
+  "rollback_command": "bash ops/rollback.sh --execute",
+  "rollback_proof": {
+    "command": "bash ops/rollback.sh --check",
+    "exit_code": 0,
+    "ran_ts": "2026-06-29T06:55:00Z"
+  },
+  "migrations": [
+    {
+      "id": "0001_init_subscription_store",
+      "reversible": true,
+      "down_command": "drop the new (blue) subscription-store process; traffic reverts to the prior (green) instance — data.json is reloaded on boot, no destructive schema change to undo"
+    }
+  ],
+  "health_check": {
+    "command": "curl -sf localhost:8209/health",
+    "expect_exit": 0
+  },
+  "traffic_shift_steps": [
+    { "step": 1, "percent": 10 },
+    { "step": 2, "percent": 50 },
+    { "step": 3, "percent": 100 }
+  ]
+}

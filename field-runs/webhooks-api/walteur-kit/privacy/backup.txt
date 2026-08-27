@@ -1,0 +1,1 @@
+webhooks-api privacy evidence: backup — backup deletion: data.json is the only persistence; it holds zero raw secrets by construction, so a leaked backup cannot forge a signature. Erasure rewrites the snapshot.

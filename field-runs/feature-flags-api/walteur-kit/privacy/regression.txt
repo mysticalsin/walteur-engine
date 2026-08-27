@@ -1,0 +1,1 @@
+feature-flags privacy regression command: node --test test/erasure.test.mjs (expect exit 0).

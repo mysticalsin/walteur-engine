@@ -1,0 +1,97 @@
+id: walteur-return-in-catch-js
+snapshots:
+  ? |
+    function f() { try { return work(); } catch (e) { return 0; } }
+  : labels:
+    - source: catch (e) { return 0; }
+      style: primary
+      start: 38
+      end: 61
+    - source: '0'
+      style: secondary
+      start: 57
+      end: 58
+    - source: return 0;
+      style: secondary
+      start: 50
+      end: 59
+    - source: '{ return 0; }'
+      style: secondary
+      start: 48
+      end: 61
+  ? |
+    function f() { try { return work(); } catch (e) { return []; } }
+  : labels:
+    - source: catch (e) { return []; }
+      style: primary
+      start: 38
+      end: 62
+    - source: '[]'
+      style: secondary
+      start: 57
+      end: 59
+    - source: return [];
+      style: secondary
+      start: 50
+      end: 60
+    - source: '{ return []; }'
+      style: secondary
+      start: 48
+      end: 62
+  ? |
+    function f() { try { return work(); } catch (e) { return null; } }
+  : labels:
+    - source: catch (e) { return null; }
+      style: primary
+      start: 38
+      end: 64
+    - source: 'null'
+      style: secondary
+      start: 57
+      end: 61
+    - source: return null;
+      style: secondary
+      start: 50
+      end: 62
+    - source: '{ return null; }'
+      style: secondary
+      start: 48
+      end: 64
+  ? |
+    function f() { try { return work(); } catch (e) { return undefined; } }
+  : labels:
+    - source: catch (e) { return undefined; }
+      style: primary
+      start: 38
+      end: 69
+    - source: undefined
+      style: secondary
+      start: 57
+      end: 66
+    - source: return undefined;
+      style: secondary
+      start: 50
+      end: 67
+    - source: '{ return undefined; }'
+      style: secondary
+      start: 48
+      end: 69
+  ? |
+    function f() { try { return work(); } catch (e) { return {}; } }
+  : labels:
+    - source: catch (e) { return {}; }
+      style: primary
+      start: 38
+      end: 62
+    - source: '{}'
+      style: secondary
+      start: 57
+      end: 59
+    - source: return {};
+      style: secondary
+      start: 50
+      end: 60
+    - source: '{ return {}; }'
+      style: secondary
+      start: 48
+      end: 62

@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: unit — unit: node --test core.mjs suite = 15/15 green (isolation, secret-once/fingerprint-only, validation, audit, erasure, snapshot/load).

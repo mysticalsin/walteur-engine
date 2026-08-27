@@ -1,0 +1,1 @@
+lessons: component-layer DOM-string tests stand in for e2e on a no-server client app; recorded honestly.

@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: beta-gate — beta gate: adversarial + accessibility + docs + rollback + signoff all green.

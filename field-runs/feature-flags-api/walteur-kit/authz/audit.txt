@@ -1,0 +1,1 @@
+feature-flags authz evidence: audit — every mutation (set/delete) writes a tenant-scoped audit row; denied actions write NONE. Proven by core.test.mjs + test/cross-tenant.test.mjs.

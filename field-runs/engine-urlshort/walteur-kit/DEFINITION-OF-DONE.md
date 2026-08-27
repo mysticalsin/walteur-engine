@@ -1,0 +1,14 @@
+# Definition of Done
+- [ ] `node --test` runs GREEN and the runner EXITS 0 with NO hang (every response path drained; every t.after returns the server.close Promise so ports are released).
+- [ ] Zero third-party dependencies — package.json has NO dependencies and NO devDependencies; only node: built-ins (http, crypto, test, assert/strict) are imported; ESM with explicit .js relative imports.
+- [ ] POST /shorten returns 201 {code, shortUrl} for valid http(s) URLs; shortUrl is REQUEST-DERIVED from req.headers.host (never a hardcoded host/port) so the ephemeral listen(0) round-trip resolves.
+- [ ] GET /:code returns 302 with Location = the canonical original URL (u.href); node:http auto-follow is NOT relied upon — the test asserts statusCode 302 + Location directly.
+- [ ] Scheme allowlisting is POST-parse only: javascript:/file:/data:/ftp: -> 400 DISALLOWED_PROTOCOL; malformed (http://) -> 400 INVALID_URL; NO regex/pre-parse scheme filtering anywhere.
+- [ ] Every malformed-input path returns a 4xx typed error (never a 500): EMPTY_BODY, INVALID_JSON, MISSING_URL, INVALID_TYPE, INVALID_URL, DISALLOWED_PROTOCOL, PAYLOAD_TOO_LARGE; unknown code -> 404 CODE_NOT_FOUND; unknown route -> 404 NOT_FOUND; wrong method -> 405 METHOD_NOT_ALLOWED WITH an Allow header.
+- [ ] Short codes are collision-safe via BOUNDED regenerate-on-collision (cap ~8) throwing CODE_GEN_EXHAUSTED on cap-out — never an unbounded loop; codes are 8-char base64url from crypto.randomBytes(6).
+- [ ] Single consistent error envelope {error:{code,message}} single-sourced in src/errors.js; all responses set Content-Type: application/json; no stack traces leak to clients.
+- [ ] Body is capped (1MB) BEFORE JSON.parse to prevent unbounded-memory DoS.
+- [ ] The node:test suite drives the running server over REAL HTTP via node:http only (supertest-free), pinning BOTH status AND error.code on each typed case.
+- [ ] README documents both endpoints (curl example matching the shipped response shape), a typed-error table matching src/errors.js byte-for-byte, run/test commands (npm start / npm test), and an explicit NON-GOALS section naming SSRF/private-IP, no-persistence, no-auth, no-rate-limiting.
+- [ ] Machine-readable proof artifact walteur-kit/test-report.json is written capturing per-error-code coverage + crypto usage + node version for audit parity.
+- [ ] File ownership is DISJOINT per dependency wave: task1 owns package.json/errors.js/.gitignore; task2 owns validate.js(+test); task3 owns store.js(+test); task4 owns server.js/bin; task5 owns http.test.js/helpers.js/test-report.json; task6 owns README.md — no two same-wave tasks write the same file.

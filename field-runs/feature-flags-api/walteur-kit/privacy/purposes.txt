@@ -1,0 +1,1 @@
+feature-flags privacy evidence: purposes — feature rollout control per tenant. Data minimization: only key/value/kind retained; no user-level personal data collected.

@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WALTEUR AI Tool Governance Proof",
+  "description": "Machine-checkable AI tool governance inventory for models, agents, MCP/plugin surfaces, data boundaries, approvals, output gates, cost controls, audit logging, and rollback.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "governance_id",
+    "run_date",
+    "build_class",
+    "risk_tier",
+    "verdict",
+    "policy",
+    "controls",
+    "tools",
+    "evidence_refs",
+    "signoff"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "governance_id": { "type": "string", "minLength": 1 },
+    "run_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "build_class": { "type": "string", "minLength": 1 },
+    "risk_tier": { "type": "string", "minLength": 1 },
+    "verdict": { "const": "PASS" },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client_tier",
+        "ai_tool_steward",
+        "data_policy",
+        "explicit_approval_required"
+      ],
+      "properties": {
+        "client_tier": {
+          "type": "string",
+          "enum": [
+            "tier_1_regulated",
+            "tier_2_compliant",
+            "tier_3_standard",
+            "tier_4_unrestricted"
+          ]
+        },
+        "ai_tool_steward": { "type": "string", "minLength": 1 },
+        "data_policy": { "type": "string", "minLength": 1 },
+        "explicit_approval_required": { "const": true }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inventory_ref",
+        "data_boundary_ref",
+        "confidentiality_ref",
+        "prompt_injection_ref",
+        "tool_allowlist_ref",
+        "model_routing_ref",
+        "cost_budget_ref",
+        "audit_log_ref",
+        "revoke_plan_ref"
+      ],
+      "properties": {
+        "inventory_ref": { "$ref": "#/definitions/ref" },
+        "data_boundary_ref": { "$ref": "#/definitions/ref" },
+        "confidentiality_ref": { "$ref": "#/definitions/ref" },
+        "prompt_injection_ref": { "$ref": "#/definitions/ref" },
+        "tool_allowlist_ref": { "$ref": "#/definitions/ref" },
+        "model_routing_ref": { "$ref": "#/definitions/ref" },
+        "cost_budget_ref": { "$ref": "#/definitions/ref" },
+        "audit_log_ref": { "$ref": "#/definitions/ref" },
+        "revoke_plan_ref": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/tool" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/ref" }
+    },
+    "signoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "signoff_ref", "owner"],
+      "properties": {
+        "required": { "const": true },
+        "signoff_ref": { "$ref": "#/definitions/ref" },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "definitions": {
+    "ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "category",
+        "purpose",
+        "data_classification",
+        "client_data_access",
+        "runtime_boundary",
+        "approval_status",
+        "approval_ref",
+        "allowlist_ref",
+        "output_gate_ref",
+        "tool_contract_ref",
+        "audit_log_ref",
+        "cost_budget_ref",
+        "rollback_ref",
+        "human_review_required",
+        "execution_stages"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "category": {
+          "type": "string",
+          "enum": [
+            "model",
+            "agent",
+            "mcp_server",
+            "plugin",
+            "connector",
+            "browser",
+            "external_tool",
+            "local_tool",
+            "ci"
+          ]
+        },
+        "purpose": { "type": "string", "minLength": 1 },
+        "data_classification": {
+          "type": "string",
+          "enum": ["public", "internal", "synthetic", "confidential", "restricted"]
+        },
+        "client_data_access": { "type": "boolean" },
+        "runtime_boundary": {
+          "type": "string",
+          "enum": ["general_purpose", "private_tenant", "client_sanctioned", "local_only"]
+        },
+        "approval_status": { "const": "approved" },
+        "approval_ref": { "$ref": "#/definitions/ref" },
+        "allowlist_ref": { "$ref": "#/definitions/ref" },
+        "output_gate_ref": { "$ref": "#/definitions/ref" },
+        "tool_contract_ref": { "$ref": "#/definitions/ref" },
+        "audit_log_ref": { "$ref": "#/definitions/ref" },
+        "cost_budget_ref": { "$ref": "#/definitions/ref" },
+        "rollback_ref": { "$ref": "#/definitions/ref" },
+        "human_review_required": { "const": true },
+        "model_tier": {
+          "type": "string",
+          "enum": ["haiku", "sonnet", "opus", "other"]
+        },
+        "execution_stages": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "conditions_ref": { "$ref": "#/definitions/ref" }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+feature-flags authz evidence: fail-closed — missing/blank/wrong/unknown-tenant credential => 401 empty body (deny-by-default) in server.mjs. Proven by test/api.test.mjs (401 cases).

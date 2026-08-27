@@ -1,0 +1,1 @@
+feature-flags authz evidence: negative — cross-tenant get=404, delete=403; no foreign value leaked. Proven by test/cross-tenant.test.mjs.

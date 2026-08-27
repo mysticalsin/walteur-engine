@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "id": "privacy_legal",
+      "status": "verified",
+      "evidence": "Privacy policy published at /legal/privacy; user data (tenants, invoices) lives only in the primary Postgres instance, documented in docs/data-map.md."
+    },
+    {
+      "id": "rls",
+      "status": "verified",
+      "evidence": "Row-Level Security policies enabled on all tenant-scoped tables via Supabase migrations; verified in staging that cross-tenant reads return zero rows."
+    }
+  ]
+}

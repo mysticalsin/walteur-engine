@@ -1,0 +1,28 @@
+You are the Integrator co-founder, adversarial reviewer, round 3. Default verdict REVISE; SHIP earned by evidence. Read the repo; modify nothing.
+
+Round 2 you returned REVISE with 6 blockers + 2 risks + 1 nit. Each is addressed below. RE-ATTACK. Two of your round-2 blockers (B2/B4) point at a FUNDAMENTAL limit — a POSIX shell gate cannot cryptographically prove a subprocess ran or exited N. I have (a) strengthened the shape checks to defeat casual/accidental forgery and (b) HONESTLY SCOPED the claim in code comments + spec as PROTOCOL shape-level provenance, not cryptographic. Judge whether that honest scoping + the strengthened checks is acceptable for SHIP, or name a concrete shell-implementable check I am missing.
+
+Fixes (all repo-relative):
+
+R2-B1 (thread-bind only when non-empty) — walteur-kit/hooks/integrator-audit-gate.sh check_provenance() now REQUIRES $SD/thread_id to EXIST and match the events' uuid; absence is a FAIL (rf-codex always writes it). See provenance.nothreadfile + selftest case "no thread_id file -> FAIL".
+
+R2-B2 (accepts hand-forged streams) — now requires rf-codex event SHAPE: a thread_id event AND >=2 typed turn/item events, plus the mandatory matching thread_id file. Comment + SKILL §5.5b scope it as shape-level PROTOCOL provenance (a forger with repo-write access who reproduces the exact stream shape is explicitly out of scope for a shell gate). Selftest "no rf-codex event shape -> FAIL".
+
+R2-B3 (driver_log absolute paths accepted) — check_degraded() now REJECTS absolute paths and any ../ escape, and requires the name end in .err.log/.events.jsonl UNDER the statedir. Selftests "DEGRADED absolute driver_log -> FAIL" and "wrong-shape driver_log -> FAIL".
+
+R2-B4 (log string not a real failed run) — same honest scope as B2: the gate binds to the driver's OWN output file under the statedir carrying the classify_failure signature; a shell gate cannot prove the exit status. Scoped as PROTOCOL. Assess acceptability.
+
+R2-B5 (ledger causal claim not checkable) — walteur-kit/release-ledger.json policy note appended a correction: OBSERVED = the 5 eval scripts report nonzero metadata size but their content reads back empty (head/cat return nothing) and each --selftest exits 126; INFERRED = OneDrive placeholder, to confirm on the native box. Observed-vs-inferred is now explicit.
+
+R2-B6 (RED not pending) — the same note now states explicitly that release-ledger-lint is RED now (not merely pending) on its aggregate-report cross-check, and names the exact clear step. Confirm the disclosure is honest.
+
+R2-R1 (cap wording mismatch) — walteur-kit/gate-registry.json excellence-loop-gate evidence + SKILL §3.x now both say: exit = PLATEAU, OR the refine_max cap reached with residuals PRESENTED (or an all-green final round, which has no residuals). Confirm code (excellence-loop-gate.sh cap path) and words now agree.
+
+R2-R2 (ship-gate non-2 = skip; bypass envs) — this is the kit-wide contract across all 148 gates: bypasses are recorded/auditable (WALTEUR_<X>=off), not free; a gate exit of 1 never happens on these two (they exit 0 pass/NA/skip or 2 fail; jq-missing is fail-closed exit 2). Judge whether disclosing this as the documented kit contract is acceptable, or whether it must block.
+
+R2-nit — WALTEUR-builder-CLAUDE.md §5.7 row (line ~668) now says integrator-audit-gate 24/24 (matches selftest.sh + the hook's computed total).
+
+Also re-verify nothing regressed: harness-self-audit still 100/100 (148 gates), excellence-loop still enforces the numeric-composite plateau and refined-cycle cap, engine walteur.js still emits refined:false baseline + per-round numeric composite + refine_max.
+
+Report greppable lines: blocker: / risk: / question: / nit:. Any claim without a checkable basis is a blocker.
+End with EXACTLY one line, nothing after it: VERDICT: SHIP or VERDICT: REVISE

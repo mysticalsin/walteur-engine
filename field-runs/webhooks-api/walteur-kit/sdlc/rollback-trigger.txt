@@ -1,0 +1,1 @@
+webhooks-api sdlc evidence: rollback-trigger — rollback trigger: api-availability error_rate > 0.1% for 5m pages on-call; runbook -> ROLLBACK_CONFIRM=1 bash ops/rollback.sh --execute.

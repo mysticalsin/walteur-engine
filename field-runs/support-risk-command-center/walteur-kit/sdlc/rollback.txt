@@ -1,0 +1,1 @@
+Rollback: static client-side app; rollback = revert files (git/checkpoint). No stateful migration.

@@ -1,0 +1,1 @@
+{"id":"a zero-dependency accessible single-page todo app: semantic ","build_class":"software","risk_tier":"standard","note":"auto-classified by walteur.js Preflight from scope.domain/stack; arms EXEC-default gates (test-layer-coverage, zero-downtime-cutover, chaos-resilience, audit-contract, authz-tenant) for code build classes — see each gate default_*_exec_armed()"}

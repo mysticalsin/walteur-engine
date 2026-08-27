@@ -1,0 +1,1 @@
+documents-api authz evidence: admin — admin boundary — POST /admin/erase is scoped to the CALLER's own tenant (DSAR); there is no cross-tenant admin path; an erase only ever touches the caller's bucket + audit rows.

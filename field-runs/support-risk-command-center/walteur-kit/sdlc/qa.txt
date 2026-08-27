@@ -1,0 +1,1 @@
+QA: 6 test cases across logic+component layers, all pass. Manual: index.html renders cards+rows.

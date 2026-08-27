@@ -1,0 +1,7 @@
+{"ts":"2026-07-02T23:46:51Z","phase":"Self-Heal","model":"sonnet","tool":"Bash","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:48:04Z","phase":"Scope","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-02T23:53:07Z","phase":"Team","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-03T00:01:17Z","phase":"Plan","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-03T00:02:08Z","phase":"Preflight","model":"sonnet","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}
+{"ts":"2026-07-03T00:02:08Z","phase":"Preflight","model":"sonnet","tool":"skill-router","exit_code":"0","gate_verdict":"required:8,optional:17","tokens":{"estimate":0}}
+{"ts":"2026-07-03T00:09:46Z","phase":"Debate","model":"opus","tool":"agent","exit_code":"0","gate_verdict":"","tokens":{"estimate":0}}

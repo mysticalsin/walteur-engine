@@ -1,0 +1,1 @@
+apikeys-vault privacy evidence: minimization — data minimization — only a sha256 hash + last4 + timestamps are kept; the raw key is discarded after the one-time response. last4 is a non-secret display aid revealing negligible entropy.

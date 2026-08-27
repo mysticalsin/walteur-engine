@@ -1,0 +1,1 @@
+documents-api privacy evidence: breach — breach response — deny-by-default means a stolen token only exposes ONE tenant's data; rotate WALTEUR_TENANT_TOKENS (ops/secrets-policy.json) to revoke. No cross-tenant blast radius.

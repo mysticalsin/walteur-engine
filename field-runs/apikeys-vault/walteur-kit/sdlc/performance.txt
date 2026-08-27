@@ -1,0 +1,1 @@
+performance — in-memory per-tenant Map store; crypto mint + sha256 on issue/rotate; sub-ms request handling observed in structured logs.

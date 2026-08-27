@@ -1,0 +1,31 @@
+{
+  "schema": "walteur.pipeline-proof/v1",
+  "build": "multitenant-tasks",
+  "ci_entrypoint": "ci.sh",
+  "pipeline_probe": {
+    "command": "node --test test/",
+    "runnable_command": "node --test test/**/*.test.mjs",
+    "expect_exit": 0,
+    "note": "The probe is the REAL suite under test/ (api + cross-tenant + erasure). The canonical spec string is 'node --test test/'; on Node >=20/24 the bare directory spec resolves test/ as a single module and throws MODULE_NOT_FOUND, so ci.sh executes the documented directory-glob equivalent 'node --test test/**/*.test.mjs', which runs every file in test/. No secret values are declared here; the suite injects short tenant tokens from env."
+  },
+  "suite": {
+    "dir": "test/",
+    "files": [
+      "test/api.test.mjs",
+      "test/cross-tenant.test.mjs",
+      "test/erasure.test.mjs"
+    ]
+  },
+  "observed": {
+    "ran_ts": "2026-06-29T00:49:11Z",
+    "node_version": "v24.13.1",
+    "platform": "win32 (Git-Bash)",
+    "command_executed": "bash ci.sh",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "verdict": "PASS"
+  }
+}

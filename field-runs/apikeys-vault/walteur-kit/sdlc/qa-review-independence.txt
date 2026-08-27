@@ -1,0 +1,1 @@
+qa-review independence — the QA lead is distinct from the core/api builders.

@@ -1,0 +1,7 @@
+You are the Integrator co-founder, adversarial reviewer, round 5 (final, MAX_ROUNDS). Default verdict REVISE; SHIP earned by evidence. Read the repo; modify nothing.
+
+Round 4 you returned VERDICT: SHIP with only 1 risk (the disclosed OneDrive aggregate residual) and 1 nit (--selftest can exit 1 by design, but ship-gate runtime paths are 0/2). ONE change since then: running walteur-kit/hooks/integrator-audit-gate.sh live against the real 172KB Codex events stream exposed a robustness bug in check_provenance() — the event-shape count used `grep -aceE` which mis-parsed and yielded a non-integer, tripping "integer expression expected". Fixed: it now uses `grep -acE '...'` with a numeric guard (case ''|*[!0-9]*) nshape=0). No other behavior changed; the selftest is still 24/24 and the shape check still requires >=2 typed rf-codex events.
+
+Verify: (1) walteur-kit/hooks/integrator-audit-gate.sh check_provenance() line ~120-126 is now robust (clean integer count, guarded); (2) nothing else regressed — harness-self-audit 100/100 (148 gates), excellence-loop 15/15, integrator 24/24, walteur/SKILL.md byte-identical to WALTEUR-builder-CLAUDE.md; (3) the only remaining RED is the disclosed release-ledger-lint aggregate-report residual (5 OneDrive-unreadable eval scripts), honestly documented.
+
+If the grep fix is sound and the disclosed environment residual is the only open item, this is SHIP. Report greppable lines: blocker: / risk: / question: / nit:. End with EXACTLY one line, nothing after it: VERDICT: SHIP or VERDICT: REVISE

@@ -1,0 +1,1 @@
+feature-flags privacy evidence: inventory — stored data = {tenantId, key, value(bool|variant string), kind} per flag + audit rows {ts,tenantId,action,key}. No PII fields by design; tenantId is the only identifier.

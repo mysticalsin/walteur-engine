@@ -1,0 +1,1 @@
+multitenant-tasks authz evidence: role-matrix — deny-by-default tenant scoping in core.mjs (owned()); proven by core.test.mjs.

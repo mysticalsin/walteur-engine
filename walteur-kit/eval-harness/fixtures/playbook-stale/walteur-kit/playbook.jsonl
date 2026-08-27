@@ -1,0 +1,2 @@
+{"id":"fresh-1","fact":"one fresh entry to prove the gate isn't just failing on file presence","valid_until":"2099-12-31"}
+{"id":"stale-1","fact":"poisoned twin - this entry's valid_until is in the past","valid_until":"2001-01-01"}

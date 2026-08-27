@@ -1,0 +1,1 @@
+feature-flags SDLC evidence: smoke — curl -sf localhost:8191/health -> 200 {status:ok}.
